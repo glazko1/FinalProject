@@ -1,7 +1,6 @@
 package pool;
 
 import org.testng.annotations.Test;
-import util.locale.LocaleManager;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,9 +10,7 @@ import java.util.Properties;
 public class DatabaseConnectionPoolTest {
 
     @Test
-    public void test() throws SQLException, ClassNotFoundException, IOException {
-        LocaleManager localeManager = new LocaleManager();
-        localeManager.getString("message.welcome");
+    public void test() throws ClassNotFoundException, IOException {
 
         Properties properties = new Properties();
         properties.load(new FileInputStream("./src/main/resources/db.properties"));

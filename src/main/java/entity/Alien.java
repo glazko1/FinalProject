@@ -4,15 +4,15 @@ public class Alien {
 
     private long alienId;
     private String alienName;
-    private int movieId;
+    private Movie movie;
     private String planet;
     private String description;
     private double averageRating;
 
-    public Alien(long alienId, String alienName, int movieId, String planet, String description, double averageRating) {
+    public Alien(long alienId, String alienName, Movie movie, String planet, String description, double averageRating) {
         this.alienId = alienId;
         this.alienName = alienName;
-        this.movieId = movieId;
+        this.movie = movie;
         this.planet = planet;
         this.description = description;
         this.averageRating = averageRating;
@@ -34,12 +34,12 @@ public class Alien {
         this.alienName = alienName;
     }
 
-    public int getMovieId() {
-        return movieId;
+    public Movie getMovie() {
+        return movie;
     }
 
-    public void setMovieId(int movieId) {
-        this.movieId = movieId;
+    public void setMovieId(Movie movie) {
+        this.movie = movie;
     }
 
     public String getPlanet() {
@@ -71,7 +71,7 @@ public class Alien {
         return "Alien{" +
                 "alienId=" + alienId +
                 ", alienName='" + alienName + '\'' +
-                ", movieId=" + movieId +
+                ", movie=" + movie +
                 ", planet='" + planet + '\'' +
                 ", description='" + description + '\'' +
                 ", averageRating=" + averageRating +

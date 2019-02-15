@@ -24,6 +24,7 @@ public class UserSQLTest {
     @Test
     public void addNewUser_validInformation_correctValues() {
         User user = new User(241, "glazko1", "New", "User",
+                "Password",
                 4, "newuser@yahoo.com", false, Date.valueOf("2000-11-12"));
         try {
             userSQL.addNewUser(user);

@@ -17,4 +17,49 @@
     <param-name>db.password</param-name>
     <param-value>relbud2k1</param-value>
   </context-param>
+
+  <servlet>
+    <servlet-name>error</servlet-name>
+    <jsp-file>/WEB-INF/error.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>error</servlet-name>
+    <url-pattern>/error</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>main</servlet-name>
+    <jsp-file>/WEB-INF/main.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>main</servlet-name>
+    <url-pattern>/main</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>alien-table</servlet-name>
+    <jsp-file>/WEB-INF/alien-table.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>alien-table</servlet-name>
+    <url-pattern>/alien-table</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>alien-page</servlet-name>
+    <jsp-file>/WEB-INF/alien-page.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>alien-page</servlet-name>
+    <url-pattern>/alien-page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>new-alien</servlet-name>
+    <jsp-file>/WEB-INF/new-alien.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>new-alien</servlet-name>
+    <url-pattern>/new-alien</url-pattern>
+  </servlet-mapping>
 </web-app>

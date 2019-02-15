@@ -2,7 +2,10 @@ package command.factory;
 
 import command.Command;
 import command.exception.CommandException;
-import command.impl.SignInCommand;
+import command.impl.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class CommandFactory {
 
@@ -14,10 +17,18 @@ public class CommandFactory {
 
     private CommandFactory() {}
 
-    public Command createCommand(String name) throws CommandException {
+    public Command createCommand(String name, HttpServletRequest request, HttpServletResponse response) throws CommandException {
         switch (name) {
             case "signIn":
-                return new SignInCommand();
+                return new SignInCommand(request, response);
+            case "signUp":
+                return new SignUpCommand(request, response);
+            case "viewAliens":
+                return new ViewAliensCommand(request, response);
+            case "addAlien":
+                return new AddAlienCommand(request, response);
+            case "viewMovies":
+                return new ViewMoviesCommand(request, response);
             default:
                 break;
         }
