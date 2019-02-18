@@ -6,7 +6,7 @@
 <fmt:setBundle basename="text" />
 <html>
 <head>
-    <title>Main page</title>
+    <title>All users</title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
@@ -17,13 +17,23 @@
     <option value="ru_RU" ${locale == 'ru_RU' ? 'selected' : ''}>Русский</option>
 </select>
 </form>
-<h2><fmt:message key="title.welcome" />, ${sessionScope.firstName}!</h2>
 <form method="get" action="mainWindow">
-    <button type="submit" name="button" value="viewAllAliens"><fmt:message key="button.view_aliens" /></button><br><br>
-    <button type="submit" name="button" value="viewAllMovies"><fmt:message key="button.view_movies" /></button>
-    <c:if test="${sessionScope.status == 1}">
-        <br><br><button type="submit" name="button" value="viewAllUsers"><fmt:message key="button.view_users" /></button>
-    </c:if>
+    <table border="1" cellpadding="4" cellspacing="0">
+        <tr>
+            <th align="center">ID</th>
+            <th align="center">Username</th>
+            <th align="center">Email</th>
+        </tr>
+        <c:forEach items="${users}" var="user">
+            <tr>
+                <td align="center">${user.userId}</td>
+                <td align="center">
+                    <button type="submit" name="button" value="viewUser${user.userId}">${user.username}</button>
+                </td>
+                <td align="center">${user.email}</td>
+            </tr>
+        </c:forEach>
+    </table>
 </form>
 </body>
 </html>

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter(value = "/*")
+@WebFilter(value = "")
 public class SignInSecurityFilter implements Filter {
 
     @Override

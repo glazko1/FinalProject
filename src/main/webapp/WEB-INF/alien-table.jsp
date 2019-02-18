@@ -6,7 +6,8 @@
 <fmt:setBundle basename="text" />
 <html>
 <head>
-    <title></title>
+    <title>All aliens</title>
+    <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
 <form>
@@ -16,26 +17,32 @@
     <option value="ru_RU" ${locale == 'ru_RU' ? 'selected' : ''}>Русский</option>
 </select>
 </form>
-<table border="1" cellpadding="4" cellspacing="0">
-    <tr>
-        <c:if test="${sessionScope.status == 1}">
-            <th align="center">ID</th>
-        </c:if>
-        <th align="center">Name</th>
-        <th align="center">Movie</th>
-        <th align="center">Planet</th>
-    </tr>
-    <c:forEach items="${aliens}" var="aliens">
+<form method="get" action="mainWindow">
+    <table border="1" cellpadding="4" cellspacing="0">
         <tr>
             <c:if test="${sessionScope.status == 1}">
-                <td align="center">${aliens.alienId}</td>
+                <th align="center">ID</th>
             </c:if>
-            <td align="center">${aliens.alienName}</td>
-            <td align="center">${aliens.movie.title}</td>
-            <td align="center">${aliens.planet}</td>
+            <th align="center">Name</th>
+            <th align="center">Movie</th>
+            <th align="center">Planet</th>
         </tr>
-    </c:forEach>
-</table>
+        <c:forEach items="${aliens}" var="alien">
+            <tr>
+                <c:if test="${sessionScope.status == 1}">
+                    <td align="center">${alien.alienId}</td>
+                </c:if>
+                <td align="center">
+                    <button type="submit" name="button" value="viewAlien${alien.alienId}">${alien.alienName}</button>
+                </td>
+                <td align="center">
+                    <button type="submit" name="button" value="viewMovie${alien.movie.movieId}">${alien.movie.title}</button>
+                </td>
+                <td align="center">${alien.planet}</td>
+            </tr>
+        </c:forEach>
+    </table>
+</form>
 <c:if test="${sessionScope.status == 1 || sessionScope.status == 3}">
     <form method="get" action="mainWindow">
         <button type="submit" name="button" value="newAlien"><fmt:message key="message.add_alien" /></button>

@@ -22,13 +22,29 @@ public class MovieSQL implements MovieDAO {
 
     private MovieSQL() {}
 
-    private static final String GET_ALL_MOVIES_SQL = "SELECT MovieId, Title, RunningTime, Budget, ReleaseDate FROM movie";
+    private static final String GET_MOVIE_BY_ID_SQL = "SELECT MovieId, Title, RunningTime, Budget, ReleaseDate FROM movie WHERE MovieId = ?";
     private static final String GET_MOVIE_BY_TITLE_SQL = "SELECT MovieId, Title, RunningTime, Budget, ReleaseDate FROM movie WHERE Title = ?";
+    private static final String GET_ALL_MOVIES_SQL = "SELECT MovieId, Title, RunningTime, Budget, ReleaseDate FROM movie";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
     @Override
-    public Movie getMovieById(long id) {
-        return null;
+    public Movie getMovieById(long id) throws DAOException {
+        try (ProxyConnection proxyConnection = pool.getConnection()) {
+            Connection connection = proxyConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(GET_MOVIE_BY_ID_SQL);
+            statement.setLong(1, id);
+            ResultSet set = statement.executeQuery();
+            if (set.next()) {
+                return new Movie(set.getLong(1),
+                        set.getString(2),
+                        set.getInt(3),
+                        set.getInt(4),
+                        set.getDate(5));
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+        throw new DAOException("No movie with id " + id + " in DAO!");
     }
 
     @Override

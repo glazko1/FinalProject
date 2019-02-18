@@ -9,6 +9,9 @@ public interface CommonService {
 
     void signIn(HttpServletRequest request, HttpServletResponse response) throws ServiceException;
     void signUp(HttpServletRequest request, HttpServletResponse response) throws ServiceException;
-    void viewAliens(HttpServletRequest request, HttpServletResponse response) throws ServiceException;
-    void viewMovies(HttpServletRequest request, HttpServletResponse response) throws ServiceException;
+    void viewAllAliens(HttpServletRequest request, HttpServletResponse response) throws ServiceException;
+    void viewAllMovies(HttpServletRequest request, HttpServletResponse response) throws ServiceException;
+    void viewAlien(HttpServletRequest request, HttpServletResponse response) throws ServiceException;
+    void addFeedback(HttpServletRequest request, HttpServletResponse response) throws ServiceException;
+    void viewMovie(HttpServletRequest request, HttpServletResponse response) throws ServiceException;
 }

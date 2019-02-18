@@ -25,6 +25,7 @@ public class UserSQL implements UserDAO {
 
     private static final String GET_USER_BY_ID_SQL = "SELECT UserId, Username, FirstName, LastName, Password, StatusId, Email, Banned, BirthDate FROM User WHERE UserId = ?";
     private static final String GET_USER_BY_USERNAME_AND_PASSWORD_SQL = "SELECT UserId, Username, FirstName, LastName, Password, StatusId, Email, Banned, BirthDate FROM User WHERE Username = ? AND Password = ?";
+    private static final String GET_USER_BY_USERNAME_SQL = "SELECT UserId, Username, FirstName, LastName, Password, StatusId, Email, Banned, BirthDate FROM User WHERE Username = ?";
     private static final String GET_ALL_USERS_SQL = "SELECT UserId, Username, FirstName, LastName, Password, StatusId, Email, Banned, BirthDate FROM User";
     private static final String ADD_NEW_USER_SQL = "INSERT INTO User (UserId, Username, FirstName, LastName, Password, StatusId, Email, Banned, BirthDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String GET_USER_BY_USERNAME_OR_EMAIL_SQL = "SELECT UserId FROM User WHERE Username = ? OR Email = ?";
@@ -80,6 +81,30 @@ public class UserSQL implements UserDAO {
     }
 
     @Override
+    public User getUserByUsername(String username) throws DAOException {
+        try (ProxyConnection proxyConnection = pool.getConnection()) {
+            Connection connection = proxyConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(GET_USER_BY_USERNAME_SQL);
+            statement.setString(1, username);
+            ResultSet set = statement.executeQuery();
+            if (set.next()) {
+                return new User(set.getLong(1),
+                        set.getString(2),
+                        set.getString(3),
+                        set.getString(4),
+                        set.getString(5),
+                        set.getInt(6),
+                        set.getString(7),
+                        set.getBoolean(8),
+                        set.getDate(9));
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+        throw new DAOException("No user with username " + username + " in DAO!");
+    }
+
+    @Override
     public List<User> getAllUsers() throws DAOException {
         List<User> users = new ArrayList<>();
         try (ProxyConnection proxyConnection = pool.getConnection()) {
@@ -99,6 +124,7 @@ public class UserSQL implements UserDAO {
                 users.add(user);
             }
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             throw new DAOException(e);
         }
         return users;

@@ -8,12 +8,12 @@ import service.impl.Common;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ViewAliensCommand implements Command {
+public class ViewAlienCommand implements Command {
 
     private HttpServletRequest request;
     private HttpServletResponse response;
 
-    public ViewAliensCommand(HttpServletRequest request, HttpServletResponse response) {
+    public ViewAlienCommand(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;
     }
@@ -22,7 +22,7 @@ public class ViewAliensCommand implements Command {
     public void execute() throws CommandException {
         Common common = Common.getInstance();
         try {
-            common.viewAliens(request, response);
+            common.viewAlien(request, response);
         } catch (ServiceException e) {
             throw new CommandException(e);
         }

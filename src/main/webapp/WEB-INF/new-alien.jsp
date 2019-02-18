@@ -6,11 +6,20 @@
 <fmt:setBundle basename="text" />
 <html>
 <head>
-    <title>Title</title>
+    <title>Add new alien</title>
+    <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
+<form>
+    <label for="locale"></label><select id="locale" name="locale" onchange="submit()">
+    <option value="en_EN" ${locale == 'en_EN' ? 'selected' : ''}>English</option>
+    <option value="de_DE" ${locale == 'de_DE' ? 'selected' : ''}>Deutsch</option>
+    <option value="ru_RU" ${locale == 'ru_RU' ? 'selected' : ''}>Русский</option>
+</select>
+</form>
+<h2><fmt:message key="message.enter_info" /></h2>
 <form method="post" action="mainWindow">
-    <table align="center">
+    <table>
         <tr>
             <td align="center"><fmt:message key="message.alien_name" /></td>
             <td align="center">
@@ -38,7 +47,7 @@
         <tr>
             <td align="center"><fmt:message key="message.description" /></td>
             <td align="center">
-                <label><input type="text" name="description" height="30px"></label>
+                <label><input type="text" name="description"></label>
             </td>
         </tr>
     </table>

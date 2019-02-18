@@ -23,12 +23,20 @@ public class CommandFactory {
                 return new SignInCommand(request, response);
             case "signUp":
                 return new SignUpCommand(request, response);
-            case "viewAliens":
-                return new ViewAliensCommand(request, response);
+            case "viewAllAliens":
+                return new ViewAllAliensCommand(request, response);
             case "addAlien":
                 return new AddAlienCommand(request, response);
-            case "viewMovies":
-                return new ViewMoviesCommand(request, response);
+            case "viewAllMovies":
+                return new ViewAllMoviesCommand(request, response);
+            case "viewAlien":
+                return new ViewAlienCommand(request, response);
+            case "addFeedback":
+                return new AddFeedbackCommand(request, response);
+            case "viewMovie":
+                return new ViewMovieCommand(request, response);
+            case "viewAllUsers":
+                return new ViewAllUsersCommand(request, response);
             default:
                 break;
         }

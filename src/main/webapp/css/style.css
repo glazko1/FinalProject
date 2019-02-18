@@ -17,3 +17,14 @@ div {
     float: right;
     background-color: bisque;
 }
+
+button {
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    border-bottom: 1px solid #1e2f45;
+    padding: 0;
+}

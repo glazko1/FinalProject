@@ -19,6 +19,15 @@
   </context-param>
 
   <servlet>
+    <servlet-name>index</servlet-name>
+    <jsp-file>/index.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>index</servlet-name>
+    <url-pattern>/index</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>error</servlet-name>
     <jsp-file>/WEB-INF/error.jsp</jsp-file>
   </servlet>
@@ -61,5 +70,23 @@
   <servlet-mapping>
     <servlet-name>new-alien</servlet-name>
     <url-pattern>/new-alien</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>movie-page</servlet-name>
+    <jsp-file>/WEB-INF/movie-page.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>movie-page</servlet-name>
+    <url-pattern>/movie-page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>user-table</servlet-name>
+    <jsp-file>/WEB-INF/user-table.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-table</servlet-name>
+    <url-pattern>/user-table</url-pattern>
   </servlet-mapping>
 </web-app>

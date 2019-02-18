@@ -6,15 +6,15 @@ public class Feedback {
 
     private long feedbackId;
     private long alienId;
-    private long userId;
+    private User user;
     private int rating;
     private String feedbackText;
     private Date feedbackDateTime;
 
-    public Feedback(long feedbackId, long alienId, long userId, int rating, String feedbackText, Date feedbackDateTime) {
+    public Feedback(long feedbackId, long alienId, User user, int rating, String feedbackText, Date feedbackDateTime) {
         this.feedbackId = feedbackId;
         this.alienId = alienId;
-        this.userId = userId;
+        this.user = user;
         this.rating = rating;
         this.feedbackText = feedbackText;
         this.feedbackDateTime = feedbackDateTime;
@@ -36,13 +36,11 @@ public class Feedback {
         this.alienId = alienId;
     }
 
-    public long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
+    public void setUser(User user) { this.user = user; }
 
     public int getRating() {
         return rating;

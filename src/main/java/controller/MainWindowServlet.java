@@ -18,14 +18,14 @@ public class MainWindowServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("button");
+        HttpSession session = request.getSession();
         CommandFactory factory = CommandFactory.getInstance();
         Command command;
         switch (action) {
-            case "viewAliens":
+            case "viewAllAliens":
                 try {
-                    command = factory.createCommand("viewAliens", request, response);
+                    command = factory.createCommand("viewAllAliens", request, response);
                     command.execute();
-                    HttpSession session = request.getSession();
                     session.setAttribute("aliens", request.getAttribute("aliens"));
                     response.sendRedirect("alien-table");
                 } catch (CommandException e) {
@@ -33,18 +33,54 @@ public class MainWindowServlet extends HttpServlet {
                 }
                 break;
             case "newAlien":
-                HttpSession session = request.getSession();
                 session.removeAttribute("aliens");
                 try {
-                    command = factory.createCommand("viewMovies", request, response);
+                    command = factory.createCommand("viewAllMovies", request, response);
                     command.execute();
                     session.setAttribute("movies", request.getAttribute("movies"));
                     response.sendRedirect("new-alien");
                 } catch (CommandException e) {
                     response.sendRedirect("error");
                 }
+                break;
+            case "viewAllMovies":
+                break;
+            case "viewAllUsers":
+                try {
+                    command = factory.createCommand("viewAllUsers", request, response);
+                    command.execute();
+                    session.setAttribute("users", request.getAttribute("users"));
+                    response.sendRedirect("user-table");
+                } catch (CommandException e) {
+                    response.sendRedirect("error");
+                }
+                break;
             default:
                 break;
+        }
+        if (action.matches("viewAlien[0-9]+")) {
+            String id = action.substring(9);
+            request.setAttribute("id", id);
+            try {
+                command = factory.createCommand("viewAlien", request, response);
+                command.execute();
+                session.setAttribute("alien", request.getAttribute("alien"));
+                session.setAttribute("feedbacks", request.getAttribute("feedbacks"));
+                response.sendRedirect("alien-page");
+            } catch (CommandException e) {
+                response.sendRedirect("error");
+            }
+        } else if (action.matches("viewMovie[0-9]+")) {
+            String id = action.substring(9);
+            request.setAttribute("id", id);
+            try {
+                command = factory.createCommand("viewMovie", request, response);
+                command.execute();
+                session.setAttribute("movie", request.getAttribute("movie"));
+                response.sendRedirect("movie-page");
+            } catch (CommandException e) {
+                response.sendRedirect("error");
+            }
         }
     }
 
@@ -72,7 +108,7 @@ public class MainWindowServlet extends HttpServlet {
                 try {
                     command = factory.createCommand("signUp", request, response);
                     command.execute();
-                    response.sendRedirect("main");
+                    response.sendRedirect("index");
                 } catch (CommandException e) {
                     response.sendRedirect("error");
                 }
@@ -86,6 +122,14 @@ public class MainWindowServlet extends HttpServlet {
                     response.sendRedirect("error");
                 }
                 break;
+            case "addFeedback":
+                try {
+                    command = factory.createCommand("addFeedback", request, response);
+                    command.execute();
+                    response.sendRedirect("main");
+                } catch (CommandException e) {
+                    response.sendRedirect("error");
+                }
             default:
                 break;
         }

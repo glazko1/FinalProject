@@ -4,9 +4,10 @@
 <c:set var="locale" value="${not empty param.locale ? param.locale : not empty locale ? locale : pageContext.request.locale}" scope="session" />
 <fmt:setLocale value="${locale}" />
 <fmt:setBundle basename="text" />
+<c:set var="movie" value="${sessionScope.movie}" />
 <html>
 <head>
-    <title>Main page</title>
+    <title>${movie.title}</title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
@@ -17,13 +18,20 @@
     <option value="ru_RU" ${locale == 'ru_RU' ? 'selected' : ''}>Русский</option>
 </select>
 </form>
-<h2><fmt:message key="title.welcome" />, ${sessionScope.firstName}!</h2>
-<form method="get" action="mainWindow">
-    <button type="submit" name="button" value="viewAllAliens"><fmt:message key="button.view_aliens" /></button><br><br>
-    <button type="submit" name="button" value="viewAllMovies"><fmt:message key="button.view_movies" /></button>
-    <c:if test="${sessionScope.status == 1}">
-        <br><br><button type="submit" name="button" value="viewAllUsers"><fmt:message key="button.view_users" /></button>
-    </c:if>
-</form>
+<h2>${movie.title}</h2>
+<table border="1" cellpadding="4" cellspacing="0">
+    <tr>
+        <th align="center"><fmt:message key="message.running_time" /></th>
+        <td align="center">${movie.runningTime} <fmt:message key="message.minutes" /></td>
+    </tr>
+    <tr>
+        <th align="center"><fmt:message key="message.budget" /></th>
+        <td align="center">${movie.budget}$</td>
+    </tr>
+    <tr>
+        <th align="center"><fmt:message key="message.release_date" /></th>
+        <td align="center">${movie.releaseDate}</td>
+    </tr>
+</table>
 </body>
 </html>
