@@ -4,7 +4,6 @@
 <c:set var="locale" value="${not empty param.locale ? param.locale : not empty locale ? locale : pageContext.request.locale}" scope="session" />
 <fmt:setLocale value="${locale}" />
 <fmt:setBundle basename="text" />
-<c:set var="movie" value="${sessionScope.movie}" />
 <html>
 <head>
     <title>${movie.title}</title>

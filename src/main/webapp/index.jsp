@@ -16,7 +16,7 @@
     <option value="ru_RU" ${locale == 'ru_RU' ? 'selected' : ''}>Русский</option>
 </select>
 </form>
-<h2 align="center"><fmt:message key="message.welcome" /></h2>
+<h1 align="center"><fmt:message key="message.welcome" /></h1>
 <form method="post" action="mainWindow">
     <div class="left-column">
         <h2><fmt:message key="message.sign_in" /></h2>

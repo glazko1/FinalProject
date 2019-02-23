@@ -2,6 +2,7 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
+import service.AlienSpecialistService;
 import service.exception.ServiceException;
 import service.impl.AlienSpecialist;
 
@@ -19,12 +20,17 @@ public class AddAlienCommand implements Command {
     }
 
     @Override
-    public void execute() throws CommandException {
-        AlienSpecialist specialist = AlienSpecialist.getInstance();
+    public String execute() throws CommandException {
+        AlienSpecialistService service = AlienSpecialist.getInstance();
+        String alienName = request.getParameter("alienName");
+        String planet = request.getParameter("planet");
+        String description = request.getParameter("description");
+        String movie = request.getParameter("movie");
         try {
-            specialist.addAlien(request, response);
+            service.addAlien(alienName, planet, description, movie);
         } catch (ServiceException e) {
             throw new CommandException(e);
         }
+        return "main";
     }
 }

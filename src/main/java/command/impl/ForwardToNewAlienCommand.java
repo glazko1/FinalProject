@@ -2,6 +2,7 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
+import command.factory.CommandFactory;
 import entity.Movie;
 import service.CommonService;
 import service.exception.ServiceException;
@@ -9,27 +10,23 @@ import service.impl.Common;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
-public class ViewMovieCommand implements Command {
+public class ForwardToNewAlienCommand implements Command {
 
     private HttpServletRequest request;
     private HttpServletResponse response;
 
-    public ViewMovieCommand(HttpServletRequest request, HttpServletResponse response) {
+    public ForwardToNewAlienCommand(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;
     }
 
     @Override
     public String execute() throws CommandException {
-        CommonService service = Common.getInstance();
-        long id = Long.parseLong((String) request.getAttribute("id"));
-        try {
-            Movie movie = service.viewMovie(id);
-            request.setAttribute("movie", movie);
-        } catch (ServiceException e) {
-            throw new CommandException(e);
-        }
-        return "movie-page";
+        CommandFactory factory = CommandFactory.getInstance();
+        Command command = factory.createCommand("viewAllMovies", request, response);
+        command.execute();
+        return "new-alien";
     }
 }

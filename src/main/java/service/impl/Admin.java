@@ -24,10 +24,27 @@ public class Admin implements AdminService {
     private UserDAO userDAO = UserSQL.getInstance();
 
     @Override
-    public void viewAllUsers(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
+    public List<User> viewAllUsers() throws ServiceException {
         try {
-            List<User> users = userDAO.getAllUsers();
-            request.setAttribute("users", users);
+            return userDAO.getAllUsers();
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void changeBanStatus(long userId) throws ServiceException {
+        try {
+            userDAO.changeBanStatus(userId);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void changeUserStatus(long userId, int statusId) throws ServiceException {
+        try {
+            userDAO.changeUserStatus(userId, statusId);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

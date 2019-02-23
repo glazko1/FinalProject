@@ -2,34 +2,33 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
-import entity.Movie;
-import service.CommonService;
+import service.AdminService;
 import service.exception.ServiceException;
-import service.impl.Common;
+import service.impl.Admin;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ViewMovieCommand implements Command {
+public class ChangeUserStatusCommand implements Command {
 
     private HttpServletRequest request;
     private HttpServletResponse response;
 
-    public ViewMovieCommand(HttpServletRequest request, HttpServletResponse response) {
+    public ChangeUserStatusCommand(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;
     }
 
     @Override
     public String execute() throws CommandException {
-        CommonService service = Common.getInstance();
-        long id = Long.parseLong((String) request.getAttribute("id"));
+        AdminService service = Admin.getInstance();
+        long userId = Long.parseLong(request.getParameter("userId"));
+        int statusId = Integer.parseInt(request.getParameter("status"));
         try {
-            Movie movie = service.viewMovie(id);
-            request.setAttribute("movie", movie);
+            service.changeUserStatus(userId, statusId);
         } catch (ServiceException e) {
             throw new CommandException(e);
         }
-        return "movie-page";
+        return "main";
     }
 }

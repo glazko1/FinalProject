@@ -2,6 +2,8 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
+import entity.User;
+import service.CommonService;
 import service.exception.ServiceException;
 import service.impl.Common;
 
@@ -19,12 +21,17 @@ public class AddFeedbackCommand implements Command {
     }
 
     @Override
-    public void execute() throws CommandException {
-        Common common = Common.getInstance();
+    public String execute() throws CommandException {
+        CommonService service = Common.getInstance();
+        long alienId = Long.parseLong(request.getParameter("alienId"));
+        String username = request.getParameter("username");
+        int rating = Integer.parseInt(request.getParameter("rating"));
+        String feedbackText = request.getParameter("feedbackText");
         try {
-            common.addFeedback(request, response);
+            service.addFeedback(alienId, username, rating, feedbackText);
         } catch (ServiceException e) {
             throw new CommandException(e);
         }
+        return "main";
     }
 }

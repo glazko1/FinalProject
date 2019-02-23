@@ -31,9 +31,10 @@ public class AlienSQL implements AlienDAO {
 
     @Override
     public Alien getAlienById(long id) throws DAOException {
+        PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_ALIEN_BY_ID_SQL);
+            statement = connection.prepareStatement(GET_ALIEN_BY_ID_SQL);
             statement.setLong(1, id);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
@@ -50,6 +51,12 @@ public class AlienSQL implements AlienDAO {
             }
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }

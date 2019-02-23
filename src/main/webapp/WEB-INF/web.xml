@@ -89,4 +89,13 @@
     <servlet-name>user-table</servlet-name>
     <url-pattern>/user-table</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>user-page</servlet-name>
+    <jsp-file>/WEB-INF/user-page.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-page</servlet-name>
+    <url-pattern>/user-page</url-pattern>
+  </servlet-mapping>
 </web-app>

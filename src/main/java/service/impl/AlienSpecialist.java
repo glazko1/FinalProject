@@ -10,8 +10,6 @@ import entity.Movie;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Random;
 
 public class AlienSpecialist implements AlienSpecialistService {
@@ -28,12 +26,9 @@ public class AlienSpecialist implements AlienSpecialistService {
     private MovieDAO movieDAO = MovieSQL.getInstance();
 
     @Override
-    public void addAlien(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
-        String alienName = request.getParameter("alienName");
-        String planet = request.getParameter("planet");
-        String description = request.getParameter("description");
+    public void addAlien(String alienName, String planet, String description, String title) throws ServiceException {
         try {
-            Movie movie = movieDAO.getMovieByTitle(request.getParameter("movie"));
+            Movie movie = movieDAO.getMovieByTitle(title);
             Random random = new Random();
             long id = Math.abs(random.nextLong());
             Alien alien = new Alien(id, alienName, movie, planet, description, 0.0);

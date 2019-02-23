@@ -29,6 +29,8 @@ public class UserSQL implements UserDAO {
     private static final String GET_ALL_USERS_SQL = "SELECT UserId, Username, FirstName, LastName, Password, StatusId, Email, Banned, BirthDate FROM User";
     private static final String ADD_NEW_USER_SQL = "INSERT INTO User (UserId, Username, FirstName, LastName, Password, StatusId, Email, Banned, BirthDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String GET_USER_BY_USERNAME_OR_EMAIL_SQL = "SELECT UserId FROM User WHERE Username = ? OR Email = ?";
+    private static final String CHANGE_BAN_STATUS_SQL = "UPDATE User SET Banned = ? WHERE UserId = ?";
+    private static final String CHANGE_USER_STATUS_SQL = "UPDATE User SET StatusId = ? WHERE UserId = ?";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
     @Override
@@ -152,6 +154,33 @@ public class UserSQL implements UserDAO {
             addUserStatement.setBoolean(8, user.isBanned());
             addUserStatement.setDate(9, user.getBirthDate());
             addUserStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    @Override
+    public void changeBanStatus(long id) throws DAOException {
+        try (ProxyConnection proxyConnection = pool.getConnection()) {
+            Connection connection = proxyConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(CHANGE_BAN_STATUS_SQL);
+            User user = getUserById(id);
+            statement.setBoolean(1, !user.isBanned());
+            statement.setLong(2, id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    @Override
+    public void changeUserStatus(long id, int statusId) throws DAOException {
+        try (ProxyConnection proxyConnection = pool.getConnection()) {
+            Connection connection = proxyConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(CHANGE_USER_STATUS_SQL);
+            statement.setInt(1, statusId);
+            statement.setLong(2, id);
+            statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
         }

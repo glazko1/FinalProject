@@ -2,11 +2,14 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
+import entity.Movie;
+import service.CommonService;
 import service.exception.ServiceException;
 import service.impl.Common;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 public class ViewAllMoviesCommand implements Command {
 
@@ -19,12 +22,14 @@ public class ViewAllMoviesCommand implements Command {
     }
 
     @Override
-    public void execute() throws CommandException {
-        Common common = Common.getInstance();
+    public String execute() throws CommandException {
+        CommonService service = Common.getInstance();
         try {
-            common.viewAllMovies(request, response);
+            List<Movie> movies = service.viewAllMovies();
+            request.setAttribute("movies", movies);
         } catch (ServiceException e) {
             throw new CommandException(e);
         }
+        return "";
     }
 }

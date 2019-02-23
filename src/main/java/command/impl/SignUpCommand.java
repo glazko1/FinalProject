@@ -2,6 +2,7 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
+import service.CommonService;
 import service.exception.ServiceException;
 import service.impl.Common;
 
@@ -19,12 +20,22 @@ public class SignUpCommand implements Command {
     }
 
     @Override
-    public void execute() throws CommandException {
-        Common common = Common.getInstance();
+    public String execute() throws CommandException {
+        CommonService service = Common.getInstance();
+        String username = request.getParameter("newUsername");
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String email = request.getParameter("email");
+        String password = request.getParameter("newPassword");
+        String confirmedPassword = request.getParameter("confirmedPassword");
+        String birthDate = request.getParameter("year") + "-" +
+                request.getParameter("month") + "-" +
+                request.getParameter("day");
         try {
-            common.signUp(request, response);
+            service.signUp(username, firstName, lastName, email, password, confirmedPassword, birthDate);
         } catch (ServiceException e) {
             throw new CommandException(e);
         }
+        return "index";
     }
 }

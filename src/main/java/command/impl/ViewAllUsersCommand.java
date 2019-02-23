@@ -2,11 +2,14 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
+import entity.User;
+import service.AdminService;
 import service.exception.ServiceException;
 import service.impl.Admin;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 public class ViewAllUsersCommand implements Command {
 
@@ -19,12 +22,14 @@ public class ViewAllUsersCommand implements Command {
     }
 
     @Override
-    public void execute() throws CommandException {
-        Admin admin = Admin.getInstance();
+    public String execute() throws CommandException {
+        AdminService service = Admin.getInstance();
         try {
-            admin.viewAllUsers(request, response);
+            List<User> users = service.viewAllUsers();
+            request.setAttribute("users", users);
         } catch (ServiceException e) {
             throw new CommandException(e);
         }
+        return "user-table";
     }
 }

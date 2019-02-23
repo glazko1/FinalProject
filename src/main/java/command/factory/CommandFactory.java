@@ -37,6 +37,14 @@ public class CommandFactory {
                 return new ViewMovieCommand(request, response);
             case "viewAllUsers":
                 return new ViewAllUsersCommand(request, response);
+            case "viewUser":
+                return new ViewUserCommand(request, response);
+            case "changeBanStatus":
+                return new ChangeBanStatusCommand(request, response);
+            case "changeUserStatus":
+                return new ChangeUserStatusCommand(request, response);
+            case "forwardToNewAlien":
+                return new ForwardToNewAlienCommand(request, response);
             default:
                 break;
         }

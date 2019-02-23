@@ -2,11 +2,14 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
+import entity.Alien;
+import service.CommonService;
 import service.exception.ServiceException;
 import service.impl.Common;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 public class ViewAllAliensCommand implements Command {
 
@@ -19,12 +22,14 @@ public class ViewAllAliensCommand implements Command {
     }
 
     @Override
-    public void execute() throws CommandException {
-        Common common = Common.getInstance();
+    public String execute() throws CommandException {
+        CommonService service = Common.getInstance();
         try {
-            common.viewAllAliens(request, response);
+            List<Alien> aliens = service.viewAllAliens();
+            request.setAttribute("aliens", aliens);
         } catch (ServiceException e) {
             throw new CommandException(e);
         }
+        return "alien-table";
     }
 }

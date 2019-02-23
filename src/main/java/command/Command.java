@@ -4,5 +4,5 @@ import command.exception.CommandException;
 
 public interface Command {
 
-    void execute() throws CommandException;
+    String execute() throws CommandException;
 }

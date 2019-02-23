@@ -4,7 +4,6 @@
 <c:set var="locale" value="${not empty param.locale ? param.locale : not empty locale ? locale : pageContext.request.locale}" scope="session" />
 <fmt:setLocale value="${locale}" />
 <fmt:setBundle basename="text" />
-<c:set var="alien" value="${sessionScope.alien}" />
 <html>
 <head>
     <title>${alien.alienName}</title>
@@ -12,13 +11,15 @@
 </head>
 <body>
 <form>
+    <input type="hidden" name="button" value="viewAlien">
+    <input type="hidden" name="alienId" value="${alien.alienId}">
     <label for="locale"></label><select id="locale" name="locale" onchange="submit()">
     <option value="en_EN" ${locale == 'en_EN' ? 'selected' : ''}>English</option>
     <option value="de_DE" ${locale == 'de_DE' ? 'selected' : ''}>Deutsch</option>
     <option value="ru_RU" ${locale == 'ru_RU' ? 'selected' : ''}>Русский</option>
 </select>
 </form>
-<h2>${alien.alienName}</h2>
+<h1>${alien.alienName}</h1>
 <table border="1" cellpadding="4" cellspacing="0">
     <tr>
         <th align="center"><fmt:message key="message.movie" /></th>
@@ -28,11 +29,10 @@
         <th align="center"><fmt:message key="message.planet" /></th>
         <td align="center">${alien.planet}</td>
     </tr>
-</table><br>
-${alien.description}
-<br>
-<h3>Feedbacks</h3>
-<c:forEach var="feedback" items="${sessionScope.feedbacks}">
+</table>
+<p>${alien.description}</p>
+<h2>Feedbacks</h2>
+<c:forEach var="feedback" items="${feedbacks}">
     ${feedback.user.username} ${feedback.feedbackDateTime} <br>
     ${feedback.feedbackText} <br>
 </c:forEach>

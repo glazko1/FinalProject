@@ -50,10 +50,10 @@ CREATE TABLE IF NOT EXISTS Feedback (
   FOREIGN KEY (UserId) REFERENCES User(UserId)
 );
 
-INSERT into UserStatus VALUES (1, 'Admin');
-INSERT into UserStatus VALUES (2, 'Movie Fan');
-INSERT into UserStatus VALUES (3, 'Alien Specialist');
-INSERT into UserStatus VALUES (4, 'User');
+INSERT INTO UserStatus VALUES (1, 'Admin');
+INSERT INTO UserStatus VALUES (2, 'Movie Fan');
+INSERT INTO UserStatus VALUES (3, 'Alien Specialist');
+INSERT INTO UserStatus VALUES (4, 'User');
 
 INSERT INTO User (UserId, Username, FirstName, LastName, Password, StatusId, Email, Banned, BirthDate) VALUES (12, 'glazko1', 'Yegor', 'Glazko', '[108, -43, 115, -22, 120, -23, -46, 107, -27, -95, 45, -46, 67, -33, 56, 104]', 1, 'glazko_2001@mail.ru', FALSE, '2001-04-10');
 INSERT INTO User (UserId, Username, FirstName, LastName, Password, StatusId, Email, Banned, BirthDate) VALUES (154, 'ivanov1999', 'Petr', 'Ivanov', '[-48, 110, -29, -48, 50, 25, 115, 110, -79, 41, -114, -106, 63, -24, 10, -46]', 2, 'ivanov1999@gmail.com', FALSE, '1999-10-24');
