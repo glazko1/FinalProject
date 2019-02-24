@@ -9,8 +9,7 @@ import entity.Alien;
 import entity.Movie;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
-
-import java.util.Random;
+import util.generator.GeneratorId;
 
 public class AlienSpecialist implements AlienSpecialistService {
 
@@ -29,8 +28,8 @@ public class AlienSpecialist implements AlienSpecialistService {
     public void addAlien(String alienName, String planet, String description, String title) throws ServiceException {
         try {
             Movie movie = movieDAO.getMovieByTitle(title);
-            Random random = new Random();
-            long id = Math.abs(random.nextLong());
+            GeneratorId generatorId = GeneratorId.getInstance();
+            long id = generatorId.generateId();
             Alien alien = new Alien(id, alienName, movie, planet, description, 0.0);
             alienDAO.addNewAlien(alien);
         } catch (DAOException e) {

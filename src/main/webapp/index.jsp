@@ -9,16 +9,18 @@
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
-<form>
-    <label for="locale"></label><select id="locale" name="locale" onchange="submit()">
-    <option value="en_EN" ${locale == 'en_EN' ? 'selected' : ''}>English</option>
-    <option value="de_DE" ${locale == 'de_DE' ? 'selected' : ''}>Deutsch</option>
-    <option value="ru_RU" ${locale == 'ru_RU' ? 'selected' : ''}>Русский</option>
-</select>
-</form>
+<div class="header">
+    <form>
+        <label for="locale"></label><select id="locale" name="locale" onchange="submit()">
+        <option value="en_EN" ${locale == 'en_EN' ? 'selected' : ''}>English</option>
+        <option value="de_DE" ${locale == 'de_DE' ? 'selected' : ''}>Deutsch</option>
+        <option value="ru_RU" ${locale == 'ru_RU' ? 'selected' : ''}>Русский</option>
+    </select>
+    </form>
+</div>
 <h1 align="center"><fmt:message key="message.welcome" /></h1>
-<form method="post" action="mainWindow">
-    <div class="left-column">
+<div class="left-column">
+    <form method="post" action="mainWindow">
         <h2><fmt:message key="message.sign_in" /></h2>
         <table align="center">
             <tr>
@@ -35,8 +37,13 @@
             </tr>
         </table><br/>
         <button type="submit" name="button" value="signIn"><fmt:message key="button.submit" /></button>
-    </div>
-    <div class="right-column">
+    </form>
+    <form method="get" action="mainWindow">
+        <button class="underlined" type="submit" name="button" value="forwardToRestorePassword"><fmt:message key="message.forgot_password" /></button>
+    </form>
+</div>
+<div class="right-column">
+    <form method="post" action="mainWindow">
         <h2><fmt:message key="message.sign_up" /></h2>
         <table align="center">
             <tr>
@@ -162,7 +169,7 @@
             </tr>
         </table><br/>
         <button type="submit" name="button" value="signUp"><fmt:message key="button.submit" /></button>
-    </div>
-</form>
+    </form>
+</div>
 </body>
 </html>

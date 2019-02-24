@@ -1,8 +1,7 @@
-package util.hasher;
+package util;
 
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.*;
+import util.hasher.PasswordHashKeeper;
 
 public class PasswordHashKeeperTest {
 
@@ -10,7 +9,7 @@ public class PasswordHashKeeperTest {
 
     @Test
     public void test() {
-        String result = keeper.generateHash("ghjkl9876");
+        String result = keeper.generateHash("alexandra234", "ghjkl9876");
 //        byte[] result = keeper.generateHash("helloworld");
         System.out.println(result);
 //        for (byte b : result) {

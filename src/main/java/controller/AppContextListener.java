@@ -6,7 +6,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import javax.servlet.http.HttpSession;
 
 @WebListener
 public class AppContextListener implements ServletContextListener {
@@ -20,11 +19,11 @@ public class AppContextListener implements ServletContextListener {
         String password = context.getInitParameter("db.password");
         DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
         pool.create(driver, url, user, password);
-        context.setAttribute("pool", pool);
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-
+        DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
+        pool.destroy();
     }
 }

@@ -23,9 +23,9 @@ public class ViewMovieCommand implements Command {
     @Override
     public String execute() throws CommandException {
         CommonService service = Common.getInstance();
-        long id = Long.parseLong((String) request.getAttribute("id"));
+        long movieId = Long.parseLong(request.getParameter("movieId"));
         try {
-            Movie movie = service.viewMovie(id);
+            Movie movie = service.viewMovie(movieId);
             request.setAttribute("movie", movie);
         } catch (ServiceException e) {
             throw new CommandException(e);

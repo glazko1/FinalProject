@@ -4,6 +4,7 @@ import pool.ConnectionPool;
 import pool.DatabaseConnectionPool;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class ProxyConnection implements AutoCloseable {
 
@@ -21,5 +22,13 @@ public class ProxyConnection implements AutoCloseable {
 
     public Connection getConnection() {
         return connection;
+    }
+
+    public void destroy() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

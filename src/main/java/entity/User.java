@@ -1,6 +1,6 @@
 package entity;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 public class User {
 
@@ -12,9 +12,9 @@ public class User {
     private int statusId;
     private String email;
     private boolean banned;
-    private Date birthDate;
+    private Timestamp birthDate;
 
-    public User(long userId, String username, String firstName, String lastName, String password, int statusId, String email, boolean banned, Date birthDate) {
+    public User(long userId, String username, String firstName, String lastName, String password, int statusId, String email, boolean banned, Timestamp birthDate) {
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
@@ -90,11 +90,11 @@ public class User {
         this.banned = banned;
     }
 
-    public Date getBirthDate() {
+    public Timestamp getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(Timestamp birthDate) {
         this.birthDate = birthDate;
     }
 

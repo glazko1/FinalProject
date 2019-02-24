@@ -3,10 +3,10 @@ package util.hasher;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
-import java.util.Arrays;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class PasswordHashKeeper {
 
@@ -18,17 +18,13 @@ public class PasswordHashKeeper {
 
     private PasswordHashKeeper() {}
 
-    public String generateHash(String password) {
-        SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[16];
-//        random.nextBytes(salt);
+    public String generateHash(String username, String password) {
+        byte[] salt = username.getBytes();
         KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
         try {
             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             byte[] encoded = factory.generateSecret(spec).getEncoded();
-//            String result = new String(encoded, UTF_8);
-//            return result;
-            return Arrays.toString(encoded);
+            return new String(encoded, UTF_8);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
         }

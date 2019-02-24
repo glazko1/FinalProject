@@ -27,6 +27,7 @@ public class AlienSQL implements AlienDAO {
     private static final String GET_ALIEN_BY_ID_SQL = "SELECT a.AlienId, a.AlienName, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, a.Planet, a.Description, a.AverageRating FROM Alien a JOIN Movie m ON a.MovieId = m.MovieId WHERE AlienId = ?";
     private static final String GET_ALL_ALIENS_SQL = "SELECT a.AlienId, a.AlienName, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, a.Planet, a.Description, a.AverageRating FROM Alien a JOIN Movie m ON a.MovieId = m.MovieId";
     private static final String ADD_NEW_ALIEN_SQL = "INSERT INTO Alien (AlienId, AlienName, MovieId, Planet, Description, AverageRating) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String UPDATE_AVERAGE_RATING_SQL = "UPDATE Alien SET AverageRating = ? WHERE AlienId = ?";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
     @Override
@@ -98,6 +99,19 @@ public class AlienSQL implements AlienDAO {
             statement.setString(4, alien.getPlanet());
             statement.setString(5, alien.getDescription());
             statement.setDouble(6, alien.getAverageRating());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    @Override
+    public void updateAverageRating(long alienId, double averageRating) throws DAOException {
+        try (ProxyConnection proxyConnection = pool.getConnection()) {
+            Connection connection = proxyConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(UPDATE_AVERAGE_RATING_SQL);
+            statement.setDouble(1, averageRating);
+            statement.setLong(2, alienId);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);

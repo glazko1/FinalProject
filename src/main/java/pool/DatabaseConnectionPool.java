@@ -71,6 +71,12 @@ public class DatabaseConnectionPool implements ConnectionPool {
     }
 
     @Override
+    public void destroy() {
+        usedConnections.forEach(ProxyConnection::destroy);
+        availableConnections.forEach(ProxyConnection::destroy);
+    }
+
+    @Override
     public String getUrl() {
         return url;
     }

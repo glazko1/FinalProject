@@ -8,6 +8,7 @@ import service.impl.Common;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.Date;
 
 public class SignUpCommand implements Command {
 
@@ -31,8 +32,9 @@ public class SignUpCommand implements Command {
         String birthDate = request.getParameter("year") + "-" +
                 request.getParameter("month") + "-" +
                 request.getParameter("day");
+        Date date = Date.valueOf(birthDate);
         try {
-            service.signUp(username, firstName, lastName, email, password, confirmedPassword, birthDate);
+            service.signUp(username, firstName, lastName, email, password, confirmedPassword, date);
         } catch (ServiceException e) {
             throw new CommandException(e);
         }

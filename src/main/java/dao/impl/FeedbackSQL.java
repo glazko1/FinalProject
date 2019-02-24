@@ -47,10 +47,10 @@ public class FeedbackSQL implements FeedbackDAO {
                                 set.getInt(8),
                                 set.getString(9),
                                 set.getBoolean(10),
-                                set.getDate(11)),
+                                set.getTimestamp(11)),
                         set.getInt(12),
                         set.getString(13),
-                        set.getDate(14));
+                        set.getTimestamp(14));
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -77,10 +77,10 @@ public class FeedbackSQL implements FeedbackDAO {
                                 set.getInt(8),
                                 set.getString(9),
                                 set.getBoolean(10),
-                                set.getDate(11)),
+                                set.getTimestamp(11)),
                         set.getInt(12),
                         set.getString(13),
-                        set.getDate(14));
+                        set.getTimestamp(14));
                 feedbacks.add(feedback);
             }
         } catch (SQLException e) {
@@ -99,7 +99,7 @@ public class FeedbackSQL implements FeedbackDAO {
             statement.setLong(3, feedback.getUser().getUserId());
             statement.setInt(4, feedback.getRating());
             statement.setString(5, feedback.getFeedbackText());
-            statement.setDate(6, feedback.getFeedbackDateTime());
+            statement.setTimestamp(6, feedback.getFeedbackDateTime());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);

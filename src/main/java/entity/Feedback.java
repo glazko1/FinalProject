@@ -1,6 +1,7 @@
 package entity;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class Feedback {
 
@@ -9,9 +10,9 @@ public class Feedback {
     private User user;
     private int rating;
     private String feedbackText;
-    private Date feedbackDateTime;
+    private Timestamp feedbackDateTime;
 
-    public Feedback(long feedbackId, long alienId, User user, int rating, String feedbackText, Date feedbackDateTime) {
+    public Feedback(long feedbackId, long alienId, User user, int rating, String feedbackText, Timestamp feedbackDateTime) {
         this.feedbackId = feedbackId;
         this.alienId = alienId;
         this.user = user;
@@ -58,11 +59,11 @@ public class Feedback {
         this.feedbackText = feedbackText;
     }
 
-    public Date getFeedbackDateTime() {
+    public Timestamp getFeedbackDateTime() {
         return feedbackDateTime;
     }
 
-    public void setFeedbackDateTime(Date feedbackDateTime) {
+    public void setFeedbackDateTime(Timestamp feedbackDateTime) {
         this.feedbackDateTime = feedbackDateTime;
     }
 }

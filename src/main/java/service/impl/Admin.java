@@ -7,8 +7,6 @@ import entity.User;
 import service.AdminService;
 import service.exception.ServiceException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public class Admin implements AdminService {

@@ -1,3 +1,3 @@
-function forward() {
-    window.open("new-alien", "_self");
+function forward(url) {
+    open(url);
 }

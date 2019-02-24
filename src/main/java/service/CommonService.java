@@ -7,17 +7,22 @@ import entity.User;
 import javafx.util.Pair;
 import service.exception.ServiceException;
 
+import java.sql.Date;
 import java.util.List;
 
 public interface CommonService {
 
     User signIn(String username, String password) throws ServiceException;
     void signUp(String username, String firstName, String lastName, String email,
-                String password, String confirmedPassword, String birthDate) throws ServiceException;
+                String password, String confirmedPassword, Date birthDate) throws ServiceException;
     List<Alien> viewAllAliens() throws ServiceException;
     List<Movie> viewAllMovies() throws ServiceException;
     Pair<Alien, List<Feedback>> viewAlien(long alienId) throws ServiceException;
     void addFeedback(long alienId, String username, int rating, String feedbackText) throws ServiceException;
     Movie viewMovie(long movieId) throws ServiceException;
     User viewUser(long userId) throws ServiceException;
+    void editUser(long userId, String firstName, String lastName, String email) throws ServiceException;
+    void changePassword(long userId, String currentPassword, String newPassword, String confirmedPassword) throws ServiceException;
+    void restorePassword(String username, String firstName, String lastName, String email, String newPassword, String confirmedPassword) throws ServiceException;
+    void recountAverageRating(long alienId) throws ServiceException;
 }

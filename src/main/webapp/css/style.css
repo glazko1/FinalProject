@@ -1,5 +1,6 @@
 body {
-    background: url("../img/background.jpg");
+    background: url("../img/background2.jpg");
+    background-size: cover;
     color: white;
     font-size: 16px;
 }
@@ -13,24 +14,33 @@ table {
 }
 
 div {
-    margin: 0 5% 5% 5%;
+    margin: 0;
     text-align: center;
     background-color: transparent;
     font-size: 18px;
 }
 
+.header {
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
 .left-column {
-    width: 40%;
-    min-height: 300px;
+    width: 30%;
+    margin-left: 20%;
     float: left;
     /*background-color: lightgreen;*/
 }
 
 .right-column {
-    width: 40%;
-    min-height: 300px;
+    width: 30%;
+    margin-right: 20%;
     float: right;
     /*background-color: bisque;*/
+}
+
+.center-column {
+    margin: 0 20% 0 20%;
 }
 
 button {
