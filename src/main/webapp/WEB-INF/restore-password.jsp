@@ -11,6 +11,16 @@
 </head>
 <body>
 <div class="header">
+    <form method="post" action="mainWindow" style="display: inline; margin: 25px;">
+        <button class="underlined" name="button" value="mainPage"><fmt:message key="button.main_page" /></button>
+    </form>
+    <form method="get" action="mainWindow" style="display: inline; margin: 25px;">
+        <input type="hidden" name="userId" value="${sessionScope.userId}">
+        <button class="underlined" name="button" value="viewUser"><fmt:message key="button.my_profile" /></button>
+    </form>
+    <form method="post" action="mainWindow" style="display: inline; margin: 25px;">
+        <button class="underlined" name="button" value="logout"><fmt:message key="button.logout" /></button>
+    </form>
     <form style="display: inline; margin: 25px;">
         <input type="hidden" name="button" value="forwardToRestorePassword">
         <label for="locale"></label><select id="locale" name="locale" onchange="submit()">
@@ -60,7 +70,7 @@
                     <label><input type="password" name="confirmedPassword"></label>
                 </td>
             </tr>
-        </table><br>
+        </table>
         <button type="submit" name="button" value="restorePassword"><fmt:message key="button.submit" /></button>
     </form>
 </div>

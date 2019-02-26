@@ -28,11 +28,11 @@ public class MovieSQL implements MovieDAO {
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
     @Override
-    public Movie getMovieById(long movieId) throws DAOException {
+    public Movie getMovieById(long id) throws DAOException {
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(GET_MOVIE_BY_ID_SQL);
-            statement.setLong(1, movieId);
+            statement.setLong(1, id);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
                 return new Movie(set.getLong(1),
@@ -44,7 +44,7 @@ public class MovieSQL implements MovieDAO {
         } catch (SQLException e) {
             throw new DAOException(e);
         }
-        throw new DAOException("No movie with id " + movieId + " in DAO!");
+        throw new DAOException("No movie with id " + id + " in DAO!");
     }
 
     @Override

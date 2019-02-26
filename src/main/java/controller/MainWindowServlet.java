@@ -23,7 +23,6 @@ public class MainWindowServlet extends HttpServlet {
             String path = command.execute();
             request.getRequestDispatcher(path).forward(request, response);
         } catch (CommandException e) {
-            System.out.println(e.getMessage());
             response.sendRedirect("error");
         }
     }
@@ -37,7 +36,6 @@ public class MainWindowServlet extends HttpServlet {
             String path = command.execute();
             response.sendRedirect(path);
         } catch (CommandException e) {
-            System.out.println(e.getMessage());
             response.sendRedirect("error");
         }
     }

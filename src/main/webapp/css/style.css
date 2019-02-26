@@ -1,5 +1,5 @@
 body {
-    background: url("../img/background2.jpg") fixed;
+    background: url("../img/background2.jpg");
     background-size: cover;
     color: white;
     font-size: 16px;

@@ -13,18 +13,17 @@ import java.util.List;
 
 public class ViewAllAliensCommand implements Command {
 
-    private CommonService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
 
-    public ViewAllAliensCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
-        this.service = service;
+    public ViewAllAliensCommand(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;
     }
 
     @Override
     public String execute() throws CommandException {
+        CommonService service = Common.getInstance();
         try {
             List<Alien> aliens = service.viewAllAliens();
             request.setAttribute("aliens", aliens);

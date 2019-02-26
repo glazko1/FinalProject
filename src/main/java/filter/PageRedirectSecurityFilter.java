@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = { "/alien-page", "/alien-table", "/change-password", "/edit-alien",
-        "/edit-user", "/index", "/main", "/movie-page", "/new-alien", "/restore-password",
-        "/user-page", "/user-table" })
+@WebFilter(urlPatterns = { "/alien-page", "/alien-table", "/change-password",
+        "/edit-user", "/main", "/movie-page", "/new-alien", "/user-page",
+        "/user-table" })
 public class PageRedirectSecurityFilter implements Filter {
 
     @Override
@@ -26,9 +26,9 @@ public class PageRedirectSecurityFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String path = request.getRequestURI();
         HttpSession session = request.getSession();
-        if (session.getAttribute("status") == null && !path.endsWith("index")) {
+        if (session.getAttribute("status") == null) {
             response.sendRedirect("index");
-        } else if (session.getAttribute("status") != null && !path.endsWith("main")) {
+        } else if (!path.endsWith("main")) {
             response.sendRedirect("main");
         }
         filterChain.doFilter(servletRequest, servletResponse);

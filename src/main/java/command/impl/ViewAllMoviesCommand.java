@@ -13,18 +13,17 @@ import java.util.List;
 
 public class ViewAllMoviesCommand implements Command {
 
-    private CommonService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
 
-    public ViewAllMoviesCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
-        this.service = service;
+    public ViewAllMoviesCommand(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;
     }
 
     @Override
     public String execute() throws CommandException {
+        CommonService service = Common.getInstance();
         try {
             List<Movie> movies = service.viewAllMovies();
             request.setAttribute("movies", movies);

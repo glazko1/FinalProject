@@ -6,7 +6,7 @@
 <fmt:setBundle basename="text" />
 <html>
 <head>
-    <title><fmt:message key="button.edit_information" /></title>
+    <title>Edit information</title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
@@ -23,6 +23,10 @@
     </form>
     <form style="display: inline; margin: 25px;">
         <input type="hidden" name="button" value="forwardToEditUser">
+        <input type="hidden" name="username" value="${username}">
+        <input type="hidden" name="firstName" value="${firstName}">
+        <input type="hidden" name="lastName" value="${lastName}">
+        <input type="hidden" name="email" value="${email}">
         <input type="hidden" name="userId" value="${userId}">
         <label for="locale"></label><select id="locale" name="locale" onchange="submit()">
         <option value="en_EN" ${locale == 'en_EN' ? 'selected' : ''}>English</option>

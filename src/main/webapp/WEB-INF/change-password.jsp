@@ -23,6 +23,7 @@
     </form>
     <form style="display: inline; margin: 25px;">
         <input type="hidden" name="button" value="forwardToChangePassword">
+        <input type="hidden" name="username" value="${username}">
         <input type="hidden" name="userId" value="${userId}">
         <label for="locale"></label><select id="locale" name="locale" onchange="submit()">
         <option value="en_EN" ${locale == 'en_EN' ? 'selected' : ''}>English</option>
@@ -34,7 +35,7 @@
 <div class="center-column">
     <h2>${username}</h2>
     <form method="post" action="mainWindow">
-        <table border="1" cellpadding="4" cellspacing="0" align="center">
+        <table border="1" cellpadding="4" cellspacing="0">
             <tr>
                 <th align="center"><fmt:message key="message.current_password" /></th>
                 <td align="center">

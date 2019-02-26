@@ -12,18 +12,17 @@ import java.sql.Date;
 
 public class SignUpCommand implements Command {
 
-    private CommonService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
 
-    public SignUpCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
-        this.service = service;
+    public SignUpCommand(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;
     }
 
     @Override
     public String execute() throws CommandException {
+        CommonService service = Common.getInstance();
         String username = request.getParameter("newUsername");
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");

@@ -37,11 +37,11 @@ public class UserSQL implements UserDAO {
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
     @Override
-    public User getUser(long userId) throws DAOException {
+    public User getUser(long id) throws DAOException {
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(GET_USER_BY_ID_SQL);
-            statement.setLong(1, userId);
+            statement.setLong(1, id);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
                 return new User(set.getLong(1),
@@ -57,7 +57,7 @@ public class UserSQL implements UserDAO {
         } catch (SQLException e) {
             throw new DAOException(e);
         }
-        throw new DAOException("No user with ID " + userId + " in DAO!");
+        throw new DAOException("No user with ID " + id + " in DAO!");
     }
 
     @Override
@@ -155,7 +155,7 @@ public class UserSQL implements UserDAO {
             addUserStatement.setInt(6, user.getStatusId());
             addUserStatement.setString(7, user.getEmail());
             addUserStatement.setBoolean(8, user.isBanned());
-            addUserStatement.setTimestamp(9, user.getBirthDateTimestamp());
+            addUserStatement.setTimestamp(9, user.getBirthDate());
             addUserStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -163,13 +163,13 @@ public class UserSQL implements UserDAO {
     }
 
     @Override
-    public void changeBanStatus(long userId) throws DAOException {
+    public void changeBanStatus(long id) throws DAOException {
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(CHANGE_BAN_STATUS_SQL);
-            User user = getUser(userId);
+            User user = getUser(id);
             statement.setBoolean(1, !user.isBanned());
-            statement.setLong(2, userId);
+            statement.setLong(2, id);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -177,12 +177,12 @@ public class UserSQL implements UserDAO {
     }
 
     @Override
-    public void changeUserStatus(long userId, int statusId) throws DAOException {
+    public void changeUserStatus(long id, int statusId) throws DAOException {
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(CHANGE_USER_STATUS_SQL);
             statement.setInt(1, statusId);
-            statement.setLong(2, userId);
+            statement.setLong(2, id);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -190,14 +190,14 @@ public class UserSQL implements UserDAO {
     }
 
     @Override
-    public void editUser(long userId, String firstName, String lastName, String email) throws DAOException {
+    public void editUser(long id, String firstName, String lastName, String email) throws DAOException {
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(EDIT_USER_SQL);
             statement.setString(1, firstName);
             statement.setString(2, lastName);
             statement.setString(3, email);
-            statement.setLong(4, userId);
+            statement.setLong(4, id);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -205,12 +205,12 @@ public class UserSQL implements UserDAO {
     }
 
     @Override
-    public void changePassword(long userId, String newPassword) throws DAOException {
+    public void changePassword(long id, String newPassword) throws DAOException {
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(CHANGE_PASSWORD_SQL);
             statement.setString(1, newPassword);
-            statement.setLong(2, userId);
+            statement.setLong(2, id);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);

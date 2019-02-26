@@ -103,16 +103,7 @@ public class Common implements CommonService {
     }
 
     @Override
-    public Alien viewAlien(long alienId) throws ServiceException {
-        try {
-            return alienDAO.getAlienById(alienId);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
-    public Pair<Alien, List<Feedback>> viewAlienWithFeedbacks(long alienId) throws ServiceException {
+    public Pair<Alien, List<Feedback>> viewAlien(long alienId) throws ServiceException {
         try {
             Alien alien = alienDAO.getAlienById(alienId);
             List<Feedback> feedbacks = feedbackDAO.getFeedbacksByAlienId(alienId);
@@ -221,24 +212,6 @@ public class Common implements CommonService {
                 averageRating = (double) ratingSum / feedbacks.size();
             }
             alienDAO.updateAverageRating(alienId, averageRating);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
-    public void deleteFeedback(long feedbackId) throws ServiceException {
-        try {
-            feedbackDAO.deleteFeedback(feedbackId);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
-    public List<Alien> viewAllAliensSorted(String sortedBy, String sortType) throws ServiceException {
-        try {
-            return alienDAO.getAllAliensSorted(sortedBy, sortType);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

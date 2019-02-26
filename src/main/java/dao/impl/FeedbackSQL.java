@@ -25,17 +25,16 @@ public class FeedbackSQL implements FeedbackDAO {
     private FeedbackSQL() {}
 
     private static final String GET_FEEDBACK_BY_ID_SQL = "SELECT f.FeedbackId, f.AlienId, u.UserId, u.Username, u.FirstName, u.LastName, u.Password, u.StatusId, u.Email, u.Banned, u.BirthDate, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN User u ON f.UserId = u.UserId WHERE FeedbackId = ?";
-    private static final String GET_FEEDBACKS_BY_ALIEN_ID_SQL = "SELECT f.FeedbackId, f.AlienId, u.UserId, u.Username, u.FirstName, u.LastName, u.Password, u.StatusId, u.Email, u.Banned, u.BirthDate, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN User u ON f.UserId = u.UserId WHERE AlienId = ? ORDER BY FeedbackDateTime DESC";
+    private static final String GET_FEEDBACKS_BY_ALIEN_ID_SQL = "SELECT f.FeedbackId, f.AlienId, u.UserId, u.Username, u.FirstName, u.LastName, u.Password, u.StatusId, u.Email, u.Banned, u.BirthDate, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN User u ON f.UserId = u.UserId WHERE AlienId = ?";
     private static final String ADD_NEW_FEEDBACK_SQL = "INSERT INTO Feedback (FeedbackId, AlienId, UserId, Rating, FeedbackText, FeedbackDateTime) VALUES (?, ?, ?, ?, ?, ?)";
-    private static final String DELETE_FEEDBACK_SQL = "DELETE FROM Feedback WHERE FeedbackId = ?";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
     @Override
-    public Feedback getFeedbackById(long feedbackId) throws DAOException {
+    public Feedback getFeedbackById(long id) throws DAOException {
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(GET_FEEDBACK_BY_ID_SQL);
-            statement.setLong(1, feedbackId);
+            statement.setLong(1, id);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
                 return new Feedback(set.getLong(1),
@@ -56,7 +55,7 @@ public class FeedbackSQL implements FeedbackDAO {
         } catch (SQLException e) {
             throw new DAOException(e);
         }
-        throw new DAOException("No feedback with ID " + feedbackId + " in DAO!");
+        throw new DAOException("No feedback with ID " + id + " in DAO!");
     }
 
     @Override
@@ -100,19 +99,7 @@ public class FeedbackSQL implements FeedbackDAO {
             statement.setLong(3, feedback.getUser().getUserId());
             statement.setInt(4, feedback.getRating());
             statement.setString(5, feedback.getFeedbackText());
-            statement.setTimestamp(6, feedback.getFeedbackTimestamp());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-    }
-
-    @Override
-    public void deleteFeedback(long feedbackId) throws DAOException {
-        try (ProxyConnection proxyConnection = pool.getConnection()) {
-            Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(DELETE_FEEDBACK_SQL);
-            statement.setLong(1, feedbackId);
+            statement.setTimestamp(6, feedback.getFeedbackDateTime());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);

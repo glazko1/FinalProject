@@ -125,13 +125,4 @@
     <servlet-name>restore-password</servlet-name>
     <url-pattern>/restore-password</url-pattern>
   </servlet-mapping>
-
-  <servlet>
-    <servlet-name>edit-alien</servlet-name>
-    <jsp-file>/WEB-INF/edit-alien.jsp</jsp-file>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>edit-alien</servlet-name>
-    <url-pattern>/edit-alien</url-pattern>
-  </servlet-mapping>
 </web-app>

@@ -1,8 +1,6 @@
 package entity;
 
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 public class User {
 
@@ -92,11 +90,7 @@ public class User {
         this.banned = banned;
     }
 
-    public String getBirthDate() {
-        return new SimpleDateFormat("dd.MM.yyyy").format(birthDate);
-    }
-
-    public Timestamp getBirthDateTimestamp() {
+    public Timestamp getBirthDate() {
         return birthDate;
     }
 

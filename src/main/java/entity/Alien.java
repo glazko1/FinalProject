@@ -59,7 +59,7 @@ public class Alien {
     }
 
     public double getAverageRating() {
-        return (double) Math.round(100 * averageRating) / 100;
+        return averageRating;
     }
 
     public void setAverageRating(double averageRating) {
