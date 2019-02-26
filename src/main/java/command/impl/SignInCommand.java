@@ -5,7 +5,6 @@ import command.exception.CommandException;
 import entity.User;
 import service.CommonService;
 import service.exception.ServiceException;
-import service.impl.Common;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,17 +12,18 @@ import javax.servlet.http.HttpSession;
 
 public class SignInCommand implements Command {
 
+    private CommonService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
 
-    public SignInCommand(HttpServletRequest request, HttpServletResponse response) {
+    public SignInCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
+        this.service = service;
         this.request = request;
         this.response = response;
     }
 
     @Override
     public String execute() throws CommandException {
-        CommonService service = Common.getInstance();
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         try {

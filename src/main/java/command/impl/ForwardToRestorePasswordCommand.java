@@ -6,12 +6,12 @@ import command.exception.CommandException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ForwardToRestorePassword implements Command {
+public class ForwardToRestorePasswordCommand implements Command {
 
     private HttpServletRequest request;
     private HttpServletResponse response;
 
-    public ForwardToRestorePassword(HttpServletRequest request, HttpServletResponse response) {
+    public ForwardToRestorePasswordCommand(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;
     }

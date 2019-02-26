@@ -34,11 +34,55 @@
     <table border="1" cellpadding="4" cellspacing="0" align="center">
         <tr>
             <c:if test="${sessionScope.status == 1}">
-                <th align="center">ID</th>
+                <th align="center">
+                    <form method="get" action="mainWindow" style="display: inline; margin: 0;">
+                        <input type="hidden" name="sortedBy" value="alienId">
+                        <c:if test="${sortedBy == 'alienId' && sortType == 'ASC'}">
+                            <input type="hidden" name="sortType" value="DESC">
+                        </c:if>
+                        <c:if test="${sortedBy != 'alienId' || sortType == 'DESC'}">
+                            <input type="hidden" name="sortType" value="ASC">
+                        </c:if>
+                        <button class="underlined" type="submit" name="button" value="viewAllAliensSorted" style="font-weight: bold">ID</button>
+                    </form>
+                </th>
             </c:if>
-            <th align="center"><fmt:message key="message.name" /></th>
-            <th align="center"><fmt:message key="message.movie" /></th>
-            <th align="center"><fmt:message key="message.planet" /></th>
+            <th align="center">
+                <form method="get" action="mainWindow" style="display: inline; margin: 0;">
+                    <input type="hidden" name="sortedBy" value="alienName">
+                    <c:if test="${sortedBy == 'alienName' && sortType == 'ASC'}">
+                        <input type="hidden" name="sortType" value="DESC">
+                    </c:if>
+                    <c:if test="${sortedBy != 'alienName' || sortType == 'DESC'}">
+                        <input type="hidden" name="sortType" value="ASC">
+                    </c:if>
+                    <button class="underlined" type="submit" name="button" value="viewAllAliensSorted" style="font-weight: bold"><fmt:message key="message.name" /></button>
+                </form>
+            </th>
+            <th align="center">
+                <form method="get" action="mainWindow" style="display: inline; margin: 0;">
+                    <input type="hidden" name="sortedBy" value="movieTitle">
+                    <c:if test="${sortedBy == 'movieTitle' && sortType == 'ASC'}">
+                        <input type="hidden" name="sortType" value="DESC">
+                    </c:if>
+                    <c:if test="${sortedBy != 'movieTitle' || sortType == 'DESC'}">
+                        <input type="hidden" name="sortType" value="ASC">
+                    </c:if>
+                    <button class="underlined" type="submit" name="button" value="viewAllAliensSorted" style="font-weight: bold"><fmt:message key="message.movie" /></button>
+                </form>
+            </th>
+            <th align="center">
+                <form method="get" action="mainWindow" style="display: inline; margin: 0;">
+                    <input type="hidden" name="sortedBy" value="planet">
+                    <c:if test="${sortedBy == 'planet' && sortType == 'ASC'}">
+                        <input type="hidden" name="sortType" value="DESC">
+                    </c:if>
+                    <c:if test="${sortedBy != 'planet' || sortType == 'DESC'}">
+                        <input type="hidden" name="sortType" value="ASC">
+                    </c:if>
+                    <button class="underlined" type="submit" name="button" value="viewAllAliensSorted" style="font-weight: bold"><fmt:message key="message.planet" /></button>
+                </form>
+            </th>
         </tr>
         <c:forEach items="${aliens}" var="alien">
             <tr>

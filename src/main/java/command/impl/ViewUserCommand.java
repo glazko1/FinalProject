@@ -12,17 +12,18 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ViewUserCommand implements Command {
 
+    private CommonService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
 
-    public ViewUserCommand(HttpServletRequest request, HttpServletResponse response) {
+    public ViewUserCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
+        this.service = service;
         this.request = request;
         this.response = response;
     }
 
     @Override
     public String execute() throws CommandException {
-        CommonService service = Common.getInstance();
         long id = Long.parseLong(request.getParameter("userId"));
         try {
             User user = service.viewUser(id);

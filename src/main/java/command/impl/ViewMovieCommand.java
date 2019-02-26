@@ -12,17 +12,18 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ViewMovieCommand implements Command {
 
+    private CommonService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
 
-    public ViewMovieCommand(HttpServletRequest request, HttpServletResponse response) {
+    public ViewMovieCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
+        this.service = service;
         this.request = request;
         this.response = response;
     }
 
     @Override
     public String execute() throws CommandException {
-        CommonService service = Common.getInstance();
         long movieId = Long.parseLong(request.getParameter("movieId"));
         try {
             Movie movie = service.viewMovie(movieId);

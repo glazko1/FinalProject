@@ -7,11 +7,14 @@ import command.impl.AddFeedbackCommand;
 import command.impl.ChangeBanStatusCommand;
 import command.impl.ChangePasswordCommand;
 import command.impl.ChangeUserStatusCommand;
+import command.impl.DeleteFeedbackCommand;
+import command.impl.EditAlienCommand;
 import command.impl.EditUserCommand;
 import command.impl.ForwardToChangePasswordCommand;
+import command.impl.ForwardToEditAlienCommand;
 import command.impl.ForwardToEditUserCommand;
 import command.impl.ForwardToNewAlienCommand;
-import command.impl.ForwardToRestorePassword;
+import command.impl.ForwardToRestorePasswordCommand;
 import command.impl.LogoutCommand;
 import command.impl.RedirectToMainPageCommand;
 import command.impl.RestorePasswordCommand;
@@ -19,6 +22,7 @@ import command.impl.SignInCommand;
 import command.impl.SignUpCommand;
 import command.impl.ViewAlienCommand;
 import command.impl.ViewAllAliensCommand;
+import command.impl.ViewAllAliensSortedCommand;
 import command.impl.ViewAllMoviesCommand;
 import command.impl.ViewAllUsersCommand;
 import command.impl.ViewMovieCommand;
@@ -43,31 +47,31 @@ public class CommandFactory {
     public Command createCommand(String name, HttpServletRequest request, HttpServletResponse response) throws CommandException {
         switch (name) {
             case "signIn":
-                return new SignInCommand(request, response);
+                return new SignInCommand(Common.getInstance(), request, response);
             case "signUp":
-                return new SignUpCommand(request, response);
+                return new SignUpCommand(Common.getInstance(), request, response);
             case "viewAllAliens":
-                return new ViewAllAliensCommand(request, response);
+                return new ViewAllAliensCommand(Common.getInstance(), request, response);
             case "addAlien":
                 return new AddAlienCommand(AlienSpecialist.getInstance(), request, response);
             case "viewAllMovies":
-                return new ViewAllMoviesCommand(request, response);
+                return new ViewAllMoviesCommand(Common.getInstance(), request, response);
             case "viewAlien":
-                return new ViewAlienCommand(request, response);
+                return new ViewAlienCommand(Common.getInstance(), request, response);
             case "addFeedback":
                 return new AddFeedbackCommand(Common.getInstance(), request, response);
             case "viewMovie":
-                return new ViewMovieCommand(request, response);
+                return new ViewMovieCommand(Common.getInstance(), request, response);
             case "viewAllUsers":
-                return new ViewAllUsersCommand(request, response);
+                return new ViewAllUsersCommand(Admin.getInstance(), request, response);
             case "viewUser":
-                return new ViewUserCommand(request, response);
+                return new ViewUserCommand(Common.getInstance(), request, response);
             case "changeBanStatus":
                 return new ChangeBanStatusCommand(Admin.getInstance(), request, response);
             case "changeUserStatus":
                 return new ChangeUserStatusCommand(Admin.getInstance(), request, response);
             case "forwardToNewAlien":
-                return new ForwardToNewAlienCommand(request, response);
+                return new ForwardToNewAlienCommand(Common.getInstance(), request, response);
             case "forwardToEditUser":
                 return new ForwardToEditUserCommand(Common.getInstance(), request, response);
             case "editUser":
@@ -81,9 +85,17 @@ public class CommandFactory {
             case "logout":
                 return new LogoutCommand(request, response);
             case "forwardToRestorePassword":
-                return new ForwardToRestorePassword(request, response);
+                return new ForwardToRestorePasswordCommand(request, response);
             case "restorePassword":
-                return new RestorePasswordCommand(request, response);
+                return new RestorePasswordCommand(Common.getInstance(), request, response);
+            case "deleteFeedback":
+                return new DeleteFeedbackCommand(Common.getInstance(), request, response);
+            case "forwardToEditAlien":
+                return new ForwardToEditAlienCommand(Common.getInstance(), request, response);
+            case "editAlien":
+                return new EditAlienCommand(AlienSpecialist.getInstance(), request, response);
+            case "viewAllAliensSorted":
+                return new ViewAllAliensSortedCommand(Common.getInstance(), request, response);
             default:
                 break;
         }

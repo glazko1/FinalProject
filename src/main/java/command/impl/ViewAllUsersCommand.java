@@ -13,17 +13,18 @@ import java.util.List;
 
 public class ViewAllUsersCommand implements Command {
 
+    private AdminService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
 
-    public ViewAllUsersCommand(HttpServletRequest request, HttpServletResponse response) {
+    public ViewAllUsersCommand(AdminService service, HttpServletRequest request, HttpServletResponse response) {
+        this.service = service;
         this.request = request;
         this.response = response;
     }
 
     @Override
     public String execute() throws CommandException {
-        AdminService service = Admin.getInstance();
         try {
             List<User> users = service.viewAllUsers();
             request.setAttribute("users", users);

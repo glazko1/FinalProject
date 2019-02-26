@@ -6,7 +6,7 @@
 <fmt:setBundle basename="text" />
 <html>
 <head>
-    <title>Change password</title>
+    <title><fmt:message key="button.edit_information" /></title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
@@ -22,8 +22,8 @@
         <button class="underlined" name="button" value="logout"><fmt:message key="button.logout" /></button>
     </form>
     <form style="display: inline; margin: 25px;">
-        <input type="hidden" name="button" value="forwardToChangePassword">
-        <input type="hidden" name="userId" value="${userId}">
+        <input type="hidden" name="button" value="forwardToEditAlien">
+        <input type="hidden" name="alienId" value="${alienId}">
         <label for="locale"></label><select id="locale" name="locale" onchange="submit()">
         <option value="en_EN" ${locale == 'en_EN' ? 'selected' : ''}>English</option>
         <option value="de_DE" ${locale == 'de_DE' ? 'selected' : ''}>Deutsch</option>
@@ -32,30 +32,36 @@
     </form>
 </div>
 <div class="center-column">
-    <h2>${username}</h2>
+    <h2>${alienName}</h2>
     <form method="post" action="mainWindow">
         <table border="1" cellpadding="4" cellspacing="0" align="center">
             <tr>
-                <th align="center"><fmt:message key="message.current_password" /></th>
+                <th align="center"><fmt:message key="message.movie" /></th>
                 <td align="center">
-                    <label><input type="password" name="currentPassword"></label>
+                    <label>
+                        <select name="movie">
+                            <c:forEach items="${movies}" var="movie">
+                                <option value="${movie.title}">${movie.title}</option>
+                            </c:forEach>
+                        </select>
+                    </label>
                 </td>
             </tr>
             <tr>
-                <th align="center"><fmt:message key="message.new_password" /></th>
+                <th align="center"><fmt:message key="message.planet" /></th>
                 <td align="center">
-                    <label><input type="password" name="newPassword"></label>
+                    <label><input type="text" name="planet" value="${planet}"></label>
                 </td>
             </tr>
             <tr>
-                <th align="center"><fmt:message key="message.confirm_password" /></th>
+                <th align="center"><fmt:message key="message.description" /></th>
                 <td align="center">
-                    <label><input type="password" name="confirmedPassword"></label>
+                    <label><input type="text" name="description" value="${description}"></label>
                 </td>
             </tr>
         </table><br>
-        <input type="hidden" name="userId" value="${userId}">
-        <button type="submit" name="button" value="changePassword"><fmt:message key="button.submit" /></button>
+        <input type="hidden" name="alienId" value="${alienId}">
+        <button type="submit" name="button" value="editAlien"><fmt:message key="button.submit" /></button>
     </form>
 </div>
 </body>

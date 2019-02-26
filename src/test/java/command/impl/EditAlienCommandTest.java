@@ -3,9 +3,9 @@ package command.impl;
 import command.Command;
 import command.exception.CommandException;
 import org.testng.annotations.Test;
-import service.CommonService;
+import service.AlienSpecialistService;
 import service.exception.ServiceException;
-import service.impl.Common;
+import service.impl.AlienSpecialist;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,21 +18,21 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
-public class EditUserCommandTest {
+public class EditAlienCommandTest {
 
     @Test(expectedExceptions = CommandException.class)
     public void execute_exceptionFromService_CommandException() throws ServiceException, CommandException {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-        CommonService service = mock(Common.class);
-        Command command = new EditUserCommand(service, mockRequest, mockResponse);
+        AlienSpecialistService service = mock(AlienSpecialist.class);
+        Command command = new EditAlienCommand(service, mockRequest, mockResponse);
         //when
-        when(mockRequest.getParameter("userId")).thenReturn("1");
-        when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
-        when(mockRequest.getParameter("lastName")).thenReturn("LastName");
-        when(mockRequest.getParameter("email")).thenReturn("Email");
-        doThrow(ServiceException.class).when(service).editUser(anyLong(), anyString(), anyString(), anyString());
+        when(mockRequest.getParameter("alienId")).thenReturn("1");
+        when(mockRequest.getParameter("movie")).thenReturn("Movie");
+        when(mockRequest.getParameter("planet")).thenReturn("Planet");
+        when(mockRequest.getParameter("description")).thenReturn("Description");
+        doThrow(ServiceException.class).when(service).editAlien(anyLong(), anyString(), anyString(), anyString());
         command.execute();
         //then
         //expecting CommandException
@@ -43,14 +43,14 @@ public class EditUserCommandTest {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-        CommonService service = mock(Common.class);
-        Command command = new EditUserCommand(service, mockRequest, mockResponse);
+        AlienSpecialistService service = mock(AlienSpecialist.class);
+        Command command = new EditAlienCommand(service, mockRequest, mockResponse);
         //when
-        when(mockRequest.getParameter("userId")).thenReturn("1");
-        when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
-        when(mockRequest.getParameter("lastName")).thenReturn("LastName");
-        when(mockRequest.getParameter("email")).thenReturn("Email");
-        doNothing().when(service).editUser(anyLong(), anyString(), anyString(), anyString());
+        when(mockRequest.getParameter("alienId")).thenReturn("1");
+        when(mockRequest.getParameter("movie")).thenReturn("Movie");
+        when(mockRequest.getParameter("planet")).thenReturn("Planet");
+        when(mockRequest.getParameter("description")).thenReturn("Description");
+        doNothing().when(service).editAlien(anyLong(), anyString(), anyString(), anyString());
         String result = command.execute();
         //then
         assertEquals(result, "main");

@@ -1,7 +1,7 @@
 package entity;
 
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 public class Feedback {
 
@@ -59,7 +59,11 @@ public class Feedback {
         this.feedbackText = feedbackText;
     }
 
-    public Timestamp getFeedbackDateTime() {
+    public String getFeedbackDateTime() {
+        return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(feedbackDateTime);
+    }
+
+    public Timestamp getFeedbackTimestamp() {
         return feedbackDateTime;
     }
 

@@ -52,15 +52,13 @@
             <td align="center">${alien.averageRating}</td>
         </tr>
     </table>
-    <h2><fmt:message key="message.feedbacks" /></h2>
-    <c:forEach var="feedback" items="${feedbacks}">
-        <form method="get" action="mainWindow" style="display: inline; margin: 0;">
-            <input type="hidden" name="userId" value="${feedback.user.userId}">
-            <button class="underlined" type="submit" name="button" value="viewUser" style="font-size: 14px;">${feedback.user.username}</button>
-        </form> ${feedback.feedbackDateTime}
-        <p>${feedback.feedbackText}</p>
-    </c:forEach>
-    <h3><fmt:message key="message.your_feedback" /></h3>
+    <c:if test="${sessionScope.status == 1 || sessionScope.status == 3}">
+        <br><form method="get" action="mainWindow">
+            <input type="hidden" name="alienId" value="${alien.alienId}">
+            <button type="submit" name="button" value="forwardToEditAlien"><fmt:message key="button.edit_information" /></button>
+        </form>
+    </c:if>
+    <h2><fmt:message key="message.your_feedback" /></h2>
     <form method="post" action="mainWindow">
         <input type="hidden" name="alienId" value="${alien.alienId}">
         <input type="hidden" name="username" value="${sessionScope.username}">
@@ -88,14 +86,30 @@
         </table><br>
         <button type="submit" name="button" value="addFeedback"><fmt:message key="button.submit" /></button>
     </form>
+    <h2><fmt:message key="message.feedbacks" /></h2>
+    <c:forEach var="feedback" items="${feedbacks}">
+        <form method="get" action="mainWindow" style="display: inline; margin: 0;">
+            <input type="hidden" name="userId" value="${feedback.user.userId}">
+            <button class="underlined" type="submit" name="button" value="viewUser" style="font-size: 14px;">${feedback.user.username}</button>
+        </form> ${feedback.feedbackDateTime}
+        <c:if test="${feedback.user.userId == sessionScope.userId || sessionScope.status == 1}">
+            <form method="post" action="mainWindow" style="display: inline; margin: 0;">
+                <input type="hidden" name="feedbackId" value="${feedback.feedbackId}">
+                <input type="hidden" name="alienId" value="${alien.alienId}">
+                <button type="submit" name="button" value="deleteFeedback" style="font-size: 14px;"><fmt:message key="message.delete" /></button>
+            </form>
+        </c:if>
+        <br>
+        <c:if test="${feedback.rating == 1}">&#9733; 1/5</c:if>
+        <c:if test="${feedback.rating == 2}">&#9733;&#9733; 2/5</c:if>
+        <c:if test="${feedback.rating == 3}">&#9733;&#9733;&#9733; 3/5</c:if>
+        <c:if test="${feedback.rating == 4}">&#9733;&#9733;&#9733;&#9733; 4/5</c:if>
+        <c:if test="${feedback.rating == 5}">&#9733;&#9733;&#9733;&#9733;&#9733; 5/5</c:if>
+        <br>${feedback.feedbackText}<br><br>
+    </c:forEach>
 </div>
 <div class="right-column" style="text-align: left">
     <p>${alien.description}</p>
-</div>
-<div class="center-column">
-
-
-
 </div>
 </body>
 </html>
