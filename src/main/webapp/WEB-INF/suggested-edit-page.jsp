@@ -6,7 +6,7 @@
 <fmt:setBundle basename="text" />
 <html>
 <head>
-    <title>Main page</title>
+    <title><fmt:message key="title.suggested_edit" /></title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
@@ -18,14 +18,12 @@
         <input type="hidden" name="userId" value="${sessionScope.userId}">
         <button class="underlined" name="button" value="viewUser"><fmt:message key="button.my_profile" /></button>
     </form>
-    <form method="get" action="mainWindow" style="display: inline; margin: 25px;">
-        <input type="hidden" name="userId" value="${sessionScope.userId}">
-        <button class="underlined" name="button" value="viewNotifications"><fmt:message key="button.notifications" /></button>
-    </form>
     <form method="post" action="mainWindow" style="display: inline; margin: 25px;">
         <button class="underlined" name="button" value="logout"><fmt:message key="button.logout" /></button>
     </form>
     <form style="display: inline; margin: 25px;">
+        <input type="hidden" name="editId" value="${edit.editId}">
+        <input type="hidden" name="button" value="viewSuggestedEdit">
         <label for="locale"></label><select id="locale" name="locale" onchange="submit()">
         <option value="en_EN" ${locale == 'en_EN' ? 'selected' : ''}>English</option>
         <option value="de_DE" ${locale == 'de_DE' ? 'selected' : ''}>Deutsch</option>
@@ -34,16 +32,30 @@
     </form>
 </div>
 <div class="center-column">
-    <h2><fmt:message key="title.welcome" />, ${sessionScope.firstName}!</h2>
-    <form method="get" action="mainWindow">
-        <button type="submit" name="button" value="viewAllAliens"><fmt:message key="button.view_aliens" /></button><br><br>
-        <button type="submit" name="button" value="viewAllMovies"><fmt:message key="button.view_movies" /></button>
-        <c:if test="${sessionScope.status == 1}">
-            <br><br><button type="submit" name="button" value="viewAllUsers"><fmt:message key="button.view_users" /></button>
-        </c:if>
-        <c:if test="${sessionScope.status == 1 || sessionScope.status == 3}">
-            <br><br><button type="submit" name="button" value="viewAllSuggestedEdits"><fmt:message key="button.view_suggested_edits" /></button>
-        </c:if>
+    <h1>${edit.alien.alienName}</h1>
+    <table border="1" cellpadding="4" cellspacing="0" align="center">
+        <tr>
+            <th align="center"><fmt:message key="message.movie" /></th>
+            <td align="center">${edit.alien.movie.title}</td>
+        </tr>
+        <tr>
+            <th align="center"><fmt:message key="message.planet" /></th>
+            <td align="center">${edit.alien.planet}</td>
+        </tr>
+        <tr>
+            <th align="center"><fmt:message key="message.average_rating" /></th>
+            <td align="center">${edit.alien.averageRating}</td>
+        </tr>
+    </table>
+    <h2><fmt:message key="message.current_description" /></h2>
+    <p>${edit.alien.description}</p>
+    <h2><fmt:message key="message.suggested_description" /></h2>
+    <p>${edit.editText}</p>
+    <form method="post" action="mainWindow">
+        <input type="hidden" name="editId" value="${edit.editId}">
+        <input type="hidden" name="userId" value="${edit.user.userId}">
+        <button type="submit" name="button" value="acceptEdit"><fmt:message key="button.accept_edit" /></button><br><br>
+        <button type="submit" name="button" value="rejectEdit"><fmt:message key="button.reject_edit" /></button>
     </form>
 </div>
 </body>

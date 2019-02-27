@@ -3,6 +3,7 @@ package service;
 import entity.Alien;
 import entity.Feedback;
 import entity.Movie;
+import entity.Notification;
 import entity.User;
 import javafx.util.Pair;
 import service.exception.ServiceException;
@@ -28,4 +29,6 @@ public interface CommonService {
     void recountAverageRating(long alienId) throws ServiceException;
     void deleteFeedback(long feedbackId) throws ServiceException;
     List<Alien> viewAllAliensSorted(String sortedBy, String sortType) throws ServiceException;
+    void suggestEdit(long userId, long alienId, String description) throws ServiceException;
+    List<Notification> viewNotifications(long userId) throws ServiceException;
 }

@@ -1,6 +1,5 @@
 package entity;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
@@ -10,18 +9,16 @@ public class User {
     private String username;
     private String firstName;
     private String lastName;
-    private String password;
     private int statusId;
     private String email;
     private boolean banned;
     private Timestamp birthDate;
 
-    public User(long userId, String username, String firstName, String lastName, String password, int statusId, String email, boolean banned, Timestamp birthDate) {
+    public User(long userId, String username, String firstName, String lastName, int statusId, String email, boolean banned, Timestamp birthDate) {
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.password = password;
         this.statusId = statusId;
         this.email = email;
         this.banned = banned;
@@ -58,14 +55,6 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public int getStatusId() {
@@ -111,7 +100,6 @@ public class User {
                 ", username='" + username + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", password='" + password + '\'' +
                 ", statusId=" + statusId +
                 ", email='" + email + '\'' +
                 ", banned=" + banned +

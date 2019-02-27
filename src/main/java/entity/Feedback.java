@@ -6,15 +6,15 @@ import java.text.SimpleDateFormat;
 public class Feedback {
 
     private long feedbackId;
-    private long alienId;
+    private Alien alien;
     private User user;
     private int rating;
     private String feedbackText;
     private Timestamp feedbackDateTime;
 
-    public Feedback(long feedbackId, long alienId, User user, int rating, String feedbackText, Timestamp feedbackDateTime) {
+    public Feedback(long feedbackId, Alien alien, User user, int rating, String feedbackText, Timestamp feedbackDateTime) {
         this.feedbackId = feedbackId;
-        this.alienId = alienId;
+        this.alien = alien;
         this.user = user;
         this.rating = rating;
         this.feedbackText = feedbackText;
@@ -29,12 +29,12 @@ public class Feedback {
         this.feedbackId = feedbackId;
     }
 
-    public long getAlienId() {
-        return alienId;
+    public Alien getAlien() {
+        return alien;
     }
 
-    public void setAlienId(long alienId) {
-        this.alienId = alienId;
+    public void setAlien(Alien alien) {
+        this.alien = alien;
     }
 
     public User getUser() {

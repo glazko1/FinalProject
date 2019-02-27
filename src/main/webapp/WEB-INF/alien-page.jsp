@@ -58,6 +58,12 @@
             <button type="submit" name="button" value="forwardToEditAlien"><fmt:message key="button.edit_information" /></button>
         </form>
     </c:if>
+    <c:if test="${sessionScope.status == 2 || sessionScope.status == 4}">
+        <br><form method="get" action="mainWindow">
+            <input type="hidden" name="alienId" value="${alien.alienId}">
+            <button type="submit" name="button" value="forwardToSuggestEdit"><fmt:message key="button.suggest_edit" /></button>
+        </form>
+    </c:if>
     <h2><fmt:message key="message.your_feedback" /></h2>
     <form method="post" action="mainWindow">
         <input type="hidden" name="alienId" value="${alien.alienId}">

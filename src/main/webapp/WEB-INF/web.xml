@@ -134,4 +134,40 @@
     <servlet-name>edit-alien</servlet-name>
     <url-pattern>/edit-alien</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>suggest-edit</servlet-name>
+    <jsp-file>/WEB-INF/suggest-edit.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>suggest-edit</servlet-name>
+    <url-pattern>/suggest-edit</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>suggested-edit-table</servlet-name>
+    <jsp-file>/WEB-INF/suggested-edit-table.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>suggested-edit-table</servlet-name>
+    <url-pattern>/suggested-edit-table</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>suggested-edit-page</servlet-name>
+    <jsp-file>/WEB-INF/suggested-edit-page.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>suggested-edit-page</servlet-name>
+    <url-pattern>/suggested-edit-page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>notifications</servlet-name>
+    <jsp-file>/WEB-INF/notifications.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>notifications</servlet-name>
+    <url-pattern>/notifications</url-pattern>
+  </servlet-mapping>
 </web-app>

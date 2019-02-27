@@ -13,4 +13,5 @@ public interface AlienDAO {
     void updateAverageRating(long alienId, double averageRating) throws DAOException;
     void editAlien(long alienId, long movieId, String planet, String description) throws DAOException;
     List<Alien> getAllAliensSorted(String sortedBy, String sortType) throws DAOException;
+    void updateDescription(long alienId, String description) throws DAOException;
 }

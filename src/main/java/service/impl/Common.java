@@ -1,17 +1,23 @@
 package service.impl;
 
 import dao.AlienDAO;
+import dao.EditDAO;
 import dao.FeedbackDAO;
 import dao.MovieDAO;
+import dao.NotificationDAO;
 import dao.UserDAO;
 import dao.exception.DAOException;
 import dao.impl.AlienSQL;
+import dao.impl.EditSQL;
 import dao.impl.FeedbackSQL;
 import dao.impl.MovieSQL;
+import dao.impl.NotificationSQL;
 import dao.impl.UserSQL;
 import entity.Alien;
+import entity.Edit;
 import entity.Feedback;
 import entity.Movie;
+import entity.Notification;
 import entity.User;
 import javafx.util.Pair;
 import service.CommonService;
@@ -22,7 +28,6 @@ import util.hasher.PasswordHashKeeper;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Random;
 
 public class Common implements CommonService {
 
@@ -39,7 +44,10 @@ public class Common implements CommonService {
     private AlienDAO alienDAO = AlienSQL.getInstance();
     private MovieDAO movieDAO = MovieSQL.getInstance();
     private FeedbackDAO feedbackDAO = FeedbackSQL.getInstance();
+    private EditDAO editDAO = EditSQL.getInstance();
+    private NotificationDAO notificationDAO = NotificationSQL.getInstance();
     private PasswordHashKeeper keeper = PasswordHashKeeper.getInstance();
+    private GeneratorId generator = GeneratorId.getInstance();
 
     @Override
     public User signIn(String username, String password) throws ServiceException {
@@ -76,9 +84,9 @@ public class Common implements CommonService {
         try {
             GeneratorId generatorId = GeneratorId.getInstance();
             long id = generatorId.generateId();
-            User user = new User(id, username, firstName, lastName, encoded, 4,
+            User user = new User(id, username, firstName, lastName, 4,
                     email, false, new Timestamp(birthDate.getTime() + 11000 * 1000));
-            userDAO.addNewUser(user);
+            userDAO.addNewUser(user, encoded);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -125,11 +133,11 @@ public class Common implements CommonService {
     @Override
     public void addFeedback(long alienId, String username, int rating, String feedbackText) throws ServiceException {
         try {
-            Random random = new Random();
-            long id = Math.abs(random.nextLong());
+            long id = generator.generateId();
             User user = userDAO.getUser(username);
+            Alien alien = alienDAO.getAlienById(alienId);
             Timestamp feedbackDateTime = new Timestamp(System.currentTimeMillis());
-            Feedback feedback = new Feedback(id, alienId, user, rating, feedbackText, feedbackDateTime);
+            Feedback feedback = new Feedback(id, alien, user, rating, feedbackText, feedbackDateTime);
             feedbackDAO.addNewFeedback(feedback);
         } catch (DAOException e) {
             throw new ServiceException(e);
@@ -239,6 +247,29 @@ public class Common implements CommonService {
     public List<Alien> viewAllAliensSorted(String sortedBy, String sortType) throws ServiceException {
         try {
             return alienDAO.getAllAliensSorted(sortedBy, sortType);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void suggestEdit(long userId, long alienId, String description) throws ServiceException {
+        long editId = generator.generateId();
+        try {
+            Alien alien = alienDAO.getAlienById(alienId);
+            User user = userDAO.getUser(userId);
+            Timestamp editDateTime = new Timestamp(System.currentTimeMillis());
+            Edit edit = new Edit(editId, alien, user, description, editDateTime);
+            editDAO.addNewEdit(edit);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public List<Notification> viewNotifications(long userId) throws ServiceException {
+        try {
+            return notificationDAO.getNotificationsByUserId(userId);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

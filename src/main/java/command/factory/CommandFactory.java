@@ -2,6 +2,7 @@ package command.factory;
 
 import command.Command;
 import command.exception.CommandException;
+import command.impl.AcceptEditCommand;
 import command.impl.AddAlienCommand;
 import command.impl.AddFeedbackCommand;
 import command.impl.ChangeBanStatusCommand;
@@ -15,17 +16,23 @@ import command.impl.ForwardToEditAlienCommand;
 import command.impl.ForwardToEditUserCommand;
 import command.impl.ForwardToNewAlienCommand;
 import command.impl.ForwardToRestorePasswordCommand;
+import command.impl.ForwardToSuggestEditCommand;
 import command.impl.LogoutCommand;
 import command.impl.RedirectToMainPageCommand;
+import command.impl.RejectEditCommand;
 import command.impl.RestorePasswordCommand;
 import command.impl.SignInCommand;
 import command.impl.SignUpCommand;
+import command.impl.SuggestEditCommand;
 import command.impl.ViewAlienCommand;
 import command.impl.ViewAllAliensCommand;
 import command.impl.ViewAllAliensSortedCommand;
 import command.impl.ViewAllMoviesCommand;
+import command.impl.ViewAllSuggestedEditsCommand;
 import command.impl.ViewAllUsersCommand;
 import command.impl.ViewMovieCommand;
+import command.impl.ViewNotificationsCommand;
+import command.impl.ViewSuggestedEditCommand;
 import command.impl.ViewUserCommand;
 import service.impl.Admin;
 import service.impl.AlienSpecialist;
@@ -84,6 +91,8 @@ public class CommandFactory {
                 return new RedirectToMainPageCommand(request, response);
             case "logout":
                 return new LogoutCommand(request, response);
+            case "viewNotifications":
+                return new ViewNotificationsCommand(Common.getInstance(), request, response);
             case "forwardToRestorePassword":
                 return new ForwardToRestorePasswordCommand(request, response);
             case "restorePassword":
@@ -96,6 +105,18 @@ public class CommandFactory {
                 return new EditAlienCommand(AlienSpecialist.getInstance(), request, response);
             case "viewAllAliensSorted":
                 return new ViewAllAliensSortedCommand(Common.getInstance(), request, response);
+            case "forwardToSuggestEdit":
+                return new ForwardToSuggestEditCommand(Common.getInstance(), request, response);
+            case "suggestEdit":
+                return new SuggestEditCommand(Common.getInstance(), request, response);
+            case "viewAllSuggestedEdits":
+                return new ViewAllSuggestedEditsCommand(AlienSpecialist.getInstance(), request, response);
+            case "viewSuggestedEdit":
+                return new ViewSuggestedEditCommand(AlienSpecialist.getInstance(), request, response);
+            case "acceptEdit":
+                return new AcceptEditCommand(AlienSpecialist.getInstance(), request, response);
+            case "rejectEdit":
+                return new RejectEditCommand(AlienSpecialist.getInstance(), request, response);
             default:
                 break;
         }

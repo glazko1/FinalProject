@@ -6,7 +6,7 @@
 <fmt:setBundle basename="text" />
 <html>
 <head>
-    <title>Main page</title>
+    <title><fmt:message key="button.notifications" /></title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
@@ -34,17 +34,11 @@
     </form>
 </div>
 <div class="center-column">
-    <h2><fmt:message key="title.welcome" />, ${sessionScope.firstName}!</h2>
-    <form method="get" action="mainWindow">
-        <button type="submit" name="button" value="viewAllAliens"><fmt:message key="button.view_aliens" /></button><br><br>
-        <button type="submit" name="button" value="viewAllMovies"><fmt:message key="button.view_movies" /></button>
-        <c:if test="${sessionScope.status == 1}">
-            <br><br><button type="submit" name="button" value="viewAllUsers"><fmt:message key="button.view_users" /></button>
-        </c:if>
-        <c:if test="${sessionScope.status == 1 || sessionScope.status == 3}">
-            <br><br><button type="submit" name="button" value="viewAllSuggestedEdits"><fmt:message key="button.view_suggested_edits" /></button>
-        </c:if>
-    </form>
+<h2><fmt:message key="button.your_notifications" /></h2>
+<c:forEach items="${notifications}" var="notification">
+    ${notification.notificationDateTime}<br>
+    ${notification.notificationText}<br><br>
+</c:forEach>
 </div>
 </body>
 </html>

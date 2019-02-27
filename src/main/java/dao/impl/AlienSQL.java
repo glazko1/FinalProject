@@ -37,6 +37,7 @@ public class AlienSQL implements AlienDAO {
     private static final String GET_ALL_ALIENS_SORTED_BY_MOVIE_TITLE_DESC_SQL = "SELECT a.AlienId, a.AlienName, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, a.Planet, a.Description, a.AverageRating FROM Alien a JOIN Movie m ON a.MovieId = m.MovieId ORDER BY m.Title DESC";
     private static final String GET_ALL_ALIENS_SORTED_BY_PLANET_ASC_SQL = "SELECT a.AlienId, a.AlienName, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, a.Planet, a.Description, a.AverageRating FROM Alien a JOIN Movie m ON a.MovieId = m.MovieId ORDER BY a.Planet ASC";
     private static final String GET_ALL_ALIENS_SORTED_BY_PLANET_DESC_SQL = "SELECT a.AlienId, a.AlienName, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, a.Planet, a.Description, a.AverageRating FROM Alien a JOIN Movie m ON a.MovieId = m.MovieId ORDER BY a.Planet DESC";
+    private static final String UPDATE_DESCRIPTION_SQL = "UPDATE Alien SET Description = ? WHERE AlienId = ?";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
     @Override
@@ -167,6 +168,19 @@ public class AlienSQL implements AlienDAO {
             throw new DAOException(e);
         }
         return aliens;
+    }
+
+    @Override
+    public void updateDescription(long alienId, String description) throws DAOException {
+        try (ProxyConnection proxyConnection = pool.getConnection()) {
+            Connection connection = proxyConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(UPDATE_DESCRIPTION_SQL);
+            statement.setString(1, description);
+            statement.setLong(2, alienId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
     }
 
     private String getSortingSQL(String sortedBy, String sortType) throws DAOException {

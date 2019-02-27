@@ -3,7 +3,9 @@ package dao.impl;
 import connection.ProxyConnection;
 import dao.FeedbackDAO;
 import dao.exception.DAOException;
+import entity.Alien;
 import entity.Feedback;
+import entity.Movie;
 import entity.User;
 import pool.DatabaseConnectionPool;
 
@@ -24,8 +26,8 @@ public class FeedbackSQL implements FeedbackDAO {
 
     private FeedbackSQL() {}
 
-    private static final String GET_FEEDBACK_BY_ID_SQL = "SELECT f.FeedbackId, f.AlienId, u.UserId, u.Username, u.FirstName, u.LastName, u.Password, u.StatusId, u.Email, u.Banned, u.BirthDate, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN User u ON f.UserId = u.UserId WHERE FeedbackId = ?";
-    private static final String GET_FEEDBACKS_BY_ALIEN_ID_SQL = "SELECT f.FeedbackId, f.AlienId, u.UserId, u.Username, u.FirstName, u.LastName, u.Password, u.StatusId, u.Email, u.Banned, u.BirthDate, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN User u ON f.UserId = u.UserId WHERE AlienId = ? ORDER BY FeedbackDateTime DESC";
+    private static final String GET_FEEDBACK_BY_ID_SQL = "SELECT f.FeedbackId, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN Alien a ON f.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User u ON f.UserId = u.UserId WHERE f.FeedbackId = ?";
+    private static final String GET_FEEDBACKS_BY_ALIEN_ID_SQL = "SELECT f.FeedbackId, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN Alien a ON f.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User u ON f.UserId = u.UserId WHERE f.AlienId = ? ORDER BY FeedbackDateTime DESC";
     private static final String ADD_NEW_FEEDBACK_SQL = "INSERT INTO Feedback (FeedbackId, AlienId, UserId, Rating, FeedbackText, FeedbackDateTime) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String DELETE_FEEDBACK_SQL = "DELETE FROM Feedback WHERE FeedbackId = ?";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
@@ -39,19 +41,27 @@ public class FeedbackSQL implements FeedbackDAO {
             ResultSet set = statement.executeQuery();
             if (set.next()) {
                 return new Feedback(set.getLong(1),
-                        set.getLong(2),
-                        new User(set.getLong(3),
+                        new Alien(set.getLong(2),
+                                set.getString(3),
+                                new Movie(set.getLong(7),
+                                        set.getString(8),
+                                        set.getInt(9),
+                                        set.getInt(10),
+                                        set.getDate(11)),
                                 set.getString(4),
                                 set.getString(5),
-                                set.getString(6),
-                                set.getString(7),
-                                set.getInt(8),
-                                set.getString(9),
-                                set.getBoolean(10),
-                                set.getTimestamp(11)),
-                        set.getInt(12),
-                        set.getString(13),
-                        set.getTimestamp(14));
+                                set.getDouble(6)),
+                        new User(set.getLong(12),
+                                set.getString(13),
+                                set.getString(14),
+                                set.getString(15),
+                                set.getInt(16),
+                                set.getString(17),
+                                set.getBoolean(18),
+                                set.getTimestamp(19)),
+                        set.getInt(20),
+                        set.getString(21),
+                        set.getTimestamp(22));
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -69,19 +79,27 @@ public class FeedbackSQL implements FeedbackDAO {
             ResultSet set = statement.executeQuery();
             while (set.next()) {
                 Feedback feedback = new Feedback(set.getLong(1),
-                        set.getLong(2),
-                        new User(set.getLong(3),
+                        new Alien(set.getLong(2),
+                                set.getString(3),
+                                new Movie(set.getLong(7),
+                                        set.getString(8),
+                                        set.getInt(9),
+                                        set.getInt(10),
+                                        set.getDate(11)),
                                 set.getString(4),
                                 set.getString(5),
-                                set.getString(6),
-                                set.getString(7),
-                                set.getInt(8),
-                                set.getString(9),
-                                set.getBoolean(10),
-                                set.getTimestamp(11)),
-                        set.getInt(12),
-                        set.getString(13),
-                        set.getTimestamp(14));
+                                set.getDouble(6)),
+                        new User(set.getLong(12),
+                                set.getString(13),
+                                set.getString(14),
+                                set.getString(15),
+                                set.getInt(16),
+                                set.getString(17),
+                                set.getBoolean(18),
+                                set.getTimestamp(19)),
+                        set.getInt(20),
+                        set.getString(21),
+                        set.getTimestamp(22));
                 feedbacks.add(feedback);
             }
         } catch (SQLException e) {
@@ -96,7 +114,7 @@ public class FeedbackSQL implements FeedbackDAO {
             Connection connection = proxyConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(ADD_NEW_FEEDBACK_SQL);
             statement.setLong(1, feedback.getFeedbackId());
-            statement.setLong(2, feedback.getAlienId());
+            statement.setLong(2, feedback.getAlien().getAlienId());
             statement.setLong(3, feedback.getUser().getUserId());
             statement.setInt(4, feedback.getRating());
             statement.setString(5, feedback.getFeedbackText());

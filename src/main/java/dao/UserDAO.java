@@ -11,7 +11,7 @@ public interface UserDAO {
     User getUser(String username, String password) throws DAOException;
     User getUser(String username) throws DAOException;
     List<User> getAllUsers() throws DAOException;
-    void addNewUser(User user) throws DAOException;
+    void addNewUser(User user, String encoded) throws DAOException;
     void changeBanStatus(long userId) throws DAOException;
     void changeUserStatus(long userId, int statusId) throws DAOException;
     void editUser(long userId, String firstName, String lastName, String email) throws DAOException;

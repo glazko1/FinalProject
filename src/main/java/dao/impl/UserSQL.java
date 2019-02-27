@@ -23,10 +23,10 @@ public class UserSQL implements UserDAO {
 
     private UserSQL() {}
 
-    private static final String GET_USER_BY_ID_SQL = "SELECT UserId, Username, FirstName, LastName, Password, StatusId, Email, Banned, BirthDate FROM User WHERE UserId = ?";
-    private static final String GET_USER_BY_USERNAME_AND_PASSWORD_SQL = "SELECT UserId, Username, FirstName, LastName, Password, StatusId, Email, Banned, BirthDate FROM User WHERE Username = ? AND Password = ?";
-    private static final String GET_USER_BY_USERNAME_SQL = "SELECT UserId, Username, FirstName, LastName, Password, StatusId, Email, Banned, BirthDate FROM User WHERE Username = ?";
-    private static final String GET_ALL_USERS_SQL = "SELECT UserId, Username, FirstName, LastName, Password, StatusId, Email, Banned, BirthDate FROM User";
+    private static final String GET_USER_BY_ID_SQL = "SELECT UserId, Username, FirstName, LastName, StatusId, Email, Banned, BirthDate FROM User WHERE UserId = ?";
+    private static final String GET_USER_BY_USERNAME_AND_PASSWORD_SQL = "SELECT UserId, Username, FirstName, LastName, StatusId, Email, Banned, BirthDate FROM User WHERE Username = ? AND Password = ?";
+    private static final String GET_USER_BY_USERNAME_SQL = "SELECT UserId, Username, FirstName, LastName, StatusId, Email, Banned, BirthDate FROM User WHERE Username = ?";
+    private static final String GET_ALL_USERS_SQL = "SELECT UserId, Username, FirstName, LastName, StatusId, Email, Banned, BirthDate FROM User";
     private static final String ADD_NEW_USER_SQL = "INSERT INTO User (UserId, Username, FirstName, LastName, Password, StatusId, Email, Banned, BirthDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String GET_USER_BY_USERNAME_OR_EMAIL_SQL = "SELECT UserId FROM User WHERE Username = ? OR Email = ?";
     private static final String CHANGE_BAN_STATUS_SQL = "UPDATE User SET Banned = ? WHERE UserId = ?";
@@ -48,11 +48,10 @@ public class UserSQL implements UserDAO {
                         set.getString(2),
                         set.getString(3),
                         set.getString(4),
-                        set.getString(5),
-                        set.getInt(6),
-                        set.getString(7),
-                        set.getBoolean(8),
-                        set.getTimestamp(9));
+                        set.getInt(5),
+                        set.getString(6),
+                        set.getBoolean(7),
+                        set.getTimestamp(8));
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -73,11 +72,10 @@ public class UserSQL implements UserDAO {
                         set.getString(2),
                         set.getString(3),
                         set.getString(4),
-                        set.getString(5),
-                        set.getInt(6),
-                        set.getString(7),
-                        set.getBoolean(8),
-                        set.getTimestamp(9));
+                        set.getInt(5),
+                        set.getString(6),
+                        set.getBoolean(7),
+                        set.getTimestamp(8));
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -97,11 +95,10 @@ public class UserSQL implements UserDAO {
                         set.getString(2),
                         set.getString(3),
                         set.getString(4),
-                        set.getString(5),
-                        set.getInt(6),
-                        set.getString(7),
-                        set.getBoolean(8),
-                        set.getTimestamp(9));
+                        set.getInt(5),
+                        set.getString(6),
+                        set.getBoolean(7),
+                        set.getTimestamp(8));
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -121,11 +118,10 @@ public class UserSQL implements UserDAO {
                         set.getString(2),
                         set.getString(3),
                         set.getString(4),
-                        set.getString(5),
-                        set.getInt(6),
-                        set.getString(7),
-                        set.getBoolean(8),
-                        set.getTimestamp(9));
+                        set.getInt(5),
+                        set.getString(6),
+                        set.getBoolean(7),
+                        set.getTimestamp(8));
                 users.add(user);
             }
         } catch (SQLException e) {
@@ -136,7 +132,7 @@ public class UserSQL implements UserDAO {
     }
 
     @Override
-    public void addNewUser(User user) throws DAOException {
+    public void addNewUser(User user, String encoded) throws DAOException {
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             PreparedStatement findUserStatement = connection.prepareStatement(GET_USER_BY_USERNAME_OR_EMAIL_SQL);
@@ -151,7 +147,7 @@ public class UserSQL implements UserDAO {
             addUserStatement.setString(2, user.getUsername());
             addUserStatement.setString(3, user.getFirstName());
             addUserStatement.setString(4, user.getLastName());
-            addUserStatement.setString(5, user.getPassword());
+            addUserStatement.setString(5, encoded);
             addUserStatement.setInt(6, user.getStatusId());
             addUserStatement.setString(7, user.getEmail());
             addUserStatement.setBoolean(8, user.isBanned());
@@ -232,11 +228,10 @@ public class UserSQL implements UserDAO {
                         set.getString(2),
                         set.getString(3),
                         set.getString(4),
-                        set.getString(5),
-                        set.getInt(6),
-                        set.getString(7),
-                        set.getBoolean(8),
-                        set.getTimestamp(9));
+                        set.getInt(5),
+                        set.getString(6),
+                        set.getBoolean(7),
+                        set.getTimestamp(8));
             }
         } catch (SQLException e) {
             throw new DAOException(e);
