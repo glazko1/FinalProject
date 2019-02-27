@@ -10,15 +10,10 @@ import service.impl.Common;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 
-public class EditUserCommandTest {
+public class DeleteFeedbackCommandTest {
 
     @Test(expectedExceptions = CommandException.class)
     public void execute_exceptionFromService_CommandException() throws ServiceException, CommandException {
@@ -26,13 +21,11 @@ public class EditUserCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        Command command = new EditUserCommand(service, mockRequest, mockResponse);
+        Command command = new DeleteFeedbackCommand(service, mockRequest, mockResponse);
         //when
-        when(mockRequest.getParameter("userId")).thenReturn("1");
-        when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
-        when(mockRequest.getParameter("lastName")).thenReturn("LastName");
-        when(mockRequest.getParameter("email")).thenReturn("Email");
-        doThrow(ServiceException.class).when(service).editUser(anyLong(), anyString(), anyString(), anyString());
+        when(mockRequest.getParameter("feedbackId")).thenReturn("1");
+        when(mockRequest.getParameter("alienId")).thenReturn("1");
+        doThrow(ServiceException.class).when(service).deleteFeedback(anyLong());
         command.execute();
         //then
         //expecting CommandException
@@ -44,13 +37,12 @@ public class EditUserCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        Command command = new EditUserCommand(service, mockRequest, mockResponse);
+        Command command = new DeleteFeedbackCommand(service, mockRequest, mockResponse);
         //when
-        when(mockRequest.getParameter("userId")).thenReturn("1");
-        when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
-        when(mockRequest.getParameter("lastName")).thenReturn("LastName");
-        when(mockRequest.getParameter("email")).thenReturn("Email");
-        doNothing().when(service).editUser(anyLong(), anyString(), anyString(), anyString());
+        when(mockRequest.getParameter("feedbackId")).thenReturn("1");
+        when(mockRequest.getParameter("alienId")).thenReturn("1");
+        doNothing().when(service).deleteFeedback(anyLong());
+        doNothing().when(service).recountAverageRating(anyLong());
         String result = command.execute();
         //then
         assertEquals(result, "main");

@@ -2,6 +2,9 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
+import entity.Alien;
+import entity.Feedback;
+import javafx.util.Pair;
 import org.testng.annotations.Test;
 import service.CommonService;
 import service.exception.ServiceException;
@@ -10,15 +13,15 @@ import service.impl.Common;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doNothing;
+import java.util.List;
+
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
-public class EditUserCommandTest {
+public class ViewAlienCommandTest {
 
     @Test(expectedExceptions = CommandException.class)
     public void execute_exceptionFromService_CommandException() throws ServiceException, CommandException {
@@ -26,33 +29,28 @@ public class EditUserCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        Command command = new EditUserCommand(service, mockRequest, mockResponse);
+        Command command = new ViewAlienCommand(service, mockRequest, mockResponse);
         //when
-        when(mockRequest.getParameter("userId")).thenReturn("1");
-        when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
-        when(mockRequest.getParameter("lastName")).thenReturn("LastName");
-        when(mockRequest.getParameter("email")).thenReturn("Email");
-        doThrow(ServiceException.class).when(service).editUser(anyLong(), anyString(), anyString(), anyString());
+        when(mockRequest.getParameter("alienId")).thenReturn("1");
+        doThrow(ServiceException.class).when(service).viewAlienWithFeedbacks(anyLong());
         command.execute();
         //then
         //expecting CommandException
     }
 
     @Test
-    public void execute_validParameters_main() throws ServiceException, CommandException {
+    public void execute_validParameters_alienPage() throws ServiceException, CommandException {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        Command command = new EditUserCommand(service, mockRequest, mockResponse);
+        Pair<Alien, List<Feedback>> pair = (Pair<Alien, List<Feedback>>) mock(Pair.class);
+        Command command = new ViewAlienCommand(service, mockRequest, mockResponse);
         //when
-        when(mockRequest.getParameter("userId")).thenReturn("1");
-        when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
-        when(mockRequest.getParameter("lastName")).thenReturn("LastName");
-        when(mockRequest.getParameter("email")).thenReturn("Email");
-        doNothing().when(service).editUser(anyLong(), anyString(), anyString(), anyString());
+        when(mockRequest.getParameter("alienId")).thenReturn("1");
+        when(service.viewAlienWithFeedbacks(anyLong())).thenReturn(pair);
         String result = command.execute();
         //then
-        assertEquals(result, "main");
+        assertEquals(result, "alien-page");
     }
 }

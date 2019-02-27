@@ -2,6 +2,7 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
+import entity.User;
 import org.testng.annotations.Test;
 import service.CommonService;
 import service.exception.ServiceException;
@@ -9,16 +10,15 @@ import service.impl.Common;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
-public class EditUserCommandTest {
+public class SignInCommandTest {
 
     @Test(expectedExceptions = CommandException.class)
     public void execute_exceptionFromService_CommandException() throws ServiceException, CommandException {
@@ -26,13 +26,11 @@ public class EditUserCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        Command command = new EditUserCommand(service, mockRequest, mockResponse);
+        Command command = new SignInCommand(service, mockRequest, mockResponse);
         //when
-        when(mockRequest.getParameter("userId")).thenReturn("1");
-        when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
-        when(mockRequest.getParameter("lastName")).thenReturn("LastName");
-        when(mockRequest.getParameter("email")).thenReturn("Email");
-        doThrow(ServiceException.class).when(service).editUser(anyLong(), anyString(), anyString(), anyString());
+        when(mockRequest.getParameter("username")).thenReturn("Username");
+        when(mockRequest.getParameter("password")).thenReturn("Password");
+        doThrow(ServiceException.class).when(service).signIn(anyString(), anyString());
         command.execute();
         //then
         //expecting CommandException
@@ -44,13 +42,14 @@ public class EditUserCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        Command command = new EditUserCommand(service, mockRequest, mockResponse);
+        User user = mock(User.class);
+        HttpSession session = mock(HttpSession.class);
+        Command command = new SignInCommand(service, mockRequest, mockResponse);
         //when
-        when(mockRequest.getParameter("userId")).thenReturn("1");
-        when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
-        when(mockRequest.getParameter("lastName")).thenReturn("LastName");
-        when(mockRequest.getParameter("email")).thenReturn("Email");
-        doNothing().when(service).editUser(anyLong(), anyString(), anyString(), anyString());
+        when(mockRequest.getParameter("username")).thenReturn("Username");
+        when(mockRequest.getParameter("password")).thenReturn("Password");
+        when(service.signIn(anyString(), anyString())).thenReturn(user);
+        when(mockRequest.getSession()).thenReturn(session);
         String result = command.execute();
         //then
         assertEquals(result, "main");

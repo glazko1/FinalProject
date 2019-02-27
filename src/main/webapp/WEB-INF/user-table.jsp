@@ -34,8 +34,8 @@
     <table border="1" cellpadding="4" cellspacing="0" align="center">
         <tr>
             <th align="center">ID</th>
-            <th align="center">Username</th>
-            <th align="center">Email</th>
+            <th align="center"><fmt:message key="message.username" /></th>
+            <th align="center"><fmt:message key="message.email" /></th>
         </tr>
         <c:forEach items="${users}" var="user">
             <tr>
