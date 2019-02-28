@@ -10,16 +10,10 @@ import service.impl.Common;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+import static org.testng.Assert.*;
 
-public class AddFeedbackCommandTest {
+public class SuggestEditCommandTest {
 
     @Test(expectedExceptions = CommandException.class)
     public void execute_exceptionFromService_CommandException() throws ServiceException, CommandException {
@@ -27,13 +21,12 @@ public class AddFeedbackCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        Command command = new AddFeedbackCommand(service, mockRequest, mockResponse);
+        Command command = new SuggestEditCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("alienId")).thenReturn("1");
-        when(mockRequest.getParameter("username")).thenReturn("Username");
-        when(mockRequest.getParameter("rating")).thenReturn("1");
-        when(mockRequest.getParameter("feedbackText")).thenReturn("FeedbackText");
-        doThrow(ServiceException.class).when(service).addFeedback(anyLong(), anyString(), anyInt(), anyString());
+        when(mockRequest.getParameter("userId")).thenReturn("1");
+        when(mockRequest.getParameter("description")).thenReturn("Description");
+        doThrow(ServiceException.class).when(service).suggestEdit(anyLong(), anyLong(), anyString());
         command.execute();
         //then
         //expecting CommandException
@@ -45,13 +38,12 @@ public class AddFeedbackCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        Command command = new AddFeedbackCommand(service, mockRequest, mockResponse);
+        Command command = new SuggestEditCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("alienId")).thenReturn("1");
-        when(mockRequest.getParameter("username")).thenReturn("Username");
-        when(mockRequest.getParameter("rating")).thenReturn("1");
-        when(mockRequest.getParameter("feedbackText")).thenReturn("FeedbackText");
-        doNothing().when(service).addFeedback(anyLong(), anyString(), anyInt(), anyString());
+        when(mockRequest.getParameter("userId")).thenReturn("1");
+        when(mockRequest.getParameter("description")).thenReturn("Description");
+        doNothing().when(service).suggestEdit(anyLong(), anyLong(), anyString());
         String result = command.execute();
         //then
         assertEquals(result, "main");

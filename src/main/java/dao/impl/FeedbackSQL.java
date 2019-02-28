@@ -26,8 +26,8 @@ public class FeedbackSQL implements FeedbackDAO {
 
     private FeedbackSQL() {}
 
-    private static final String GET_FEEDBACK_BY_ID_SQL = "SELECT f.FeedbackId, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN Alien a ON f.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User u ON f.UserId = u.UserId WHERE f.FeedbackId = ?";
-    private static final String GET_FEEDBACKS_BY_ALIEN_ID_SQL = "SELECT f.FeedbackId, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN Alien a ON f.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User u ON f.UserId = u.UserId WHERE f.AlienId = ? ORDER BY FeedbackDateTime DESC";
+    private static final String GET_FEEDBACK_BY_ID_SQL = "SELECT f.FeedbackId, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, a.ImagePath, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN Alien a ON f.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User u ON f.UserId = u.UserId WHERE f.FeedbackId = ?";
+    private static final String GET_FEEDBACKS_BY_ALIEN_ID_SQL = "SELECT f.FeedbackId, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, a.ImagePath, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN Alien a ON f.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User u ON f.UserId = u.UserId WHERE f.AlienId = ? ORDER BY FeedbackDateTime DESC";
     private static final String ADD_NEW_FEEDBACK_SQL = "INSERT INTO Feedback (FeedbackId, AlienId, UserId, Rating, FeedbackText, FeedbackDateTime) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String DELETE_FEEDBACK_SQL = "DELETE FROM Feedback WHERE FeedbackId = ?";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
@@ -43,25 +43,26 @@ public class FeedbackSQL implements FeedbackDAO {
                 return new Feedback(set.getLong(1),
                         new Alien(set.getLong(2),
                                 set.getString(3),
-                                new Movie(set.getLong(7),
-                                        set.getString(8),
-                                        set.getInt(9),
+                                new Movie(set.getLong(8),
+                                        set.getString(9),
                                         set.getInt(10),
-                                        set.getDate(11)),
+                                        set.getInt(11),
+                                        set.getTimestamp(12)),
                                 set.getString(4),
                                 set.getString(5),
-                                set.getDouble(6)),
-                        new User(set.getLong(12),
-                                set.getString(13),
+                                set.getDouble(6),
+                                set.getString(7)),
+                        new User(set.getLong(13),
                                 set.getString(14),
                                 set.getString(15),
-                                set.getInt(16),
-                                set.getString(17),
-                                set.getBoolean(18),
-                                set.getTimestamp(19)),
-                        set.getInt(20),
-                        set.getString(21),
-                        set.getTimestamp(22));
+                                set.getString(16),
+                                set.getInt(17),
+                                set.getString(18),
+                                set.getBoolean(19),
+                                set.getTimestamp(20)),
+                        set.getInt(21),
+                        set.getString(22),
+                        set.getTimestamp(23));
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -81,25 +82,26 @@ public class FeedbackSQL implements FeedbackDAO {
                 Feedback feedback = new Feedback(set.getLong(1),
                         new Alien(set.getLong(2),
                                 set.getString(3),
-                                new Movie(set.getLong(7),
-                                        set.getString(8),
-                                        set.getInt(9),
+                                new Movie(set.getLong(8),
+                                        set.getString(9),
                                         set.getInt(10),
-                                        set.getDate(11)),
+                                        set.getInt(11),
+                                        set.getTimestamp(12)),
                                 set.getString(4),
                                 set.getString(5),
-                                set.getDouble(6)),
-                        new User(set.getLong(12),
-                                set.getString(13),
+                                set.getDouble(6),
+                                set.getString(7)),
+                        new User(set.getLong(13),
                                 set.getString(14),
                                 set.getString(15),
-                                set.getInt(16),
-                                set.getString(17),
-                                set.getBoolean(18),
-                                set.getTimestamp(19)),
-                        set.getInt(20),
-                        set.getString(21),
-                        set.getTimestamp(22));
+                                set.getString(16),
+                                set.getInt(17),
+                                set.getString(18),
+                                set.getBoolean(19),
+                                set.getTimestamp(20)),
+                        set.getInt(21),
+                        set.getString(22),
+                        set.getTimestamp(23));
                 feedbacks.add(feedback);
             }
         } catch (SQLException e) {

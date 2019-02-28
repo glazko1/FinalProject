@@ -31,6 +31,6 @@ public class ViewAllMoviesCommand implements Command {
         } catch (ServiceException e) {
             throw new CommandException(e);
         }
-        return "";
+        return "movie-table";
     }
 }

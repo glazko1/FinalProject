@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface AlienSpecialistService {
 
-    void addAlien(String alienName, String planet, String description, String movieTitle) throws ServiceException;
+    void addAlien(String alienName, String planet, String description, String movieTitle, String imagePath) throws ServiceException;
     void editAlien(long alienId, String movieTitle, String planet, String description) throws ServiceException;
     List<Edit> viewAllSuggestedEdits() throws ServiceException;
     Edit viewSuggestedEdit(long editId) throws ServiceException;

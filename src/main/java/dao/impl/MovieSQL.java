@@ -25,6 +25,7 @@ public class MovieSQL implements MovieDAO {
     private static final String GET_MOVIE_BY_ID_SQL = "SELECT MovieId, Title, RunningTime, Budget, ReleaseDate FROM movie WHERE MovieId = ?";
     private static final String GET_MOVIE_BY_TITLE_SQL = "SELECT MovieId, Title, RunningTime, Budget, ReleaseDate FROM movie WHERE Title = ?";
     private static final String GET_ALL_MOVIES_SQL = "SELECT MovieId, Title, RunningTime, Budget, ReleaseDate FROM movie";
+    private static final String ADD_NEW_MOVIE_SQL = "INSERT INTO Movie (MovieId, Title, RunningTime, Budget, ReleaseDate) VALUES (?, ?, ?, ?, ?)";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
     @Override
@@ -39,7 +40,7 @@ public class MovieSQL implements MovieDAO {
                         set.getString(2),
                         set.getInt(3),
                         set.getInt(4),
-                        set.getDate(5));
+                        set.getTimestamp(5));
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -59,7 +60,7 @@ public class MovieSQL implements MovieDAO {
                         set.getString(2),
                         set.getInt(3),
                         set.getInt(4),
-                        set.getDate(5));
+                        set.getTimestamp(5));
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -79,12 +80,28 @@ public class MovieSQL implements MovieDAO {
                         set.getString(2),
                         set.getInt(3),
                         set.getInt(4),
-                        set.getDate(5));
+                        set.getTimestamp(5));
                 movies.add(movie);
             }
         } catch (SQLException e) {
             throw new DAOException(e);
         }
         return movies;
+    }
+
+    @Override
+    public void addNewMovie(Movie movie) throws DAOException {
+        try (ProxyConnection proxyConnection = pool.getConnection()) {
+            Connection connection = proxyConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(ADD_NEW_MOVIE_SQL);
+            statement.setLong(1, movie.getMovieId());
+            statement.setString(2, movie.getTitle());
+            statement.setInt(3, movie.getRunningTime());
+            statement.setInt(4, movie.getBudget());
+            statement.setTimestamp(5, movie.getReleaseDateTimestamp());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
     }
 }

@@ -18,6 +18,10 @@
         <input type="hidden" name="userId" value="${sessionScope.userId}">
         <button class="underlined" name="button" value="viewUser"><fmt:message key="button.my_profile" /></button>
     </form>
+    <form method="get" action="mainWindow" style="display: inline; margin: 25px;">
+        <input type="hidden" name="userId" value="${sessionScope.userId}">
+        <button class="underlined" name="button" value="viewNotifications"><fmt:message key="button.notifications" /></button>
+    </form>
     <form method="post" action="mainWindow" style="display: inline; margin: 25px;">
         <button class="underlined" name="button" value="logout"><fmt:message key="button.logout" /></button>
     </form>
@@ -64,6 +68,7 @@
             <button type="submit" name="button" value="forwardToSuggestEdit"><fmt:message key="button.suggest_edit" /></button>
         </form>
     </c:if>
+    <p>${alien.description}</p>
     <h2><fmt:message key="message.your_feedback" /></h2>
     <form method="post" action="mainWindow">
         <input type="hidden" name="alienId" value="${alien.alienId}">
@@ -114,8 +119,9 @@
         <br>${feedback.feedbackText}<br><br>
     </c:forEach>
 </div>
-<div class="right-column" style="text-align: left">
-    <p>${alien.description}</p>
+<div class="right-column">
+    <img src="${alien.imagePath}" align="center" alt="${alien.alienName}" height="300" style="border: 2px solid white;"><br><br>
+    ${alien.alienName}
 </div>
 </body>
 </html>

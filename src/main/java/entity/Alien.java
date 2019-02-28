@@ -8,14 +8,16 @@ public class Alien {
     private String planet;
     private String description;
     private double averageRating;
+    private String imagePath;
 
-    public Alien(long alienId, String alienName, Movie movie, String planet, String description, double averageRating) {
+    public Alien(long alienId, String alienName, Movie movie, String planet, String description, double averageRating, String imagePath) {
         this.alienId = alienId;
         this.alienName = alienName;
         this.movie = movie;
         this.planet = planet;
         this.description = description;
         this.averageRating = averageRating;
+        this.imagePath = imagePath;
     }
 
     public long getAlienId() {
@@ -38,7 +40,7 @@ public class Alien {
         return movie;
     }
 
-    public void setMovieId(Movie movie) {
+    public void setMovie(Movie movie) {
         this.movie = movie;
     }
 
@@ -64,6 +66,14 @@ public class Alien {
 
     public void setAverageRating(double averageRating) {
         this.averageRating = averageRating;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     @Override

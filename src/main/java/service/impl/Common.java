@@ -82,8 +82,7 @@ public class Common implements CommonService {
         PasswordHashKeeper keeper = PasswordHashKeeper.getInstance();
         String encoded = keeper.generateHash(username, password);
         try {
-            GeneratorId generatorId = GeneratorId.getInstance();
-            long id = generatorId.generateId();
+            long id = generator.generateId();
             User user = new User(id, username, firstName, lastName, 4,
                     email, false, new Timestamp(birthDate.getTime() + 11000 * 1000));
             userDAO.addNewUser(user, encoded);

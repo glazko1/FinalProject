@@ -27,7 +27,7 @@ public class AddAlienCommand implements Command {
         String description = request.getParameter("description");
         String movie = request.getParameter("movie");
         try {
-            service.addAlien(alienName, planet, description, movie);
+            service.addAlien(alienName, planet, description, movie, "");
         } catch (ServiceException e) {
             throw new CommandException(e);
         }

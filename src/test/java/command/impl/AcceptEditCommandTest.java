@@ -9,6 +9,7 @@ import service.exception.ServiceException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -16,7 +17,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
-public class AddAlienCommandTest {
+public class AcceptEditCommandTest {
 
     @Test(expectedExceptions = CommandException.class)
     public void execute_exceptionFromService_CommandException() throws ServiceException, CommandException {
@@ -24,13 +25,11 @@ public class AddAlienCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         AlienSpecialistService service = mock(AlienSpecialistService.class);
-        Command command = new AddAlienCommand(service, mockRequest, mockResponse);
+        Command command = new AcceptEditCommand(service, mockRequest, mockResponse);
         //when
-        when(mockRequest.getParameter("alienName")).thenReturn("AlienName");
-        when(mockRequest.getParameter("planet")).thenReturn("Planet");
-        when(mockRequest.getParameter("description")).thenReturn("Description");
-        when(mockRequest.getParameter("movie")).thenReturn("Movie");
-        doThrow(ServiceException.class).when(service).addAlien(anyString(), anyString(), anyString(), anyString(), anyString());
+        when(mockRequest.getParameter("editId")).thenReturn("1");
+        when(mockRequest.getParameter("userId")).thenReturn("1");
+        doThrow(ServiceException.class).when(service).acceptEdit(anyLong());
         command.execute();
         //then
         //expecting CommandException
@@ -42,13 +41,13 @@ public class AddAlienCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         AlienSpecialistService service = mock(AlienSpecialistService.class);
-        Command command = new AddAlienCommand(service, mockRequest, mockResponse);
+        Command command = new AcceptEditCommand(service, mockRequest, mockResponse);
         //when
-        when(mockRequest.getParameter("alienName")).thenReturn("AlienName");
-        when(mockRequest.getParameter("planet")).thenReturn("Planet");
-        when(mockRequest.getParameter("description")).thenReturn("Description");
-        when(mockRequest.getParameter("movie")).thenReturn("Movie");
-        doNothing().when(service).addAlien(anyString(), anyString(), anyString(), anyString(), anyString());
+        when(mockRequest.getParameter("editId")).thenReturn("1");
+        when(mockRequest.getParameter("userId")).thenReturn("1");
+        doNothing().when(service).acceptEdit(anyLong());
+        doNothing().when(service).sendNotification(anyLong(), anyString());
+        doNothing().when(service).deleteEdit(anyLong());
         String result = command.execute();
         //then
         assertEquals(result, "main");

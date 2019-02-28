@@ -6,7 +6,7 @@
 <fmt:setBundle basename="text" />
 <html>
 <head>
-    <title><fmt:message key="title.suggested_edits" /></title>
+    <title>All movies</title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
@@ -26,7 +26,6 @@
         <button class="underlined" name="button" value="logout"><fmt:message key="button.logout" /></button>
     </form>
     <form style="display: inline; margin: 25px;">
-        <input type="hidden" name="button" value="viewAllSuggestedEdits">
         <label for="locale"></label><select id="locale" name="locale" onchange="submit()">
         <option value="en_EN" ${locale == 'en_EN' ? 'selected' : ''}>English</option>
         <option value="de_DE" ${locale == 'de_DE' ? 'selected' : ''}>Deutsch</option>
@@ -38,24 +37,27 @@
     <table border="1" cellpadding="4" cellspacing="0" align="center">
         <tr>
             <th align="center">ID</th>
-            <th align="center"><fmt:message key="message.username" /></th>
-            <th align="center"><fmt:message key="message.alien_name" /></th>
-            <th align="center"><fmt:message key="message.date_time" /></th>
+            <th align="center"><fmt:message key="message.movie" /></th>
+            <th align="center"><fmt:message key="message.running_time" /></th>
         </tr>
-        <c:forEach items="${edits}" var="edit">
+        <c:forEach items="${movies}" var="movie">
             <tr>
-                <td>
+                <td align="center">${movie.movieId}</td>
+                <td align="center">
                     <form method="get" action="mainWindow" style="display: inline; margin: 0;">
-                        <input type="hidden" name="editId" value="${edit.editId}">
-                        <button class="underlined" type="submit" name="button" value="viewSuggestedEdit">${edit.editId}</button>
+                        <input type="hidden" name="movieId" value="${movie.movieId}">
+                        <button class="underlined" type="submit" name="button" value="viewMovie">${movie.title}</button>
                     </form>
                 </td>
-                <td align="center">${edit.user.username}</td>
-                <td align="center">${edit.alien.alienName}</td>
-                <td align="center">${edit.editDateTime}</td>
+                <td align="center">${movie.runningTime} <fmt:message key="message.minutes" /></td>
             </tr>
         </c:forEach>
     </table>
+    <c:if test="${sessionScope.status == 1 || sessionScope.status == 2}">
+        <form method="get" action="mainWindow">
+            <br><button type="submit" name="button" value="forwardToNewMovie"><fmt:message key="message.add_movie" /></button>
+        </form>
+    </c:if>
 </div>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package pool;
 
 import org.testng.annotations.Test;
+import util.generator.GeneratorId;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,10 +12,14 @@ public class DatabaseConnectionPoolTest {
 
     @Test
     public void test() throws ClassNotFoundException, IOException {
-
-        Properties properties = new Properties();
-        properties.load(new FileInputStream("./src/main/resources/db.properties"));
-        Class.forName(properties.getProperty("db.driver"));
+        System.out.println(GeneratorId.getInstance().generateId());
+        System.out.println(GeneratorId.getInstance().generateId());
+        System.out.println(GeneratorId.getInstance().generateId());
+        System.out.println(GeneratorId.getInstance().generateId());
+        System.out.println(GeneratorId.getInstance().generateId());
+//        Properties properties = new Properties();
+//        properties.load(new FileInputStream("./src/main/resources/db.properties"));
+//        Class.forName(properties.getProperty("db.driver"));
 //        DatabaseConnectionPool pool = DatabaseConnectionPool.create(
 //                properties.getProperty("db.url"),
 //                properties.getProperty("db.user"),

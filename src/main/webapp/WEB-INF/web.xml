@@ -170,4 +170,22 @@
     <servlet-name>notifications</servlet-name>
     <url-pattern>/notifications</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>movie-table</servlet-name>
+    <jsp-file>/WEB-INF/movie-table.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>movie-table</servlet-name>
+    <url-pattern>/movie-table</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>new-movie</servlet-name>
+    <jsp-file>/WEB-INF/new-movie.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>new-movie</servlet-name>
+    <url-pattern>/new-movie</url-pattern>
+  </servlet-mapping>
 </web-app>

@@ -1,6 +1,8 @@
 package entity;
 
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 public class Movie {
 
@@ -8,9 +10,9 @@ public class Movie {
     private String title;
     private int runningTime;
     private int budget;
-    private Date releaseDate;
+    private Timestamp releaseDate;
 
-    public Movie(long movieId, String title, int runningTime, int budget, Date releaseDate) {
+    public Movie(long movieId, String title, int runningTime, int budget, Timestamp releaseDate) {
         this.movieId = movieId;
         this.title = title;
         this.runningTime = runningTime;
@@ -50,11 +52,15 @@ public class Movie {
         this.budget = budget;
     }
 
-    public Date getReleaseDate() {
+    public String getReleaseDate() {
+        return new SimpleDateFormat("dd.MM.yyyy").format(releaseDate);
+    }
+
+    public Timestamp getReleaseDateTimestamp() {
         return releaseDate;
     }
 
-    public void setReleaseDate(Date releaseDate) {
+    public void setReleaseDate(Timestamp releaseDate) {
         this.releaseDate = releaseDate;
     }
 }
