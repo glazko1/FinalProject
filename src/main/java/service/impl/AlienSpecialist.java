@@ -21,6 +21,7 @@ import service.exception.ServiceException;
 import util.generator.GeneratorId;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AlienSpecialist implements AlienSpecialistService {
@@ -41,11 +42,9 @@ public class AlienSpecialist implements AlienSpecialistService {
     private GeneratorId generator = GeneratorId.getInstance();
 
     @Override
-    public void addAlien(String alienName, String planet, String description, String movieTitle, String imagePath) throws ServiceException {
+    public void addAlien(long id, String alienName, String planet, String description, String movieTitle, String imagePath) throws ServiceException {
         try {
             Movie movie = movieDAO.getMovieByTitle(movieTitle);
-            GeneratorId generatorId = GeneratorId.getInstance();
-            long id = generatorId.generateId();
             Alien alien = new Alien(id, alienName, movie, planet, description, 0.0, imagePath);
             alienDAO.addNewAlien(alien);
         } catch (DAOException e) {
@@ -113,5 +112,52 @@ public class AlienSpecialist implements AlienSpecialistService {
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
+    }
+
+    @Override
+    public void sendNotificationToAll(String notificationText) throws ServiceException {
+        try {
+            List<User> users = userDAO.getAllUsers();
+            List<Notification> notifications = new ArrayList<>();
+            Timestamp notificationDateTime = new Timestamp(System.currentTimeMillis());
+            users.forEach(u -> {
+                long notificationId = generator.generateId();
+                notifications.add(new Notification(notificationId, u, notificationText, notificationDateTime));
+            });
+            for (Notification notification : notifications) {
+                notificationDAO.addNewNotification(notification);
+            }
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void deleteAlien(long alienId) throws ServiceException {
+        try {
+            alienDAO.deleteAlien(alienId);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+
+    void setAlienDAO(AlienDAO alienDAO) {
+        this.alienDAO = alienDAO;
+    }
+
+    void setMovieDAO(MovieDAO movieDAO) {
+        this.movieDAO = movieDAO;
+    }
+
+    void setEditDAO(EditDAO editDAO) {
+        this.editDAO = editDAO;
+    }
+
+    void setNotificationDAO(NotificationDAO notificationDAO) {
+        this.notificationDAO = notificationDAO;
     }
 }

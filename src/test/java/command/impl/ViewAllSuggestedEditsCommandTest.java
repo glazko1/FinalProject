@@ -3,6 +3,7 @@ package command.impl;
 import command.Command;
 import command.exception.CommandException;
 import entity.Edit;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
@@ -12,8 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.List;
 
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ViewAllSuggestedEditsCommandTest {
 
@@ -43,6 +45,6 @@ public class ViewAllSuggestedEditsCommandTest {
         when(service.viewAllSuggestedEdits()).thenReturn(edits);
         String result = command.execute();
         //then
-        assertEquals(result, "suggested-edit-table");
+        Assert.assertEquals(result, "suggested-edit-table");
     }
 }

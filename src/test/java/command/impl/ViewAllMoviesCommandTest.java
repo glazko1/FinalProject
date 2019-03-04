@@ -13,8 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.List;
 
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
 
 public class ViewAllMoviesCommandTest {
 

@@ -31,4 +31,5 @@ public interface CommonService {
     List<Alien> viewAllAliensSorted(String sortedBy, String sortType) throws ServiceException;
     void suggestEdit(long userId, long alienId, String description) throws ServiceException;
     List<Notification> viewNotifications(long userId) throws ServiceException;
+    List<Movie> viewAllMoviesSorted(String sortedBy, String sortType) throws ServiceException;
 }

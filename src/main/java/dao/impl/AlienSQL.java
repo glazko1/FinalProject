@@ -38,6 +38,7 @@ public class AlienSQL implements AlienDAO {
     private static final String GET_ALL_ALIENS_SORTED_BY_PLANET_ASC_SQL = "SELECT a.AlienId, a.AlienName, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, a.Planet, a.Description, a.AverageRating, a.ImagePath FROM Alien a JOIN Movie m ON a.MovieId = m.MovieId ORDER BY a.Planet ASC";
     private static final String GET_ALL_ALIENS_SORTED_BY_PLANET_DESC_SQL = "SELECT a.AlienId, a.AlienName, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, a.Planet, a.Description, a.AverageRating, a.ImagePath FROM Alien a JOIN Movie m ON a.MovieId = m.MovieId ORDER BY a.Planet DESC";
     private static final String UPDATE_DESCRIPTION_SQL = "UPDATE Alien SET Description = ? WHERE AlienId = ?";
+    private static final String DELETE_ALIEN_SQL = "DELETE FROM Alien WHERE AlienId = ?";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
     @Override
@@ -49,17 +50,7 @@ public class AlienSQL implements AlienDAO {
             statement.setLong(1, alienId);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
-                return new Alien(set.getLong(1),
-                        set.getString(2),
-                        new Movie(set.getInt(3),
-                                set.getString(4),
-                                set.getInt(5),
-                                set.getInt(6),
-                                set.getTimestamp(7)),
-                        set.getString(8),
-                        set.getString(9),
-                        set.getDouble(10),
-                        set.getString(11));
+                return getNextAlien(set);
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -81,17 +72,7 @@ public class AlienSQL implements AlienDAO {
             PreparedStatement statement = connection.prepareStatement(GET_ALL_ALIENS_SQL);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                Alien alien = new Alien(set.getLong(1),
-                        set.getString(2),
-                        new Movie(set.getInt(3),
-                                set.getString(4),
-                                set.getInt(5),
-                                set.getInt(6),
-                                set.getTimestamp(7)),
-                        set.getString(8),
-                        set.getString(9),
-                        set.getDouble(10),
-                        set.getString(11));
+                Alien alien = getNextAlien(set);
                 aliens.add(alien);
             }
         } catch (SQLException e) {
@@ -155,17 +136,7 @@ public class AlienSQL implements AlienDAO {
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                Alien alien = new Alien(set.getLong(1),
-                        set.getString(2),
-                        new Movie(set.getInt(3),
-                                set.getString(4),
-                                set.getInt(5),
-                                set.getInt(6),
-                                set.getTimestamp(7)),
-                        set.getString(8),
-                        set.getString(9),
-                        set.getDouble(10),
-                        set.getString(11));
+                Alien alien = getNextAlien(set);
                 aliens.add(alien);
             }
         } catch (SQLException e) {
@@ -181,6 +152,18 @@ public class AlienSQL implements AlienDAO {
             PreparedStatement statement = connection.prepareStatement(UPDATE_DESCRIPTION_SQL);
             statement.setString(1, description);
             statement.setLong(2, alienId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    @Override
+    public void deleteAlien(long alienId) throws DAOException {
+        try (ProxyConnection proxyConnection = pool.getConnection()) {
+            Connection connection = proxyConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(DELETE_ALIEN_SQL);
+            statement.setLong(1, alienId);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -209,5 +192,19 @@ public class AlienSQL implements AlienDAO {
                 break;
         }
         throw new DAOException("No sorting SQL for parameters " + sortedBy + " and " + sortType);
+    }
+
+    private Alien getNextAlien(ResultSet set) throws SQLException {
+        return new Alien(set.getLong(1),
+                set.getString(2),
+                new Movie(set.getLong(3),
+                        set.getString(4),
+                        set.getInt(5),
+                        set.getInt(6),
+                        set.getTimestamp(7)),
+                set.getString(8),
+                set.getString(9),
+                set.getDouble(10),
+                set.getString(11));
     }
 }

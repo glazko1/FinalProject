@@ -2,8 +2,44 @@ package command.factory;
 
 import command.Command;
 import command.exception.CommandException;
-import command.impl.*;
-import service.MovieFanService;
+import command.impl.AcceptEditCommand;
+import command.impl.AddAlienCommand;
+import command.impl.AddFeedbackCommand;
+import command.impl.AddMovieCommand;
+import command.impl.ChangeBanStatusCommand;
+import command.impl.ChangePasswordCommand;
+import command.impl.ChangeUserStatusCommand;
+import command.impl.DeleteAlienCommand;
+import command.impl.DeleteFeedbackCommand;
+import command.impl.EditAlienCommand;
+import command.impl.EditMovieCommand;
+import command.impl.EditUserCommand;
+import command.impl.ForwardToChangePasswordCommand;
+import command.impl.ForwardToEditAlienCommand;
+import command.impl.ForwardToEditMovieCommand;
+import command.impl.ForwardToEditUserCommand;
+import command.impl.ForwardToNewAlienCommand;
+import command.impl.ForwardToNewMovieCommand;
+import command.impl.ForwardToRestorePasswordCommand;
+import command.impl.ForwardToSuggestEditCommand;
+import command.impl.LogoutCommand;
+import command.impl.RedirectToMainPageCommand;
+import command.impl.RejectEditCommand;
+import command.impl.RestorePasswordCommand;
+import command.impl.SignInCommand;
+import command.impl.SignUpCommand;
+import command.impl.SuggestEditCommand;
+import command.impl.ViewAlienCommand;
+import command.impl.ViewAllAliensCommand;
+import command.impl.ViewAllAliensSortedCommand;
+import command.impl.ViewAllMoviesCommand;
+import command.impl.ViewAllMoviesSortedCommand;
+import command.impl.ViewAllSuggestedEditsCommand;
+import command.impl.ViewAllUsersCommand;
+import command.impl.ViewMovieCommand;
+import command.impl.ViewNotificationsCommand;
+import command.impl.ViewSuggestedEditCommand;
+import command.impl.ViewUserCommand;
 import service.impl.Admin;
 import service.impl.AlienSpecialist;
 import service.impl.Common;
@@ -92,6 +128,14 @@ public class CommandFactory {
                 return new ForwardToNewMovieCommand(request, response);
             case "addMovie":
                 return new AddMovieCommand(MovieFan.getInstance(), request, response);
+            case "deleteAlien":
+                return new DeleteAlienCommand(AlienSpecialist.getInstance(), request, response);
+            case "viewAllMoviesSorted":
+                return new ViewAllMoviesSortedCommand(Common.getInstance(), request, response);
+            case "forwardToEditMovie":
+                return new ForwardToEditMovieCommand(Common.getInstance(), request, response);
+            case "editMovie":
+                return new EditMovieCommand(MovieFan.getInstance(), request, response);
             default:
                 break;
         }

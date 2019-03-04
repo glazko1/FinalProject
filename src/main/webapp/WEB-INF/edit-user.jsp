@@ -6,7 +6,7 @@
 <fmt:setBundle basename="text" />
 <html>
 <head>
-    <title><fmt:message key="button.edit_information" /></title>
+    <title><fmt:message key="title.edit_information" /></title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>

@@ -2,7 +2,6 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
-import command.factory.CommandFactory;
 import entity.Movie;
 import service.CommonService;
 import service.exception.ServiceException;

@@ -273,4 +273,13 @@ public class Common implements CommonService {
             throw new ServiceException(e);
         }
     }
+
+    @Override
+    public List<Movie> viewAllMoviesSorted(String sortedBy, String sortType) throws ServiceException {
+        try {
+            return movieDAO.getAllMoviesSorted(sortedBy, sortType);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
 }

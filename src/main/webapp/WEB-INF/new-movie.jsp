@@ -6,7 +6,7 @@
 <fmt:setBundle basename="text" />
 <html>
 <head>
-    <title>Add new movie</title>
+    <title><fmt:message key="title.add_movie" /></title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>

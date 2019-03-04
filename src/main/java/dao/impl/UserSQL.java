@@ -68,19 +68,12 @@ public class UserSQL implements UserDAO {
             statement.setString(2, password);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
-                return new User(set.getLong(1),
-                        set.getString(2),
-                        set.getString(3),
-                        set.getString(4),
-                        set.getInt(5),
-                        set.getString(6),
-                        set.getBoolean(7),
-                        set.getTimestamp(8));
+                return getNextUser(set);
             }
         } catch (SQLException e) {
             throw new DAOException(e);
         }
-        throw new DAOException("No user with username " + username + " in DAO!");
+        throw new DAOException("Login or password is incorrect!");
     }
 
     @Override
@@ -91,14 +84,7 @@ public class UserSQL implements UserDAO {
             statement.setString(1, username);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
-                return new User(set.getLong(1),
-                        set.getString(2),
-                        set.getString(3),
-                        set.getString(4),
-                        set.getInt(5),
-                        set.getString(6),
-                        set.getBoolean(7),
-                        set.getTimestamp(8));
+                return getNextUser(set);
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -114,14 +100,7 @@ public class UserSQL implements UserDAO {
             PreparedStatement statement = connection.prepareStatement(GET_ALL_USERS_SQL);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                User user = new User(set.getLong(1),
-                        set.getString(2),
-                        set.getString(3),
-                        set.getString(4),
-                        set.getInt(5),
-                        set.getString(6),
-                        set.getBoolean(7),
-                        set.getTimestamp(8));
+                User user = getNextUser(set);
                 users.add(user);
             }
         } catch (SQLException e) {
@@ -224,14 +203,7 @@ public class UserSQL implements UserDAO {
             statement.setString(3, lastName);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
-                return new User(set.getLong(1),
-                        set.getString(2),
-                        set.getString(3),
-                        set.getString(4),
-                        set.getInt(5),
-                        set.getString(6),
-                        set.getBoolean(7),
-                        set.getTimestamp(8));
+                return getNextUser(set);
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -240,5 +212,16 @@ public class UserSQL implements UserDAO {
                 ", first name " + firstName +
                 ", last name" + lastName +
                 "e-mail" + email + "in DAO!");
+    }
+
+    private User getNextUser(ResultSet set) throws SQLException {
+        return new User(set.getLong(1),
+                set.getString(2),
+                set.getString(3),
+                set.getString(4),
+                set.getInt(5),
+                set.getString(6),
+                set.getBoolean(7),
+                set.getTimestamp(8));
     }
 }

@@ -3,6 +3,7 @@ package command.impl;
 import command.Command;
 import command.exception.CommandException;
 import entity.Notification;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import service.CommonService;
 import service.exception.ServiceException;
@@ -13,8 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.List;
 
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ViewNotificationsCommandTest {
 
@@ -46,6 +49,6 @@ public class ViewNotificationsCommandTest {
         when(service.viewNotifications(anyLong())).thenReturn(notifications);
         String result = command.execute();
         //then
-        assertEquals(result, "notifications");
+        Assert.assertEquals(result, "notifications");
     }
 }

@@ -56,28 +56,7 @@ public class EditSQL implements EditDAO {
             PreparedStatement statement = connection.prepareStatement(GET_ALL_EDITS_SQL);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                Edit edit = new Edit(set.getLong(1),
-                        new Alien(set.getLong(2),
-                                set.getString(3),
-                                new Movie(set.getLong(8),
-                                        set.getString(9),
-                                        set.getInt(10),
-                                        set.getInt(11),
-                                        set.getTimestamp(12)),
-                                set.getString(4),
-                                set.getString(5),
-                                set.getDouble(6),
-                                set.getString(7)),
-                        new User(set.getLong(13),
-                                set.getString(14),
-                                set.getString(15),
-                                set.getString(16),
-                                set.getInt(17),
-                                set.getString(18),
-                                set.getBoolean(19),
-                                set.getTimestamp(20)),
-                        set.getString(21),
-                        set.getTimestamp(22));
+                Edit edit = getNextEdit(set);
                 edits.add(edit);
             }
         } catch (SQLException e) {
@@ -94,28 +73,7 @@ public class EditSQL implements EditDAO {
             statement.setLong(1, editId);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
-                return new Edit(set.getLong(1),
-                        new Alien(set.getLong(2),
-                                set.getString(3),
-                                new Movie(set.getLong(8),
-                                        set.getString(9),
-                                        set.getInt(10),
-                                        set.getInt(11),
-                                        set.getTimestamp(12)),
-                                set.getString(4),
-                                set.getString(5),
-                                set.getDouble(6),
-                                set.getString(7)),
-                        new User(set.getLong(13),
-                                set.getString(14),
-                                set.getString(15),
-                                set.getString(16),
-                                set.getInt(17),
-                                set.getString(18),
-                                set.getBoolean(19),
-                                set.getTimestamp(20)),
-                        set.getString(21),
-                        set.getTimestamp(22));
+                return getNextEdit(set);
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -133,5 +91,30 @@ public class EditSQL implements EditDAO {
         } catch (SQLException e) {
             throw new DAOException(e);
         }
+    }
+
+    private Edit getNextEdit(ResultSet set) throws SQLException {
+        return new Edit(set.getLong(1),
+                new Alien(set.getLong(2),
+                        set.getString(3),
+                        new Movie(set.getLong(8),
+                                set.getString(9),
+                                set.getInt(10),
+                                set.getInt(11),
+                                set.getTimestamp(12)),
+                        set.getString(4),
+                        set.getString(5),
+                        set.getDouble(6),
+                        set.getString(7)),
+                new User(set.getLong(13),
+                        set.getString(14),
+                        set.getString(15),
+                        set.getString(16),
+                        set.getInt(17),
+                        set.getString(18),
+                        set.getBoolean(19),
+                        set.getTimestamp(20)),
+                set.getString(21),
+                set.getTimestamp(22));
     }
 }

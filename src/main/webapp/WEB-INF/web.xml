@@ -17,6 +17,10 @@
     <param-name>db.password</param-name>
     <param-value>relbud2k1</param-value>
   </context-param>
+  <context-param>
+    <param-name>upload.location</param-name>
+    <param-value>/FinalProject/upload</param-value>
+  </context-param>
 
   <servlet>
     <servlet-name>index</servlet-name>
@@ -187,5 +191,14 @@
   <servlet-mapping>
     <servlet-name>new-movie</servlet-name>
     <url-pattern>/new-movie</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>edit-movie</servlet-name>
+    <jsp-file>/WEB-INF/edit-movie.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>edit-movie</servlet-name>
+    <url-pattern>/edit-movie</url-pattern>
   </servlet-mapping>
 </web-app>

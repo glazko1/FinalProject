@@ -6,7 +6,7 @@
 <fmt:setBundle basename="text" />
 <html>
 <head>
-    <title>Main page</title>
+    <title><fmt:message key="title.main_page" /></title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
@@ -36,13 +36,26 @@
 <div class="center-column">
     <h2><fmt:message key="title.welcome" />, ${sessionScope.firstName}!</h2>
     <form method="get" action="mainWindow">
-        <button type="submit" name="button" value="viewAllAliens"><fmt:message key="button.view_aliens" /></button><br><br>
-        <button type="submit" name="button" value="viewAllMovies"><fmt:message key="button.view_movies" /></button>
+        <button type="submit" name="button" value="viewAllAliens" style="height: 200px; width: 200px; margin-right: 25px">
+            <img src="img/spock.png" align="center" alt="" height="150px"><br>
+            <fmt:message key="button.view_aliens" />
+        </button>
+        <button type="submit" name="button" value="viewAllMovies" style="height: 200px; width: 200px">
+            <img src="img/transformers.png" align="center" alt="" height="150px"><br>
+            <fmt:message key="button.view_movies" />
+        </button>
+        <br><br>
         <c:if test="${sessionScope.status == 1}">
-            <br><br><button type="submit" name="button" value="viewAllUsers"><fmt:message key="button.view_users" /></button>
+            <button type="submit" name="button" value="viewAllUsers" style="height: 200px; width: 200px; margin-right: 25px">
+                <img src="img/user.png" align="center" alt="" height="150px"><br>
+                <fmt:message key="button.view_users" />
+            </button>
         </c:if>
         <c:if test="${sessionScope.status == 1 || sessionScope.status == 3}">
-            <br><br><button type="submit" name="button" value="viewAllSuggestedEdits"><fmt:message key="button.view_suggested_edits" /></button>
+            <button type="submit" name="button" value="viewAllSuggestedEdits" style="height: 200px; width: 200px;">
+                <img src="img/edit.png" align="center" alt="" height="150px"><br>
+                <fmt:message key="button.view_suggested_edits" />
+            </button>
         </c:if>
     </form>
 </div>

@@ -18,8 +18,6 @@ public class DatabaseConnectionPool implements ConnectionPool {
 
     private DatabaseConnectionPool() {}
 
-    // proxy-connection implements connection and instead of closing returns connection to pool
-
     private String url;
     private String user;
     private String password;
@@ -28,7 +26,6 @@ public class DatabaseConnectionPool implements ConnectionPool {
     private static final int INITIAL_SIZE = 10; // set in properties
 
     public void create(String driver, String url, String user, String password) {
-//        Properties properties = new Properties();
         try {
             Class.forName(driver);
             this.url = url;
@@ -36,9 +33,6 @@ public class DatabaseConnectionPool implements ConnectionPool {
             this.password = password;
             availableConnections = new ArrayBlockingQueue<>(INITIAL_SIZE);
             usedConnections = new ArrayBlockingQueue<>(INITIAL_SIZE);
-            // classForName here
-            // fatal error if exception here
-            // first release reserved connections, then available
             for (int i = 0; i < INITIAL_SIZE; i++) {
                 Connection connection = createConnection(url, user, password);
                 availableConnections.add(new ProxyConnection(connection));

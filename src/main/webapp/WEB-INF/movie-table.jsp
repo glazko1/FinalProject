@@ -6,7 +6,7 @@
 <fmt:setBundle basename="text" />
 <html>
 <head>
-    <title>All movies</title>
+    <title><fmt:message key="title.all_movies" /></title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
@@ -36,13 +36,50 @@
 <div class="center-column">
     <table border="1" cellpadding="4" cellspacing="0" align="center">
         <tr>
-            <th align="center">ID</th>
-            <th align="center"><fmt:message key="message.movie" /></th>
-            <th align="center"><fmt:message key="message.running_time" /></th>
+            <c:if test="${sessionScope.status == 1}">
+                <th align="center">
+                    <form method="get" action="mainWindow" style="display: inline; margin: 0;">
+                        <input type="hidden" name="sortedBy" value="movieId">
+                        <c:if test="${sortedBy == 'movieId' && sortType == 'ASC'}">
+                            <input type="hidden" name="sortType" value="DESC">
+                        </c:if>
+                        <c:if test="${sortedBy != 'movieId' || sortType == 'DESC'}">
+                            <input type="hidden" name="sortType" value="ASC">
+                        </c:if>
+                        <button class="underlined" type="submit" name="button" value="viewAllMoviesSorted" style="font-weight: bold">ID</button>
+                    </form>
+                </th>
+            </c:if>
+            <th align="center">
+                <form method="get" action="mainWindow" style="display: inline; margin: 0;">
+                    <input type="hidden" name="sortedBy" value="title">
+                    <c:if test="${sortedBy == 'title' && sortType == 'ASC'}">
+                        <input type="hidden" name="sortType" value="DESC">
+                    </c:if>
+                    <c:if test="${sortedBy != 'title' || sortType == 'DESC'}">
+                        <input type="hidden" name="sortType" value="ASC">
+                    </c:if>
+                    <button class="underlined" type="submit" name="button" value="viewAllMoviesSorted" style="font-weight: bold"><fmt:message key="message.movie" /></button>
+                </form>
+            </th>
+            <th align="center">
+                <form method="get" action="mainWindow" style="display: inline; margin: 0;">
+                    <input type="hidden" name="sortedBy" value="runningTime">
+                    <c:if test="${sortedBy == 'runningTime' && sortType == 'ASC'}">
+                        <input type="hidden" name="sortType" value="DESC">
+                    </c:if>
+                    <c:if test="${sortedBy != 'runningTime' || sortType == 'DESC'}">
+                        <input type="hidden" name="sortType" value="ASC">
+                    </c:if>
+                    <button class="underlined" type="submit" name="button" value="viewAllMoviesSorted" style="font-weight: bold"><fmt:message key="message.running_time" /></button>
+                </form>
+            </th>
         </tr>
         <c:forEach items="${movies}" var="movie">
             <tr>
-                <td align="center">${movie.movieId}</td>
+                <c:if test="${sessionScope.status == 1}">
+                    <td align="center">${movie.movieId}</td>
+                </c:if>
                 <td align="center">
                     <form method="get" action="mainWindow" style="display: inline; margin: 0;">
                         <input type="hidden" name="movieId" value="${movie.movieId}">

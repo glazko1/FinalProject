@@ -6,7 +6,7 @@
 <fmt:setBundle basename="text" />
 <html>
 <head>
-    <title>All users</title>
+    <title><fmt:message key="title.all_users" /></title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>

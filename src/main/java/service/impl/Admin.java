@@ -47,4 +47,8 @@ public class Admin implements AdminService {
             throw new ServiceException(e);
         }
     }
+
+    void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 }

@@ -37,6 +37,12 @@
           <version>7.0.0-beta3</version>
           <scope>test</scope>
       </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-module-junit4</artifactId>
+      <version>1.6.4</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

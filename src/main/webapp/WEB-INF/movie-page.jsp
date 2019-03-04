@@ -51,6 +51,13 @@
             <td align="center">${movie.releaseDate}</td>
         </tr>
     </table>
+    <c:if test="${sessionScope.status == 1 || sessionScope.status == 2}">
+        <br><form method="get" action="mainWindow">
+        <input type="hidden" name="movieId" value="${movie.movieId}">
+        <button type="submit" name="button" value="forwardToEditMovie"><fmt:message key="button.edit_information" /></button><br><br>
+        <button type="submit" name="button" value="deleteMovie"><fmt:message key="button.delete_movie" /></button>
+    </form>
+    </c:if>
 </div>
 </body>
 </html>

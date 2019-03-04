@@ -40,29 +40,7 @@ public class FeedbackSQL implements FeedbackDAO {
             statement.setLong(1, feedbackId);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
-                return new Feedback(set.getLong(1),
-                        new Alien(set.getLong(2),
-                                set.getString(3),
-                                new Movie(set.getLong(8),
-                                        set.getString(9),
-                                        set.getInt(10),
-                                        set.getInt(11),
-                                        set.getTimestamp(12)),
-                                set.getString(4),
-                                set.getString(5),
-                                set.getDouble(6),
-                                set.getString(7)),
-                        new User(set.getLong(13),
-                                set.getString(14),
-                                set.getString(15),
-                                set.getString(16),
-                                set.getInt(17),
-                                set.getString(18),
-                                set.getBoolean(19),
-                                set.getTimestamp(20)),
-                        set.getInt(21),
-                        set.getString(22),
-                        set.getTimestamp(23));
+                return getNextFeedback(set);
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -79,29 +57,7 @@ public class FeedbackSQL implements FeedbackDAO {
             statement.setLong(1, alienId);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                Feedback feedback = new Feedback(set.getLong(1),
-                        new Alien(set.getLong(2),
-                                set.getString(3),
-                                new Movie(set.getLong(8),
-                                        set.getString(9),
-                                        set.getInt(10),
-                                        set.getInt(11),
-                                        set.getTimestamp(12)),
-                                set.getString(4),
-                                set.getString(5),
-                                set.getDouble(6),
-                                set.getString(7)),
-                        new User(set.getLong(13),
-                                set.getString(14),
-                                set.getString(15),
-                                set.getString(16),
-                                set.getInt(17),
-                                set.getString(18),
-                                set.getBoolean(19),
-                                set.getTimestamp(20)),
-                        set.getInt(21),
-                        set.getString(22),
-                        set.getTimestamp(23));
+                Feedback feedback = getNextFeedback(set);
                 feedbacks.add(feedback);
             }
         } catch (SQLException e) {
@@ -137,5 +93,31 @@ public class FeedbackSQL implements FeedbackDAO {
         } catch (SQLException e) {
             throw new DAOException(e);
         }
+    }
+
+    private Feedback getNextFeedback(ResultSet set) throws SQLException {
+        return new Feedback(set.getLong(1),
+                new Alien(set.getLong(2),
+                        set.getString(3),
+                        new Movie(set.getLong(8),
+                                set.getString(9),
+                                set.getInt(10),
+                                set.getInt(11),
+                                set.getTimestamp(12)),
+                        set.getString(4),
+                        set.getString(5),
+                        set.getDouble(6),
+                        set.getString(7)),
+                new User(set.getLong(13),
+                        set.getString(14),
+                        set.getString(15),
+                        set.getString(16),
+                        set.getInt(17),
+                        set.getString(18),
+                        set.getBoolean(19),
+                        set.getTimestamp(20)),
+                set.getInt(21),
+                set.getString(22),
+                set.getTimestamp(23));
     }
 }

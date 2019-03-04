@@ -59,7 +59,8 @@
     <c:if test="${sessionScope.status == 1 || sessionScope.status == 3}">
         <br><form method="get" action="mainWindow">
             <input type="hidden" name="alienId" value="${alien.alienId}">
-            <button type="submit" name="button" value="forwardToEditAlien"><fmt:message key="button.edit_information" /></button>
+            <button type="submit" name="button" value="forwardToEditAlien"><fmt:message key="button.edit_information" /></button><br><br>
+            <button type="submit" name="button" value="deleteAlien"><fmt:message key="button.delete_alien" /></button>
         </form>
     </c:if>
     <c:if test="${sessionScope.status == 2 || sessionScope.status == 4}">

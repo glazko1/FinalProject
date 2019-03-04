@@ -6,7 +6,7 @@
 <fmt:setBundle basename="text" />
 <html>
 <head>
-    <title>Change password</title>
+    <title><fmt:message key="title.change_password" /></title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>

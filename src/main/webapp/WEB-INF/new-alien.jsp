@@ -6,7 +6,7 @@
 <fmt:setBundle basename="text" />
 <html>
 <head>
-    <title>Add new alien</title>
+    <title><fmt:message key="title.add_alien" /></title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
@@ -36,7 +36,7 @@
 </div>
 <div class="center-column">
     <h2><fmt:message key="message.enter_info_about_alien" /></h2>
-    <form method="post" action="mainWindow">
+    <form method="post" action="mainWindow" enctype="multipart/form-data">
         <table align="center">
             <tr>
                 <td align="center"><fmt:message key="message.alien_name" /></td>
@@ -66,6 +66,12 @@
                 <td align="center"><fmt:message key="message.description" /></td>
                 <td align="center">
                     <label><input type="text" name="description"></label>
+                </td>
+            </tr>
+            <tr>
+                <td align="center"><fmt:message key="message.photo" /></td>
+                <td align="center">
+                    <input type="file" name="photo">
                 </td>
             </tr>
         </table><br>

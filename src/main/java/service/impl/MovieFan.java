@@ -1,11 +1,11 @@
 package service.impl;
 
-import com.google.protobuf.ServiceException;
 import dao.MovieDAO;
 import dao.exception.DAOException;
 import dao.impl.MovieSQL;
 import entity.Movie;
 import service.MovieFanService;
+import service.exception.ServiceException;
 import util.generator.GeneratorId;
 
 import java.sql.Date;
@@ -30,6 +30,15 @@ public class MovieFan implements MovieFanService {
         Movie movie = new Movie(movieId, title, runningTime, budget, new Timestamp(releaseDate.getTime() + 11000 * 1000));
         try {
             movieDAO.addNewMovie(movie);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void editMovie(long movieId, int runningTime, int budget, Date releaseDate) throws ServiceException {
+        try {
+            movieDAO.editMovie(movieId, runningTime, budget, releaseDate);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
