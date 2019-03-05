@@ -3,6 +3,8 @@ package controller;
 import command.Command;
 import command.exception.CommandException;
 import command.factory.CommandFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -16,6 +18,8 @@ import java.io.IOException;
 @MultipartConfig
 public class MainWindowServlet extends HttpServlet {
 
+    private static final Logger LOGGER = LogManager.getLogger(MainWindowServlet.class);
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("button");
@@ -25,7 +29,7 @@ public class MainWindowServlet extends HttpServlet {
             String path = command.execute();
             request.getRequestDispatcher(path).forward(request, response);
         } catch (CommandException e) {
-            System.out.println(e.getMessage());
+            LOGGER.error(e.getMessage());
             response.sendRedirect("error");
         }
     }
@@ -39,7 +43,7 @@ public class MainWindowServlet extends HttpServlet {
             String path = command.execute();
             response.sendRedirect(path);
         } catch (CommandException e) {
-            System.out.println(e.getMessage());
+            LOGGER.error(e.getMessage());
             response.sendRedirect("error");
         }
     }

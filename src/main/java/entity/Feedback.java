@@ -2,6 +2,7 @@ package entity;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 
 public class Feedback {
 
@@ -69,5 +70,27 @@ public class Feedback {
 
     public void setFeedbackDateTime(Timestamp feedbackDateTime) {
         this.feedbackDateTime = feedbackDateTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Feedback feedback = (Feedback) o;
+        return feedbackId == feedback.feedbackId &&
+                rating == feedback.rating &&
+                Objects.equals(alien, feedback.alien) &&
+                Objects.equals(user, feedback.user) &&
+                Objects.equals(feedbackText, feedback.feedbackText) &&
+                Objects.equals(feedbackDateTime, feedback.feedbackDateTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(feedbackId, alien, user, rating, feedbackText, feedbackDateTime);
     }
 }

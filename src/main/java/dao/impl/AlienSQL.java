@@ -5,6 +5,8 @@ import dao.AlienDAO;
 import dao.exception.DAOException;
 import entity.Alien;
 import entity.Movie;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pool.DatabaseConnectionPool;
 
 import java.sql.Connection;
@@ -24,6 +26,7 @@ public class AlienSQL implements AlienDAO {
 
     private AlienSQL() {}
 
+    private static final Logger LOGGER = LogManager.getLogger(AlienSQL.class);
     private static final String GET_ALIEN_BY_ID_SQL = "SELECT a.AlienId, a.AlienName, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, a.Planet, a.Description, a.AverageRating, a.ImagePath FROM Alien a JOIN Movie m ON a.MovieId = m.MovieId WHERE AlienId = ?";
     private static final String GET_ALL_ALIENS_SQL = "SELECT a.AlienId, a.AlienName, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, a.Planet, a.Description, a.AverageRating, a.ImagePath FROM Alien a JOIN Movie m ON a.MovieId = m.MovieId";
     private static final String ADD_NEW_ALIEN_SQL = "INSERT INTO Alien (AlienId, AlienName, MovieId, Planet, Description, AverageRating, ImagePath) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -58,18 +61,19 @@ public class AlienSQL implements AlienDAO {
             try {
                 statement.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                LOGGER.error(e.getMessage());
             }
         }
-        return null;
+        throw new DAOException("No alien with ID " + alienId + " in DAO!");
     }
 
     @Override
     public List<Alien> getAllAliens() throws DAOException {
+        PreparedStatement statement = null;
         List<Alien> aliens = new ArrayList<>();
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_ALL_ALIENS_SQL);
+            statement = connection.prepareStatement(GET_ALL_ALIENS_SQL);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
                 Alien alien = getNextAlien(set);
@@ -77,15 +81,22 @@ public class AlienSQL implements AlienDAO {
             }
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+            }
         }
         return aliens;
     }
 
     @Override
     public void addNewAlien(Alien alien) throws DAOException {
+        PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(ADD_NEW_ALIEN_SQL);
+            statement = connection.prepareStatement(ADD_NEW_ALIEN_SQL);
             statement.setLong(1, alien.getAlienId());
             statement.setString(2, alien.getAlienName());
             statement.setLong(3, alien.getMovie().getMovieId());
@@ -96,27 +107,41 @@ public class AlienSQL implements AlienDAO {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+            }
         }
     }
 
     @Override
     public void updateAverageRating(long alienId, double averageRating) throws DAOException {
+        PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(UPDATE_AVERAGE_RATING_SQL);
+            statement = connection.prepareStatement(UPDATE_AVERAGE_RATING_SQL);
             statement.setDouble(1, averageRating);
             statement.setLong(2, alienId);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+            }
         }
     }
 
     @Override
     public void editAlien(long alienId, long movieId, String planet, String description) throws DAOException {
+        PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(EDIT_ALIEN_SQL);
+            statement = connection.prepareStatement(EDIT_ALIEN_SQL);
             statement.setLong(1, movieId);
             statement.setString(2, planet);
             statement.setString(3, description);
@@ -124,16 +149,23 @@ public class AlienSQL implements AlienDAO {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+            }
         }
     }
 
     @Override
     public List<Alien> getAllAliensSorted(String sortedBy, String sortType) throws DAOException {
+        PreparedStatement statement = null;
         List<Alien> aliens = new ArrayList<>();
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             String sql = getSortingSQL(sortedBy, sortType);
-            PreparedStatement statement = connection.prepareStatement(sql);
+            statement = connection.prepareStatement(sql);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
                 Alien alien = getNextAlien(set);
@@ -141,32 +173,52 @@ public class AlienSQL implements AlienDAO {
             }
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+            }
         }
         return aliens;
     }
 
     @Override
     public void updateDescription(long alienId, String description) throws DAOException {
+        PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(UPDATE_DESCRIPTION_SQL);
+            statement = connection.prepareStatement(UPDATE_DESCRIPTION_SQL);
             statement.setString(1, description);
             statement.setLong(2, alienId);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+            }
         }
     }
 
     @Override
     public void deleteAlien(long alienId) throws DAOException {
+        PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(DELETE_ALIEN_SQL);
+            statement = connection.prepareStatement(DELETE_ALIEN_SQL);
             statement.setLong(1, alienId);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+            }
         }
     }
 

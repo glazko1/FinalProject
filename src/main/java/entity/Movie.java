@@ -3,6 +3,7 @@ package entity;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 
 public class Movie {
 
@@ -62,5 +63,26 @@ public class Movie {
 
     public void setReleaseDate(Timestamp releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Movie movie = (Movie) o;
+        return movieId == movie.movieId &&
+                runningTime == movie.runningTime &&
+                budget == movie.budget &&
+                Objects.equals(title, movie.title) &&
+                Objects.equals(releaseDate, movie.releaseDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(movieId, title, runningTime, budget, releaseDate);
     }
 }

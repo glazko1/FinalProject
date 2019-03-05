@@ -43,4 +43,12 @@ public class MovieFan implements MovieFanService {
             throw new ServiceException(e);
         }
     }
+
+    void setMovieDAO(MovieDAO movieDAO) {
+        this.movieDAO = movieDAO;
+    }
+
+    void setGenerator(GeneratorId generator) {
+        this.generator = generator;
+    }
 }

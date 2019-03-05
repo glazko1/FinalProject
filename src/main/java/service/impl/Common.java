@@ -56,7 +56,6 @@ public class Common implements CommonService {
             throw new ServiceException("Information is not valid!");
         }
         try {
-            PasswordHashKeeper keeper = PasswordHashKeeper.getInstance();
             String encoded = keeper.generateHash(username, password);
             User user = userDAO.getUser(username, encoded);
             if (user.isBanned()) {
@@ -79,7 +78,6 @@ public class Common implements CommonService {
                 !password.equals(confirmedPassword)) {
             throw new ServiceException("Information is not valid!");
         }
-        PasswordHashKeeper keeper = PasswordHashKeeper.getInstance();
         String encoded = keeper.generateHash(username, password);
         try {
             long id = generator.generateId();
@@ -281,5 +279,37 @@ public class Common implements CommonService {
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
+    }
+
+    void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+
+    void setAlienDAO(AlienDAO alienDAO) {
+        this.alienDAO = alienDAO;
+    }
+
+    void setMovieDAO(MovieDAO movieDAO) {
+        this.movieDAO = movieDAO;
+    }
+
+    void setFeedbackDAO(FeedbackDAO feedbackDAO) {
+        this.feedbackDAO = feedbackDAO;
+    }
+
+    void setEditDAO(EditDAO editDAO) {
+        this.editDAO = editDAO;
+    }
+
+    void setNotificationDAO(NotificationDAO notificationDAO) {
+        this.notificationDAO = notificationDAO;
+    }
+
+    void setKeeper(PasswordHashKeeper keeper) {
+        this.keeper = keeper;
+    }
+
+    void setGenerator(GeneratorId generator) {
+        this.generator = generator;
     }
 }

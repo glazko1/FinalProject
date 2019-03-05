@@ -21,9 +21,9 @@ public class DatabaseConnectionPool implements ConnectionPool {
     private String url;
     private String user;
     private String password;
-    private BlockingQueue<ProxyConnection> availableConnections; // ArrayBlockingQueue
+    private BlockingQueue<ProxyConnection> availableConnections;
     private BlockingQueue<ProxyConnection> usedConnections;
-    private static final int INITIAL_SIZE = 10; // set in properties
+    private static final int INITIAL_SIZE = 10;
 
     public void create(String driver, String url, String user, String password) {
         try {

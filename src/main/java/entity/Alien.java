@@ -1,5 +1,7 @@
 package entity;
 
+import java.util.Objects;
+
 public class Alien {
 
     private long alienId;
@@ -74,6 +76,29 @@ public class Alien {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Alien alien = (Alien) o;
+        return alienId == alien.alienId &&
+                Double.compare(alien.averageRating, averageRating) == 0 &&
+                Objects.equals(alienName, alien.alienName) &&
+                Objects.equals(movie, alien.movie) &&
+                Objects.equals(planet, alien.planet) &&
+                Objects.equals(description, alien.description) &&
+                Objects.equals(imagePath, alien.imagePath);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(alienId, alienName, movie, planet, description, averageRating, imagePath);
     }
 
     @Override

@@ -54,7 +54,8 @@ public class AlienSpecialistTest {
         //given
         //when
         doThrow(DAOException.class).when(movieDAO).getMovieByTitle(anyString());
-        service.addAlien(1, "", "", "", "", "");
+        service.addAlien(1, "AlienName", "Planet",
+                "Description", "Title", "Path");
         //then
         //expecting ServiceException
     }

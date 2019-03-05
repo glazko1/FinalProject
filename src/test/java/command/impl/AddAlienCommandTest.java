@@ -15,7 +15,7 @@ import javax.servlet.http.Part;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static org.mockito.Matchers.anyByte;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -70,7 +70,7 @@ public class AddAlienCommandTest {
         when(mockRequest.getPart("photo")).thenReturn(part);
         doNothing().when(service).addAlien(anyLong(), anyString(), anyString(), anyString(), anyString(), anyString());
         whenNew(FileOutputStream.class).withArguments(anyString()).thenReturn(outputStream);
-        doNothing().when(outputStream).write(anyByte());
+        doNothing().when(outputStream).write(any());
         String result = command.execute();
         //then
         assertEquals(result, "main");
