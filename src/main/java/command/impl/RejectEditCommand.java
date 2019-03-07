@@ -4,6 +4,7 @@ import command.Command;
 import command.exception.CommandException;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
+import service.impl.AlienSpecialist;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +19,10 @@ public class RejectEditCommand implements Command {
         this.service = service;
         this.request = request;
         this.response = response;
+    }
+
+    public RejectEditCommand(HttpServletRequest request, HttpServletResponse response) {
+        this(AlienSpecialist.getInstance(), request, response);
     }
 
     @Override

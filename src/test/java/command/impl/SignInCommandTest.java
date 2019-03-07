@@ -5,6 +5,7 @@ import command.exception.CommandException;
 import entity.User;
 import org.testng.annotations.Test;
 import service.CommonService;
+import service.exception.InvalidSignInInformationException;
 import service.exception.ServiceException;
 import service.impl.Common;
 

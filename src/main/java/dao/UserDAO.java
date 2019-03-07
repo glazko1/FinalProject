@@ -1,6 +1,7 @@
 package dao;
 
 import dao.exception.DAOException;
+import dao.exception.InvalidUsernameOrPasswordException;
 import entity.User;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 public interface UserDAO {
 
     User getUser(long userId) throws DAOException;
-    User getUser(String username, String password) throws DAOException;
+    User getUser(String username, String password) throws DAOException, InvalidUsernameOrPasswordException;
     User getUser(String username) throws DAOException;
     List<User> getAllUsers() throws DAOException;
     void addNewUser(User user, String encoded) throws DAOException;

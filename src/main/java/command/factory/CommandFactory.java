@@ -40,10 +40,6 @@ import command.impl.ViewMovieCommand;
 import command.impl.ViewNotificationsCommand;
 import command.impl.ViewSuggestedEditCommand;
 import command.impl.ViewUserCommand;
-import service.impl.Admin;
-import service.impl.AlienSpecialist;
-import service.impl.Common;
-import service.impl.MovieFan;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -61,81 +57,81 @@ public class CommandFactory {
     public Command createCommand(String name, HttpServletRequest request, HttpServletResponse response) throws CommandException {
         switch (name) {
             case "signIn":
-                return new SignInCommand(Common.getInstance(), request, response);
+                return new SignInCommand(request, response);
             case "signUp":
-                return new SignUpCommand(Common.getInstance(), request, response);
+                return new SignUpCommand(request, response);
             case "viewAllAliens":
-                return new ViewAllAliensCommand(Common.getInstance(), request, response);
+                return new ViewAllAliensCommand(request, response);
             case "addAlien":
-                return new AddAlienCommand(AlienSpecialist.getInstance(), request, response);
+                return new AddAlienCommand(request, response);
             case "viewAllMovies":
-                return new ViewAllMoviesCommand(Common.getInstance(), request, response);
+                return new ViewAllMoviesCommand(request, response);
             case "viewAlien":
-                return new ViewAlienCommand(Common.getInstance(), request, response);
+                return new ViewAlienCommand(request, response);
             case "addFeedback":
-                return new AddFeedbackCommand(Common.getInstance(), request, response);
+                return new AddFeedbackCommand(request, response);
             case "viewMovie":
-                return new ViewMovieCommand(Common.getInstance(), request, response);
+                return new ViewMovieCommand(request, response);
             case "viewAllUsers":
-                return new ViewAllUsersCommand(Admin.getInstance(), request, response);
+                return new ViewAllUsersCommand(request, response);
             case "viewUser":
-                return new ViewUserCommand(Common.getInstance(), request, response);
+                return new ViewUserCommand(request, response);
             case "changeBanStatus":
-                return new ChangeBanStatusCommand(Admin.getInstance(), request, response);
+                return new ChangeBanStatusCommand(request, response);
             case "changeUserStatus":
-                return new ChangeUserStatusCommand(Admin.getInstance(), request, response);
+                return new ChangeUserStatusCommand(request, response);
             case "forwardToNewAlien":
-                return new ForwardToNewAlienCommand(Common.getInstance(), request, response);
+                return new ForwardToNewAlienCommand(request, response);
             case "forwardToEditUser":
-                return new ForwardToEditUserCommand(Common.getInstance(), request, response);
+                return new ForwardToEditUserCommand(request, response);
             case "editUser":
-                return new EditUserCommand(Common.getInstance(), request, response);
+                return new EditUserCommand(request, response);
             case "forwardToChangePassword":
-                return new ForwardToChangePasswordCommand(Common.getInstance(), request, response);
+                return new ForwardToChangePasswordCommand(request, response);
             case "changePassword":
-                return new ChangePasswordCommand(Common.getInstance(), request, response);
+                return new ChangePasswordCommand(request, response);
             case "mainPage":
                 return new RedirectToMainPageCommand(request, response);
             case "logout":
                 return new LogoutCommand(request, response);
             case "viewNotifications":
-                return new ViewNotificationsCommand(Common.getInstance(), request, response);
+                return new ViewNotificationsCommand(request, response);
             case "forwardToRestorePassword":
                 return new ForwardToRestorePasswordCommand(request, response);
             case "restorePassword":
-                return new RestorePasswordCommand(Common.getInstance(), request, response);
+                return new RestorePasswordCommand(request, response);
             case "deleteFeedback":
-                return new DeleteFeedbackCommand(Common.getInstance(), request, response);
+                return new DeleteFeedbackCommand(request, response);
             case "forwardToEditAlien":
-                return new ForwardToEditAlienCommand(Common.getInstance(), request, response);
+                return new ForwardToEditAlienCommand(request, response);
             case "editAlien":
-                return new EditAlienCommand(AlienSpecialist.getInstance(), request, response);
+                return new EditAlienCommand(request, response);
             case "viewAllAliensSorted":
-                return new ViewAllAliensSortedCommand(Common.getInstance(), request, response);
+                return new ViewAllAliensSortedCommand(request, response);
             case "forwardToSuggestEdit":
-                return new ForwardToSuggestEditCommand(Common.getInstance(), request, response);
+                return new ForwardToSuggestEditCommand(request, response);
             case "suggestEdit":
-                return new SuggestEditCommand(Common.getInstance(), request, response);
+                return new SuggestEditCommand(request, response);
             case "viewAllSuggestedEdits":
-                return new ViewAllSuggestedEditsCommand(AlienSpecialist.getInstance(), request, response);
+                return new ViewAllSuggestedEditsCommand(request, response);
             case "viewSuggestedEdit":
-                return new ViewSuggestedEditCommand(AlienSpecialist.getInstance(), request, response);
+                return new ViewSuggestedEditCommand(request, response);
             case "acceptEdit":
-                return new AcceptEditCommand(AlienSpecialist.getInstance(), request, response);
+                return new AcceptEditCommand(request, response);
             case "rejectEdit":
-                return new RejectEditCommand(AlienSpecialist.getInstance(), request, response);
+                return new RejectEditCommand(request, response);
             case "forwardToNewMovie":
                 return new ForwardToNewMovieCommand(request, response);
             case "addMovie":
-                return new AddMovieCommand(MovieFan.getInstance(), request, response);
+                return new AddMovieCommand(request, response);
             case "deleteAlien":
-                return new DeleteAlienCommand(AlienSpecialist.getInstance(), request, response);
+                return new DeleteAlienCommand(request, response);
             case "viewAllMoviesSorted":
-                return new ViewAllMoviesSortedCommand(Common.getInstance(), request, response);
+                return new ViewAllMoviesSortedCommand(request, response);
             case "forwardToEditMovie":
-                return new ForwardToEditMovieCommand(Common.getInstance(), request, response);
+                return new ForwardToEditMovieCommand(request, response);
             case "editMovie":
-                return new EditMovieCommand(MovieFan.getInstance(), request, response);
+                return new EditMovieCommand(request, response);
             default:
                 break;
         }

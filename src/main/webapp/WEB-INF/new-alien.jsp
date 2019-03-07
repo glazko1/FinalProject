@@ -41,7 +41,9 @@
             <tr>
                 <td align="center"><fmt:message key="message.alien_name" /></td>
                 <td align="center">
-                    <label><input type="text" name="alienName"></label>
+                    <label>
+                        <input type="text" name="alienName">
+                    </label>
                 </td>
             </tr>
             <tr>

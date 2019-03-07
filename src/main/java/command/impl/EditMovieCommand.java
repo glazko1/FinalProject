@@ -4,6 +4,7 @@ import command.Command;
 import command.exception.CommandException;
 import service.MovieFanService;
 import service.exception.ServiceException;
+import service.impl.MovieFan;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +15,10 @@ public class EditMovieCommand implements Command {
     private MovieFanService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
+
+    public EditMovieCommand(HttpServletRequest request, HttpServletResponse response) {
+        this(MovieFan.getInstance(), request, response);
+    }
 
     public EditMovieCommand(MovieFanService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;

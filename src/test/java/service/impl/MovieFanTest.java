@@ -7,7 +7,7 @@ import entity.Movie;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import service.exception.ServiceException;
-import util.generator.GeneratorId;
+import util.generator.IdGenerator;
 
 import java.sql.Date;
 
@@ -17,13 +17,12 @@ import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.testng.Assert.*;
 
 public class MovieFanTest {
 
     private MovieFan service = MovieFan.getInstance();
     private MovieDAO movieDAO = mock(MovieSQL.class);
-    private GeneratorId generator = mock(GeneratorId.class);
+    private IdGenerator generator = mock(IdGenerator.class);
 
     @BeforeClass
     public void init() {

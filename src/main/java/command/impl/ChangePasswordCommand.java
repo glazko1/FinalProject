@@ -3,7 +3,9 @@ package command.impl;
 import command.Command;
 import command.exception.CommandException;
 import service.CommonService;
+import service.exception.InvalidPasswordException;
 import service.exception.ServiceException;
+import service.impl.Common;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +15,10 @@ public class ChangePasswordCommand implements Command {
     private CommonService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
+
+    public ChangePasswordCommand(HttpServletRequest request, HttpServletResponse response) {
+        this(Common.getInstance(), request, response);
+    }
 
     public ChangePasswordCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;
@@ -28,6 +34,8 @@ public class ChangePasswordCommand implements Command {
         String confirmedPassword = request.getParameter("confirmedPassword");
         try {
             service.changePassword(userId, currentPassword, newPassword, confirmedPassword);
+        } catch (InvalidPasswordException e) {
+
         } catch (ServiceException e) {
             throw new CommandException(e);
         }

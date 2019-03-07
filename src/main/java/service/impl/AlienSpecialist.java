@@ -18,7 +18,7 @@ import entity.Notification;
 import entity.User;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
-import util.generator.GeneratorId;
+import util.generator.IdGenerator;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class AlienSpecialist implements AlienSpecialistService {
     private MovieDAO movieDAO = MovieSQL.getInstance();
     private EditDAO editDAO = EditSQL.getInstance();
     private NotificationDAO notificationDAO = NotificationSQL.getInstance();
-    private GeneratorId generator = GeneratorId.getInstance();
+    private IdGenerator generator = IdGenerator.getInstance();
 
     @Override
     public void addAlien(long id, String alienName, String planet, String description, String movieTitle, String imagePath) throws ServiceException {

@@ -2,15 +2,15 @@ package util.generator;
 
 import java.util.Random;
 
-public class GeneratorId {
+public class IdGenerator {
 
-    private static final GeneratorId INSTANCE = new GeneratorId();
+    private static final IdGenerator INSTANCE = new IdGenerator();
 
-    public static GeneratorId getInstance() {
+    public static IdGenerator getInstance() {
         return INSTANCE;
     }
 
-    private GeneratorId() {}
+    private IdGenerator() {}
 
     public long generateId() {
         Random random = new Random();

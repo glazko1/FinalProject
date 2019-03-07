@@ -5,6 +5,7 @@ import command.exception.CommandException;
 import entity.Edit;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
+import service.impl.AlienSpecialist;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +16,10 @@ public class ViewAllSuggestedEditsCommand implements Command {
     private AlienSpecialistService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
+
+    public ViewAllSuggestedEditsCommand(HttpServletRequest request, HttpServletResponse response) {
+        this(AlienSpecialist.getInstance(), request, response);
+    }
 
     public ViewAllSuggestedEditsCommand(AlienSpecialistService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;

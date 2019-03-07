@@ -6,14 +6,17 @@ import entity.Movie;
 import entity.Notification;
 import entity.User;
 import javafx.util.Pair;
+import service.exception.BannedUserException;
+import service.exception.InvalidPasswordException;
 import service.exception.ServiceException;
+import service.exception.InvalidSignInInformationException;
 
 import java.sql.Date;
 import java.util.List;
 
 public interface CommonService {
 
-    User signIn(String username, String password) throws ServiceException;
+    User signIn(String username, String password) throws ServiceException, InvalidSignInInformationException, BannedUserException;
     void signUp(String username, String firstName, String lastName, String email,
                 String password, String confirmedPassword, Date birthDate) throws ServiceException;
     List<Alien> viewAllAliens() throws ServiceException;
@@ -24,7 +27,7 @@ public interface CommonService {
     Movie viewMovie(long movieId) throws ServiceException;
     User viewUser(long userId) throws ServiceException;
     void editUser(long userId, String firstName, String lastName, String email) throws ServiceException;
-    void changePassword(long userId, String currentPassword, String newPassword, String confirmedPassword) throws ServiceException;
+    void changePassword(long userId, String currentPassword, String newPassword, String confirmedPassword) throws ServiceException, InvalidPasswordException;
     void restorePassword(String username, String firstName, String lastName, String email, String newPassword, String confirmedPassword) throws ServiceException;
     void recountAverageRating(long alienId) throws ServiceException;
     void deleteFeedback(long feedbackId) throws ServiceException;

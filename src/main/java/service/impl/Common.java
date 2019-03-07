@@ -7,6 +7,7 @@ import dao.MovieDAO;
 import dao.NotificationDAO;
 import dao.UserDAO;
 import dao.exception.DAOException;
+import dao.exception.InvalidUsernameOrPasswordException;
 import dao.impl.AlienSQL;
 import dao.impl.EditSQL;
 import dao.impl.FeedbackSQL;
@@ -21,8 +22,12 @@ import entity.Notification;
 import entity.User;
 import javafx.util.Pair;
 import service.CommonService;
+import service.exception.BannedUserException;
+import service.exception.InvalidPasswordException;
+import service.exception.InvalidSignInInformationException;
+import service.exception.InvalidSignUpInformationException;
 import service.exception.ServiceException;
-import util.generator.GeneratorId;
+import util.generator.IdGenerator;
 import util.hasher.PasswordHashKeeper;
 
 import java.sql.Date;
@@ -39,7 +44,10 @@ public class Common implements CommonService {
 
     private Common() {}
 
+    private static final String USERNAME_FORMAT_REGEX = ".{6,15}";
+    private static final String NAME_FORMAT_REGEX = ".{2,30}";
     private static final String EMAIL_FORMAT_REGEX = "[a-z][[a-z][0-9][-][_]]{3,15}[@][a-z]{2,10}[.][a-z]{2,4}";
+    private static final String PASSWORD_FORMAT_REGEX = ".{8,30}";
     private UserDAO userDAO = UserSQL.getInstance();
     private AlienDAO alienDAO = AlienSQL.getInstance();
     private MovieDAO movieDAO = MovieSQL.getInstance();
@@ -47,21 +55,23 @@ public class Common implements CommonService {
     private EditDAO editDAO = EditSQL.getInstance();
     private NotificationDAO notificationDAO = NotificationSQL.getInstance();
     private PasswordHashKeeper keeper = PasswordHashKeeper.getInstance();
-    private GeneratorId generator = GeneratorId.getInstance();
+    private IdGenerator generator = IdGenerator.getInstance();
 
     @Override
     public User signIn(String username, String password) throws ServiceException {
-        if (username.length() < 6 ||
-                password.length() < 8) {
-            throw new ServiceException("Information is not valid!");
+        if (!username.matches(USERNAME_FORMAT_REGEX) ||
+                !password.matches(PASSWORD_FORMAT_REGEX)) {
+            throw new InvalidSignInInformationException("Information is not valid!");
         }
         try {
             String encoded = keeper.generateHash(username, password);
             User user = userDAO.getUser(username, encoded);
             if (user.isBanned()) {
-                throw new ServiceException("User is banned!");
+                throw new BannedUserException("User is banned!");
             }
             return user;
+        } catch (InvalidUsernameOrPasswordException e) {
+            throw new InvalidSignInInformationException(e);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -70,13 +80,13 @@ public class Common implements CommonService {
     @Override
     public void signUp(String username, String firstName, String lastName, String email,
                        String password, String confirmedPassword, Date birthDate) throws ServiceException {
-        if (username.length() < 6 ||
-                firstName.length() < 2 ||
-                lastName.length() < 2 ||
+        if (!username.matches(USERNAME_FORMAT_REGEX) ||
+                !firstName.matches(NAME_FORMAT_REGEX) ||
+                !lastName.matches(NAME_FORMAT_REGEX) ||
                 !email.matches(EMAIL_FORMAT_REGEX) ||
-                password.length() < 8 ||
+                !password.matches(PASSWORD_FORMAT_REGEX) ||
                 !password.equals(confirmedPassword)) {
-            throw new ServiceException("Information is not valid!");
+            throw new InvalidSignUpInformationException("Information is not valid!");
         }
         String encoded = keeper.generateHash(username, password);
         try {
@@ -161,8 +171,8 @@ public class Common implements CommonService {
 
     @Override
     public void editUser(long userId, String firstName, String lastName, String email) throws ServiceException {
-        if (firstName.length() < 2 ||
-                lastName.length() < 2 ||
+        if (!firstName.matches(NAME_FORMAT_REGEX) ||
+                !lastName.matches(NAME_FORMAT_REGEX) ||
                 !email.matches(EMAIL_FORMAT_REGEX)) {
             throw new ServiceException("Information is not valid!");
         }
@@ -174,10 +184,11 @@ public class Common implements CommonService {
     }
 
     @Override
-    public void changePassword(long userId, String currentPassword, String newPassword, String confirmedPassword) throws ServiceException {
-        if (currentPassword.length() < 8 ||
-                newPassword.length() < 8 ||
-                confirmedPassword.length() < 8 ||
+    public void changePassword(long userId, String currentPassword, String newPassword,
+                               String confirmedPassword) throws ServiceException {
+        if (!currentPassword.matches(PASSWORD_FORMAT_REGEX) ||
+                !newPassword.matches(PASSWORD_FORMAT_REGEX) ||
+                !confirmedPassword.matches(PASSWORD_FORMAT_REGEX) ||
                 !newPassword.equals(confirmedPassword)) {
             throw new ServiceException("Information is not valid!");
         }
@@ -188,6 +199,8 @@ public class Common implements CommonService {
             String encodedNewPassword = keeper.generateHash(username, newPassword);
             userDAO.getUser(username, encodedCurrentPassword);
             userDAO.changePassword(userId, encodedNewPassword);
+        } catch (InvalidUsernameOrPasswordException e) {
+            throw new InvalidPasswordException(e);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -195,11 +208,11 @@ public class Common implements CommonService {
 
     @Override
     public void restorePassword(String username, String firstName, String lastName, String email, String newPassword, String confirmedPassword) throws ServiceException {
-        if (username.length() < 6 ||
+        if (!username.matches(USERNAME_FORMAT_REGEX) ||
+                !firstName.matches(NAME_FORMAT_REGEX) ||
+                !lastName.matches(NAME_FORMAT_REGEX) ||
                 !email.matches(EMAIL_FORMAT_REGEX) ||
-                firstName.length() < 2 ||
-                lastName.length() < 2 ||
-                newPassword.length() < 8 ||
+                !newPassword.matches(PASSWORD_FORMAT_REGEX) ||
                 !newPassword.equals(confirmedPassword)) {
             throw new ServiceException("Information is not valid!");
         }
@@ -309,7 +322,7 @@ public class Common implements CommonService {
         this.keeper = keeper;
     }
 
-    void setGenerator(GeneratorId generator) {
+    void setGenerator(IdGenerator generator) {
         this.generator = generator;
     }
 }

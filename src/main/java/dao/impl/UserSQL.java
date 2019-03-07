@@ -3,6 +3,7 @@ package dao.impl;
 import connection.ProxyConnection;
 import dao.UserDAO;
 import dao.exception.DAOException;
+import dao.exception.InvalidUsernameOrPasswordException;
 import entity.User;
 import pool.DatabaseConnectionPool;
 
@@ -73,7 +74,7 @@ public class UserSQL implements UserDAO {
         } catch (SQLException e) {
             throw new DAOException(e);
         }
-        throw new DAOException("Login or password is incorrect!");
+        throw new InvalidUsernameOrPasswordException("Login or password is incorrect!");
     }
 
     @Override

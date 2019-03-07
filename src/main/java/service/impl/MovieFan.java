@@ -6,7 +6,7 @@ import dao.impl.MovieSQL;
 import entity.Movie;
 import service.MovieFanService;
 import service.exception.ServiceException;
-import util.generator.GeneratorId;
+import util.generator.IdGenerator;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -22,7 +22,7 @@ public class MovieFan implements MovieFanService {
     private MovieFan() {}
 
     private MovieDAO movieDAO = MovieSQL.getInstance();
-    private GeneratorId generator = GeneratorId.getInstance();
+    private IdGenerator generator = IdGenerator.getInstance();
 
     @Override
     public void addMovie(String title, int runningTime, int budget, Date releaseDate) throws ServiceException {
@@ -48,7 +48,7 @@ public class MovieFan implements MovieFanService {
         this.movieDAO = movieDAO;
     }
 
-    void setGenerator(GeneratorId generator) {
+    void setGenerator(IdGenerator generator) {
         this.generator = generator;
     }
 }

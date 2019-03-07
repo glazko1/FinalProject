@@ -7,6 +7,7 @@ import dao.MovieDAO;
 import dao.NotificationDAO;
 import dao.UserDAO;
 import dao.exception.DAOException;
+import dao.exception.InvalidUsernameOrPasswordException;
 import dao.impl.AlienSQL;
 import dao.impl.EditSQL;
 import dao.impl.FeedbackSQL;
@@ -22,8 +23,10 @@ import entity.User;
 import javafx.util.Pair;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import service.exception.InvalidPasswordException;
+import service.exception.InvalidSignInInformationException;
 import service.exception.ServiceException;
-import util.generator.GeneratorId;
+import util.generator.IdGenerator;
 import util.hasher.PasswordHashKeeper;
 
 import java.sql.Date;
@@ -49,7 +52,7 @@ public class CommonTest {
     private FeedbackDAO feedbackDAO = mock(FeedbackSQL.class);
     private EditDAO editDAO = mock(EditSQL.class);
     private NotificationDAO notificationDAO = mock(NotificationSQL.class);
-    private GeneratorId generatorId = mock(GeneratorId.class);
+    private IdGenerator idGenerator = mock(IdGenerator.class);
     private PasswordHashKeeper keeper = mock(PasswordHashKeeper.class);
 
     @BeforeClass
@@ -60,7 +63,7 @@ public class CommonTest {
         service.setFeedbackDAO(feedbackDAO);
         service.setEditDAO(editDAO);
         service.setNotificationDAO(notificationDAO);
-        service.setGenerator(generatorId);
+        service.setGenerator(idGenerator);
         service.setKeeper(keeper);
     }
 
