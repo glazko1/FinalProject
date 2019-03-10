@@ -35,6 +35,9 @@
 </div>
 <div class="center-column">
     <h2><fmt:message key="title.welcome" />, ${sessionScope.firstName}!</h2>
+    <c:if test="${message != null}">
+        <fmt:message key="${message}" /><br><br>
+    </c:if>
     <form method="get" action="mainWindow">
         <button type="submit" name="button" value="viewAllAliens" style="height: 200px; width: 200px; margin-right: 25px">
             <img src="img/spock.png" align="center" alt="" height="150px"><br>
@@ -59,5 +62,6 @@
         </c:if>
     </form>
 </div>
+<c:remove var="message" />
 </body>
 </html>

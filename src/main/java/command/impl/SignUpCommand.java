@@ -3,8 +3,10 @@ package command.impl;
 import command.Command;
 import command.exception.CommandException;
 import service.CommonService;
-import service.exception.InvalidSignUpInformationException;
+import service.exception.user.InvalidEmailException;
 import service.exception.ServiceException;
+import service.exception.user.InvalidUserInformationException;
+import service.exception.user.InvalidUsernameException;
 import service.impl.Common;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +43,11 @@ public class SignUpCommand implements Command {
         HttpSession session = request.getSession();
         try {
             service.signUp(username, firstName, lastName, email, password, confirmedPassword, date);
-        } catch (InvalidSignUpInformationException e) {
+        } catch (InvalidUsernameException e) {
+            session.setAttribute("signUpMessage", "message.invalid_username");
+        } catch (InvalidEmailException e) {
+            session.setAttribute("signUpMessage", "message.invalid_email");
+        } catch (InvalidUserInformationException e) {
             session.setAttribute("signUpMessage", "message.invalid_info");
         } catch (ServiceException e) {
             throw new CommandException(e);

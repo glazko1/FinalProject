@@ -42,7 +42,7 @@
                 <td align="center"><fmt:message key="message.alien_name" /></td>
                 <td align="center">
                     <label>
-                        <input type="text" name="alienName">
+                        <input type="text" required pattern=".{2,30}" name="alienName" title="<fmt:message key="message.name_format" />" />
                     </label>
                 </td>
             </tr>
@@ -61,19 +61,23 @@
             <tr>
                 <td align="center"><fmt:message key="message.planet" /></td>
                 <td align="center">
-                    <label><input type="text" name="planet"></label>
+                    <label>
+                        <input type="text" required pattern=".{4,20}" name="planet" title="<fmt:message key="message.planet_format" />" />
+                    </label>
                 </td>
             </tr>
             <tr>
                 <td align="center"><fmt:message key="message.description" /></td>
                 <td align="center">
-                    <label><input type="text" name="description"></label>
+                    <label>
+                        <input type="text" required pattern=".{1,255}" name="description" title="<fmt:message key="message.description_format" />" />
+                    </label>
                 </td>
             </tr>
             <tr>
                 <td align="center"><fmt:message key="message.photo" /></td>
                 <td align="center">
-                    <input type="file" name="photo">
+                    <input type="file" required name="photo">
                 </td>
             </tr>
         </table><br>

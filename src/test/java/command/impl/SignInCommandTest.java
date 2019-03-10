@@ -3,9 +3,9 @@ package command.impl;
 import command.Command;
 import command.exception.CommandException;
 import entity.User;
+import entity.UserStatus;
 import org.testng.annotations.Test;
 import service.CommonService;
-import service.exception.InvalidSignInInformationException;
 import service.exception.ServiceException;
 import service.impl.Common;
 
@@ -44,13 +44,15 @@ public class SignInCommandTest {
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
         User user = mock(User.class);
+        UserStatus userStatus = UserStatus.ADMIN;
         HttpSession session = mock(HttpSession.class);
         Command command = new SignInCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("username")).thenReturn("Username");
         when(mockRequest.getParameter("password")).thenReturn("Password");
-        when(service.signIn(anyString(), anyString())).thenReturn(user);
         when(mockRequest.getSession()).thenReturn(session);
+        when(service.signIn(anyString(), anyString())).thenReturn(user);
+        when(user.getStatus()).thenReturn(userStatus);
         String result = command.execute();
         //then
         assertEquals(result, "main");

@@ -3,9 +3,10 @@ package command.impl;
 import command.Command;
 import command.exception.CommandException;
 import entity.User;
+import entity.UserStatus;
 import service.CommonService;
-import service.exception.BannedUserException;
-import service.exception.InvalidSignInInformationException;
+import service.exception.user.BannedUserException;
+import service.exception.user.InvalidUserInformationException;
 import service.exception.ServiceException;
 import service.impl.Common;
 
@@ -38,13 +39,14 @@ public class SignInCommand implements Command {
             User user = service.signIn(username, password);
             session.setAttribute("userId", String.valueOf(user.getUserId()));
             session.setAttribute("username", user.getUsername());
-            session.setAttribute("status", String.valueOf(user.getStatusId()));
+            UserStatus status = user.getStatus();
+            session.setAttribute("status", String.valueOf(status.getStatusId()));
             session.setAttribute("firstName", user.getFirstName());
             session.setAttribute("lastName", user.getLastName());
         } catch (BannedUserException e) {
             session.setAttribute("signInMessage", "message.user_is_banned");
             return "index";
-        } catch (InvalidSignInInformationException e) {
+        } catch (InvalidUserInformationException e) {
             session.setAttribute("signInMessage", "message.invalid_username_password");
             return "index";
         } catch (ServiceException e) {

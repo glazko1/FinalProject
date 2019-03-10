@@ -10,20 +10,13 @@ public class User {
     private String username;
     private String firstName;
     private String lastName;
-    private int statusId;
+    private UserStatus status;
     private String email;
     private boolean banned;
     private Timestamp birthDate;
 
-    public User(long userId, String username, String firstName, String lastName, int statusId, String email, boolean banned, Timestamp birthDate) {
+    public User(long userId) {
         this.userId = userId;
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.statusId = statusId;
-        this.email = email;
-        this.banned = banned;
-        this.birthDate = birthDate;
     }
 
     public long getUserId() {
@@ -58,12 +51,12 @@ public class User {
         this.lastName = lastName;
     }
 
-    public int getStatusId() {
-        return statusId;
+    public UserStatus getStatus() {
+        return status;
     }
 
-    public void setStatusId(int statusId) {
-        this.statusId = statusId;
+    public void setStatus(UserStatus status) {
+        this.status = status;
     }
 
     public String getEmail() {
@@ -104,31 +97,17 @@ public class User {
         }
         User user = (User) o;
         return userId == user.userId &&
-                statusId == user.statusId &&
                 banned == user.banned &&
                 Objects.equals(username, user.username) &&
                 Objects.equals(firstName, user.firstName) &&
                 Objects.equals(lastName, user.lastName) &&
+                status == user.status &&
                 Objects.equals(email, user.email) &&
                 Objects.equals(birthDate, user.birthDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, username, firstName, lastName, statusId, email, banned, birthDate);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", username='" + username + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", statusId=" + statusId +
-                ", email='" + email + '\'' +
-                ", banned=" + banned +
-                ", birthDate=" + birthDate +
-                '}';
+        return Objects.hash(userId, username, firstName, lastName, status, email, banned, birthDate);
     }
 }

@@ -67,7 +67,7 @@ public class AlienSpecialistTest {
         //when
         doReturn(movie).when(movieDAO).getMovieByTitle(anyString());
         doNothing().when(alienDAO).addNewAlien(any(Alien.class));
-        service.addAlien(1, "", "", "", "", "");
+        service.addAlien(1, "AlienName", "Planet", "Description", "Title", "Path");
         //then
     }
 
@@ -88,7 +88,7 @@ public class AlienSpecialistTest {
         //when
         doReturn(movie).when(movieDAO).getMovieByTitle(anyString());
         doNothing().when(alienDAO).editAlien(anyLong(), anyLong(), anyString(), anyString());
-        service.editAlien(1, "", "", "");
+        service.editAlien(1, "Title", "Planet", "Description");
         //then
     }
 

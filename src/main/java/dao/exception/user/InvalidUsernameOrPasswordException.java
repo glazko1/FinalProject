@@ -1,4 +1,6 @@
-package dao.exception;
+package dao.exception.user;
+
+import dao.exception.DAOException;
 
 public class InvalidUsernameOrPasswordException extends DAOException {
 

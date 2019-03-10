@@ -5,6 +5,7 @@ import command.exception.CommandException;
 import org.testng.annotations.Test;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
+import util.writer.ContentWriter;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -14,6 +15,7 @@ import javax.servlet.http.Part;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
@@ -58,9 +60,10 @@ public class AddAlienCommandTest {
         AlienSpecialistService service = mock(AlienSpecialistService.class);
         ServletContext context = mock(ServletContext.class);
         Part part = mock(Part.class);
-        FileOutputStream outputStream = mock(FileOutputStream.class);
-        Command command = new AddAlienCommand(service, mockRequest, mockResponse);
+        ContentWriter writer = mock(ContentWriter.class);
+        AddAlienCommand command = new AddAlienCommand(service, mockRequest, mockResponse);
         //when
+        command.setWriter(writer);
         when(mockRequest.getParameter("alienName")).thenReturn("AlienName");
         when(mockRequest.getParameter("planet")).thenReturn("Planet");
         when(mockRequest.getParameter("description")).thenReturn("Description");
@@ -69,8 +72,8 @@ public class AddAlienCommandTest {
         when(context.getRealPath(anyString())).thenReturn("/");
         when(mockRequest.getPart("photo")).thenReturn(part);
         doNothing().when(service).addAlien(anyLong(), anyString(), anyString(), anyString(), anyString(), anyString());
-        whenNew(FileOutputStream.class).withArguments(anyString()).thenReturn(outputStream);
-        doNothing().when(outputStream).write(any());
+        doNothing().when(writer).writeContent(any(InputStream.class), anyString());
+        doNothing().when(service).sendNotificationToAll(anyString());
         String result = command.execute();
         //then
         assertEquals(result, "main");

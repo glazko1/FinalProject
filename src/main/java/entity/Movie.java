@@ -1,6 +1,5 @@
 package entity;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
@@ -12,6 +11,10 @@ public class Movie {
     private int runningTime;
     private int budget;
     private Timestamp releaseDate;
+
+    public Movie(long movieId) {
+        this.movieId = movieId;
+    }
 
     public Movie(long movieId, String title, int runningTime, int budget, Timestamp releaseDate) {
         this.movieId = movieId;

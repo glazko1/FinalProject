@@ -3,8 +3,12 @@ package dao.impl;
 import connection.ProxyConnection;
 import dao.MovieDAO;
 import dao.exception.DAOException;
+import dao.exception.movie.UsedMovieTitleException;
 import entity.Movie;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pool.DatabaseConnectionPool;
+import util.builder.MovieBuilder;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -18,12 +22,14 @@ import java.util.List;
 public class MovieSQL implements MovieDAO {
 
     private static final MovieSQL INSTANCE = new MovieSQL();
+
     public static MovieSQL getInstance() {
         return INSTANCE;
     }
 
     private MovieSQL() {}
 
+    private static final Logger LOGGER = LogManager.getLogger(MovieSQL.class);
     private static final String GET_MOVIE_BY_ID_SQL = "SELECT MovieId, Title, RunningTime, Budget, ReleaseDate FROM Movie WHERE MovieId = ?";
     private static final String GET_MOVIE_BY_TITLE_SQL = "SELECT MovieId, Title, RunningTime, Budget, ReleaseDate FROM Movie WHERE Title = ?";
     private static final String GET_ALL_MOVIES_SQL = "SELECT MovieId, Title, RunningTime, Budget, ReleaseDate FROM Movie";
@@ -35,74 +41,88 @@ public class MovieSQL implements MovieDAO {
     private static final String GET_ALL_MOVIES_SORTED_BY_RUNNING_TIME_ASC_SQL = "SELECT MovieId, Title, RunningTime, Budget, ReleaseDate FROM Movie ORDER BY RunningTime ASC";
     private static final String GET_ALL_MOVIES_SORTED_BY_RUNNING_TIME_DESC_SQL = "SELECT MovieId, Title, RunningTime, Budget, ReleaseDate FROM Movie ORDER BY RunningTime DESC";
     private static final String EDIT_MOVIE_SQL = "UPDATE Movie SET RunningTime = ?, Budget = ?, ReleaseDate = ? WHERE MovieId = ?";
+    private static final String DELETE_MOVIE_SQL = "DELETE FROM Movie WHERE MovieId = ?";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
     @Override
     public Movie getMovieById(long movieId) throws DAOException {
+        PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_MOVIE_BY_ID_SQL);
+            statement = connection.prepareStatement(GET_MOVIE_BY_ID_SQL);
             statement.setLong(1, movieId);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
-                return new Movie(set.getLong(1),
-                        set.getString(2),
-                        set.getInt(3),
-                        set.getInt(4),
-                        set.getTimestamp(5));
+                return getNextMovie(set);
             }
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+            }
         }
         throw new DAOException("No movie with id " + movieId + " in DAO!");
     }
 
     @Override
     public Movie getMovieByTitle(String title) throws DAOException {
+        PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_MOVIE_BY_TITLE_SQL);
+            statement = connection.prepareStatement(GET_MOVIE_BY_TITLE_SQL);
             statement.setString(1, title);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
-                return new Movie(set.getLong(1),
-                        set.getString(2),
-                        set.getInt(3),
-                        set.getInt(4),
-                        set.getTimestamp(5));
+                return getNextMovie(set);
             }
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+            }
         }
         throw new DAOException("No movie with title " + title + " in DAO!");
     }
 
     @Override
     public List<Movie> getAllMovies() throws DAOException {
+        PreparedStatement statement = null;
         List<Movie> movies = new ArrayList<>();
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_ALL_MOVIES_SQL);
+            statement = connection.prepareStatement(GET_ALL_MOVIES_SQL);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                Movie movie = new Movie(set.getLong(1),
-                        set.getString(2),
-                        set.getInt(3),
-                        set.getInt(4),
-                        set.getTimestamp(5));
+                Movie movie = getNextMovie(set);
                 movies.add(movie);
             }
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+            }
         }
         return movies;
     }
 
     @Override
     public void addNewMovie(Movie movie) throws DAOException {
+        PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(ADD_NEW_MOVIE_SQL);
+            statement = connection.prepareStatement(ADD_NEW_MOVIE_SQL);
+            if (movieTitleIsUsed(connection, movie.getTitle())) {
+                throw new UsedMovieTitleException("Movie title is already in use!");
+            }
             statement.setLong(1, movie.getMovieId());
             statement.setString(2, movie.getTitle());
             statement.setInt(3, movie.getRunningTime());
@@ -111,29 +131,88 @@ public class MovieSQL implements MovieDAO {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+            }
         }
     }
 
     @Override
     public List<Movie> getAllMoviesSorted(String sortedBy, String sortType) throws DAOException {
+        PreparedStatement statement = null;
         List<Movie> movies = new ArrayList<>();
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             String sql = getSortingSQL(sortedBy, sortType);
-            PreparedStatement statement = connection.prepareStatement(sql);
+            statement = connection.prepareStatement(sql);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                Movie movie = new Movie(set.getLong(1),
-                        set.getString(2),
-                        set.getInt(3),
-                        set.getInt(4),
-                        set.getTimestamp(5));
+                Movie movie = getNextMovie(set);
                 movies.add(movie);
             }
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+            }
         }
         return movies;
+    }
+
+    @Override
+    public void editMovie(long movieId, int runningTime, int budget, Date releaseDate) throws DAOException {
+        PreparedStatement statement = null;
+        try (ProxyConnection proxyConnection = pool.getConnection()) {
+            Connection connection = proxyConnection.getConnection();
+            statement = connection.prepareStatement(EDIT_MOVIE_SQL);
+            statement.setInt(1, runningTime);
+            statement.setInt(2, budget);
+            statement.setTimestamp(3, new Timestamp(releaseDate.getTime() + 11000 * 1000));
+            statement.setLong(4, movieId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void deleteMovie(long movieId) throws DAOException {
+        PreparedStatement statement = null;
+        try (ProxyConnection proxyConnection = pool.getConnection()) {
+            Connection connection = proxyConnection.getConnection();
+            statement = connection.prepareStatement(DELETE_MOVIE_SQL);
+            statement.setLong(1, movieId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+            }
+        }
+    }
+
+    private Movie getNextMovie(ResultSet set) throws SQLException {
+        MovieBuilder movieBuilder = new MovieBuilder(set.getLong(1));
+        return movieBuilder.withTitle(set.getString(2))
+                .withRunningTime(set.getInt(3))
+                .withBudget(set.getInt(4))
+                .hasReleaseDate(set.getTimestamp(5))
+                .build();
     }
 
     private String getSortingSQL(String sortedBy, String sortType) throws DAOException {
@@ -156,18 +235,11 @@ public class MovieSQL implements MovieDAO {
         throw new DAOException("No sorting SQL for parameters " + sortedBy + " and " + sortType);
     }
 
-    @Override
-    public void editMovie(long movieId, int runningTime, int budget, Date releaseDate) throws DAOException {
-        try (ProxyConnection proxyConnection = pool.getConnection()) {
-            Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(EDIT_MOVIE_SQL);
-            statement.setInt(1, runningTime);
-            statement.setInt(2, budget);
-            statement.setTimestamp(3, new Timestamp(releaseDate.getTime() + 11000 * 1000));
-            statement.setLong(4, movieId);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new DAOException(e);
+    private boolean movieTitleIsUsed(Connection connection, String movieTitle) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(GET_MOVIE_BY_TITLE_SQL)) {
+            statement.setString(1, movieTitle);
+            ResultSet set = statement.executeQuery();
+            return set.first();
         }
     }
 }

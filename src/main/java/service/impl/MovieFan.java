@@ -44,6 +44,15 @@ public class MovieFan implements MovieFanService {
         }
     }
 
+    @Override
+    public void deleteMovie(long movieId) throws ServiceException {
+        try {
+            movieDAO.deleteMovie(movieId);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
     void setMovieDAO(MovieDAO movieDAO) {
         this.movieDAO = movieDAO;
     }

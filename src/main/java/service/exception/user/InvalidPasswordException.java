@@ -1,4 +1,6 @@
-package service.exception;
+package service.exception.user;
+
+import service.exception.ServiceException;
 
 public class InvalidPasswordException extends ServiceException {
 

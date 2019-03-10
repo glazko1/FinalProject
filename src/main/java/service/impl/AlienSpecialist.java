@@ -6,6 +6,7 @@ import dao.MovieDAO;
 import dao.NotificationDAO;
 import dao.UserDAO;
 import dao.exception.DAOException;
+import dao.exception.alien.UsedAlienNameException;
 import dao.impl.AlienSQL;
 import dao.impl.EditSQL;
 import dao.impl.MovieSQL;
@@ -18,6 +19,9 @@ import entity.Notification;
 import entity.User;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
+import service.exception.alien.InvalidAlienInformationException;
+import service.exception.alien.InvalidAlienNameException;
+import util.builder.AlienBuilder;
 import util.generator.IdGenerator;
 
 import java.sql.Timestamp;
@@ -34,6 +38,9 @@ public class AlienSpecialist implements AlienSpecialistService {
 
     private AlienSpecialist() {}
 
+    private static final String ALIEN_NAME_FORMAT_REGEX = ".{2,30}";
+    private static final String PLANET_FORMAT_REGEX = ".{4,20}";
+    private static final String DESCRIPTION_FORMAT_REGEX = ".{1,255}";
     private UserDAO userDAO = UserSQL.getInstance();
     private AlienDAO alienDAO = AlienSQL.getInstance();
     private MovieDAO movieDAO = MovieSQL.getInstance();
@@ -43,10 +50,24 @@ public class AlienSpecialist implements AlienSpecialistService {
 
     @Override
     public void addAlien(long id, String alienName, String planet, String description, String movieTitle, String imagePath) throws ServiceException {
+        if (!alienName.matches(ALIEN_NAME_FORMAT_REGEX) ||
+                !planet.matches(PLANET_FORMAT_REGEX) ||
+                !description.matches(DESCRIPTION_FORMAT_REGEX)) {
+            throw new InvalidAlienInformationException("Information is not valid!");
+        }
         try {
             Movie movie = movieDAO.getMovieByTitle(movieTitle);
-            Alien alien = new Alien(id, alienName, movie, planet, description, 0.0, imagePath);
+            AlienBuilder alienBuilder = new AlienBuilder(id);
+            Alien alien = alienBuilder.withName(alienName)
+                    .fromMovie(movie)
+                    .fromPlanet(planet)
+                    .hasDescription(description)
+                    .withAverageRating(0.0)
+                    .withPathToImage(imagePath)
+                    .build();
             alienDAO.addNewAlien(alien);
+        } catch (UsedAlienNameException e) {
+            throw new InvalidAlienNameException(e);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -54,6 +75,10 @@ public class AlienSpecialist implements AlienSpecialistService {
 
     @Override
     public void editAlien(long alienId, String movieTitle, String planet, String description) throws ServiceException {
+        if (!planet.matches(PLANET_FORMAT_REGEX) ||
+                !description.matches(DESCRIPTION_FORMAT_REGEX)) {
+            throw new InvalidAlienInformationException("Information is not valid!");
+        }
         try {
             Movie movie = movieDAO.getMovieByTitle(movieTitle);
             long movieId = movie.getMovieId();

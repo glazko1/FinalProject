@@ -3,11 +3,14 @@ package dao.impl;
 import connection.ProxyConnection;
 import dao.AlienDAO;
 import dao.exception.DAOException;
+import dao.exception.alien.UsedAlienNameException;
 import entity.Alien;
 import entity.Movie;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pool.DatabaseConnectionPool;
+import util.builder.AlienBuilder;
+import util.builder.MovieBuilder;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -42,6 +45,7 @@ public class AlienSQL implements AlienDAO {
     private static final String GET_ALL_ALIENS_SORTED_BY_PLANET_DESC_SQL = "SELECT a.AlienId, a.AlienName, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, a.Planet, a.Description, a.AverageRating, a.ImagePath FROM Alien a JOIN Movie m ON a.MovieId = m.MovieId ORDER BY a.Planet DESC";
     private static final String UPDATE_DESCRIPTION_SQL = "UPDATE Alien SET Description = ? WHERE AlienId = ?";
     private static final String DELETE_ALIEN_SQL = "DELETE FROM Alien WHERE AlienId = ?";
+    private static final String GET_ALIEN_BY_NAME_SQL = "SELECT a.AlienId, a.AlienName, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, a.Planet, a.Description, a.AverageRating, a.ImagePath FROM Alien a JOIN Movie m ON a.MovieId = m.MovieId WHERE AlienName = ?";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
     @Override
@@ -97,6 +101,9 @@ public class AlienSQL implements AlienDAO {
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             statement = connection.prepareStatement(ADD_NEW_ALIEN_SQL);
+            if (alienNameIsUsed(connection, alien.getAlienName())) {
+                throw new UsedAlienNameException("Alien name is already in use!");
+            }
             statement.setLong(1, alien.getAlienId());
             statement.setString(2, alien.getAlienName());
             statement.setLong(3, alien.getMovie().getMovieId());
@@ -247,16 +254,27 @@ public class AlienSQL implements AlienDAO {
     }
 
     private Alien getNextAlien(ResultSet set) throws SQLException {
-        return new Alien(set.getLong(1),
-                set.getString(2),
-                new Movie(set.getLong(3),
-                        set.getString(4),
-                        set.getInt(5),
-                        set.getInt(6),
-                        set.getTimestamp(7)),
-                set.getString(8),
-                set.getString(9),
-                set.getDouble(10),
-                set.getString(11));
+        MovieBuilder movieBuilder = new MovieBuilder(set.getLong(3));
+        Movie movie = movieBuilder.withTitle(set.getString(4))
+                .withRunningTime(set.getInt(5))
+                .withBudget(set.getInt(6))
+                .hasReleaseDate(set.getTimestamp(7))
+                .build();
+        AlienBuilder alienBuilder = new AlienBuilder(set.getLong(1));
+        return alienBuilder.withName(set.getString(2))
+                .fromMovie(movie)
+                .fromPlanet(set.getString(8))
+                .hasDescription(set.getString(9))
+                .withAverageRating(set.getDouble(10))
+                .withPathToImage(set.getString(11))
+                .build();
+    }
+
+    private boolean alienNameIsUsed(Connection connection, String alienName) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(GET_ALIEN_BY_NAME_SQL)) {
+            statement.setString(1, alienName);
+            ResultSet set = statement.executeQuery();
+            return set.first();
+        }
     }
 }

@@ -57,9 +57,9 @@
                     <label><input type="text" name="email" value="${email}"></label>
                 </td>
             </tr>
-        </table><br>
+        </table>
         <input type="hidden" name="userId" value="${userId}">
-        <button type="submit" name="button" value="editUser"><fmt:message key="button.submit" /></button>
+        <br><button type="submit" name="button" value="editUser"><fmt:message key="button.submit" /></button>
     </form>
 </div>
 </body>

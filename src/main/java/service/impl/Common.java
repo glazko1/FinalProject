@@ -7,7 +7,9 @@ import dao.MovieDAO;
 import dao.NotificationDAO;
 import dao.UserDAO;
 import dao.exception.DAOException;
-import dao.exception.InvalidUsernameOrPasswordException;
+import dao.exception.user.InvalidUsernameOrPasswordException;
+import dao.exception.user.UsedEmailException;
+import dao.exception.user.UsedUsernameException;
 import dao.impl.AlienSQL;
 import dao.impl.EditSQL;
 import dao.impl.FeedbackSQL;
@@ -20,13 +22,16 @@ import entity.Feedback;
 import entity.Movie;
 import entity.Notification;
 import entity.User;
+import entity.UserStatus;
 import javafx.util.Pair;
 import service.CommonService;
-import service.exception.BannedUserException;
-import service.exception.InvalidPasswordException;
-import service.exception.InvalidSignInInformationException;
-import service.exception.InvalidSignUpInformationException;
 import service.exception.ServiceException;
+import service.exception.user.BannedUserException;
+import service.exception.user.InvalidEmailException;
+import service.exception.user.InvalidPasswordException;
+import service.exception.user.InvalidUserInformationException;
+import service.exception.user.InvalidUsernameException;
+import util.builder.UserBuilder;
 import util.generator.IdGenerator;
 import util.hasher.PasswordHashKeeper;
 
@@ -61,7 +66,7 @@ public class Common implements CommonService {
     public User signIn(String username, String password) throws ServiceException {
         if (!username.matches(USERNAME_FORMAT_REGEX) ||
                 !password.matches(PASSWORD_FORMAT_REGEX)) {
-            throw new InvalidSignInInformationException("Information is not valid!");
+            throw new InvalidUserInformationException("Information is not valid!");
         }
         try {
             String encoded = keeper.generateHash(username, password);
@@ -71,7 +76,7 @@ public class Common implements CommonService {
             }
             return user;
         } catch (InvalidUsernameOrPasswordException e) {
-            throw new InvalidSignInInformationException(e);
+            throw new InvalidUserInformationException(e);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -86,14 +91,25 @@ public class Common implements CommonService {
                 !email.matches(EMAIL_FORMAT_REGEX) ||
                 !password.matches(PASSWORD_FORMAT_REGEX) ||
                 !password.equals(confirmedPassword)) {
-            throw new InvalidSignUpInformationException("Information is not valid!");
+            throw new InvalidUserInformationException("Information is not valid!");
         }
         String encoded = keeper.generateHash(username, password);
         try {
             long id = generator.generateId();
-            User user = new User(id, username, firstName, lastName, 4,
-                    email, false, new Timestamp(birthDate.getTime() + 11000 * 1000));
+            UserBuilder builder = new UserBuilder(id);
+            User user = builder.withUsername(username)
+                    .withFirstName(firstName)
+                    .withLastName(lastName)
+                    .withStatus(UserStatus.USER)
+                    .hasEmail(email)
+                    .isBanned(false)
+                    .hasBirthDate(new Timestamp(birthDate.getTime() + 11000 * 1000))
+                    .build();
             userDAO.addNewUser(user, encoded);
+        } catch (UsedUsernameException e) {
+            throw new InvalidUsernameException(e);
+        } catch (UsedEmailException e) {
+            throw new InvalidEmailException(e);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -174,10 +190,12 @@ public class Common implements CommonService {
         if (!firstName.matches(NAME_FORMAT_REGEX) ||
                 !lastName.matches(NAME_FORMAT_REGEX) ||
                 !email.matches(EMAIL_FORMAT_REGEX)) {
-            throw new ServiceException("Information is not valid!");
+            throw new InvalidUserInformationException("Information is not valid!");
         }
         try {
             userDAO.editUser(userId, firstName, lastName, email);
+        } catch (UsedEmailException e) {
+            throw new InvalidEmailException(e);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -190,7 +208,7 @@ public class Common implements CommonService {
                 !newPassword.matches(PASSWORD_FORMAT_REGEX) ||
                 !confirmedPassword.matches(PASSWORD_FORMAT_REGEX) ||
                 !newPassword.equals(confirmedPassword)) {
-            throw new ServiceException("Information is not valid!");
+            throw new InvalidUserInformationException("Information is not valid!");
         }
         try {
             User user = userDAO.getUser(userId);
@@ -214,7 +232,7 @@ public class Common implements CommonService {
                 !email.matches(EMAIL_FORMAT_REGEX) ||
                 !newPassword.matches(PASSWORD_FORMAT_REGEX) ||
                 !newPassword.equals(confirmedPassword)) {
-            throw new ServiceException("Information is not valid!");
+            throw new InvalidUserInformationException("Information is not valid!");
         }
         try {
             User user = userDAO.getUser(username, firstName, lastName, email);

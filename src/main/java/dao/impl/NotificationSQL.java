@@ -5,7 +5,9 @@ import dao.NotificationDAO;
 import dao.exception.DAOException;
 import entity.Notification;
 import entity.User;
+import entity.UserStatus;
 import pool.DatabaseConnectionPool;
+import util.builder.UserBuilder;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -37,17 +39,7 @@ public class NotificationSQL implements NotificationDAO {
             statement.setLong(1, userId);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                Notification notification = new Notification(set.getLong(1),
-                        new User(set.getLong(2),
-                                set.getString(3),
-                                set.getString(4),
-                                set.getString(5),
-                                set.getInt(6),
-                                set.getString(7),
-                                set.getBoolean(8),
-                                set.getTimestamp(9)),
-                        set.getString(10),
-                        set.getTimestamp(11));
+                Notification notification = getNextNotification(set);
                 notifications.add(notification);
             }
         } catch (SQLException e) {
@@ -70,5 +62,23 @@ public class NotificationSQL implements NotificationDAO {
         } catch (SQLException e) {
             throw new DAOException(e);
         }
+    }
+
+    private Notification getNextNotification(ResultSet set) throws SQLException {
+        int statusId = set.getInt(6) - 1;
+        UserStatus status = UserStatus.values()[statusId];
+        UserBuilder builder = new UserBuilder(set.getLong(2));
+        User user = builder.withUsername(set.getString(3))
+                .withFirstName(set.getString(4))
+                .withLastName(set.getString(5))
+                .withStatus(status)
+                .hasEmail(set.getString(7))
+                .isBanned(set.getBoolean(8))
+                .hasBirthDate(set.getTimestamp(9))
+                .build();
+        return new Notification(set.getLong(1),
+                user,
+                set.getString(10),
+                set.getTimestamp(11));
     }
 }

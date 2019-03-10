@@ -3,11 +3,11 @@ package dao.impl;
 import connection.ProxyConnection;
 import dao.EditDAO;
 import dao.exception.DAOException;
-import entity.Alien;
-import entity.Edit;
-import entity.Movie;
-import entity.User;
+import entity.*;
 import pool.DatabaseConnectionPool;
+import util.builder.AlienBuilder;
+import util.builder.MovieBuilder;
+import util.builder.UserBuilder;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -94,26 +94,34 @@ public class EditSQL implements EditDAO {
     }
 
     private Edit getNextEdit(ResultSet set) throws SQLException {
+        int statusId = set.getInt(17) - 1;
+        UserStatus status = UserStatus.values()[statusId];
+        UserBuilder builder = new UserBuilder(set.getLong(13));
+        User user = builder.withUsername(set.getString(14))
+                .withFirstName(set.getString(15))
+                .withLastName(set.getString(16))
+                .withStatus(status)
+                .hasEmail(set.getString(18))
+                .isBanned(set.getBoolean(19))
+                .hasBirthDate(set.getTimestamp(20))
+                .build();
+        MovieBuilder movieBuilder = new MovieBuilder(set.getLong(8));
+        Movie movie = movieBuilder.withTitle(set.getString(9))
+                .withRunningTime(set.getInt(10))
+                .withBudget(set.getInt(11))
+                .hasReleaseDate(set.getTimestamp(12))
+                .build();
+        AlienBuilder alienBuilder = new AlienBuilder(set.getLong(2));
+        Alien alien = alienBuilder.withName(set.getString(3))
+                .fromMovie(movie)
+                .fromPlanet(set.getString(4))
+                .hasDescription(set.getString(5))
+                .withAverageRating(set.getDouble(6))
+                .withPathToImage(set.getString(7))
+                .build();
         return new Edit(set.getLong(1),
-                new Alien(set.getLong(2),
-                        set.getString(3),
-                        new Movie(set.getLong(8),
-                                set.getString(9),
-                                set.getInt(10),
-                                set.getInt(11),
-                                set.getTimestamp(12)),
-                        set.getString(4),
-                        set.getString(5),
-                        set.getDouble(6),
-                        set.getString(7)),
-                new User(set.getLong(13),
-                        set.getString(14),
-                        set.getString(15),
-                        set.getString(16),
-                        set.getInt(17),
-                        set.getString(18),
-                        set.getBoolean(19),
-                        set.getTimestamp(20)),
+                alien,
+                user,
                 set.getString(21),
                 set.getTimestamp(22));
     }

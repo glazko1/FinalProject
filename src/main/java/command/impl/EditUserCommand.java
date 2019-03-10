@@ -4,10 +4,13 @@ import command.Command;
 import command.exception.CommandException;
 import service.CommonService;
 import service.exception.ServiceException;
+import service.exception.user.InvalidEmailException;
+import service.exception.user.InvalidUserInformationException;
 import service.impl.Common;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class EditUserCommand implements Command {
 
@@ -31,8 +34,13 @@ public class EditUserCommand implements Command {
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");
+        HttpSession session = request.getSession();
         try {
             service.editUser(userId, firstName, lastName, email);
+        } catch (InvalidEmailException e) {
+            session.setAttribute("message", "message.invalid_email");
+        } catch (InvalidUserInformationException e) {
+            session.setAttribute("message", "message.invalid_info");
         } catch (ServiceException e) {
             throw new CommandException(e);
         }

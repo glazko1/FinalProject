@@ -32,9 +32,7 @@ public class AddMovieCommandTest {
         when(mockRequest.getParameter("title")).thenReturn("Title");
         when(mockRequest.getParameter("runningTime")).thenReturn("100");
         when(mockRequest.getParameter("budget")).thenReturn("2000000");
-        when(mockRequest.getParameter("year")).thenReturn("2000");
-        when(mockRequest.getParameter("month")).thenReturn("1");
-        when(mockRequest.getParameter("day")).thenReturn("1");
+        when(mockRequest.getParameter("releaseDate")).thenReturn("2000-01-01");
         doThrow(ServiceException.class).when(service).addMovie(anyString(), anyInt(), anyInt(), any());
         command.execute();
         //then
@@ -52,9 +50,7 @@ public class AddMovieCommandTest {
         when(mockRequest.getParameter("title")).thenReturn("Title");
         when(mockRequest.getParameter("runningTime")).thenReturn("100");
         when(mockRequest.getParameter("budget")).thenReturn("2000000");
-        when(mockRequest.getParameter("year")).thenReturn("2000");
-        when(mockRequest.getParameter("month")).thenReturn("1");
-        when(mockRequest.getParameter("day")).thenReturn("1");
+        when(mockRequest.getParameter("releaseDate")).thenReturn("2000-01-01");
         doNothing().when(service).addMovie(anyString(), anyInt(), anyInt(), any());
         String result = command.execute();
         //then

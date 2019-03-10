@@ -54,13 +54,17 @@
             <tr>
                 <th align="center"><fmt:message key="message.planet" /></th>
                 <td align="center">
-                    <label><input type="text" name="planet" value="${planet}"></label>
+                    <label>
+                        <input type="text" required pattern=".{4,20}" name="planet" title="<fmt:message key="message.planet_format" />" value="${planet}" />
+                    </label>
                 </td>
             </tr>
             <tr>
                 <th align="center"><fmt:message key="message.description" /></th>
                 <td align="center">
-                    <label><input type="text" name="description" value="${description}"></label>
+                    <label>
+                        <input type="text" required pattern=".{1,255}" name="description" title="<fmt:message key="message.description_format" />" value="${description}" />
+                    </label>
                 </td>
             </tr>
         </table><br>

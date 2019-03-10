@@ -51,6 +51,15 @@
             </c:if>
         </tr>
         <tr>
+            <th align="center"><fmt:message key="message.status" /></th>
+            <td align="center">
+                <c:if test="${user.status.statusId == 1}"><fmt:message key="status.admin" /></c:if>
+                <c:if test="${user.status.statusId == 2}"><fmt:message key="status.movie_fan" /></c:if>
+                <c:if test="${user.status.statusId == 3}"><fmt:message key="status.alien_specialist" /></c:if>
+                <c:if test="${user.status.statusId == 4}"><fmt:message key="status.user" /></c:if>
+            </td>
+        </tr>
+        <tr>
             <th align="center"><fmt:message key="message.birth_date" /></th>
             <td align="center">${user.birthDate}</td>
         </tr>
@@ -64,7 +73,7 @@
     </c:if>
     <form method="post" action="mainWindow">
         <input type="hidden" name="userId" value=${user.userId}>
-        <c:if test="${sessionScope.status == 1 && user.userId != sessionScope.userId && user.statusId != 1}">
+        <c:if test="${sessionScope.status == 1 && user.userId != sessionScope.userId && user.status.statusId != 1}">
             <button type="submit" name="button" value="changeBanStatus">
                 <c:if test="${user.banned == false}"><fmt:message key="button.ban_user" /></c:if>
                 <c:if test="${user.banned == true}"><fmt:message key="button.unban_user" /></c:if>
@@ -72,17 +81,17 @@
             <fmt:message key="message.change_status" />
             <label>
                 <select name="status">
-                    <c:if test="${user.statusId != 1}">
-                        <option value="1">Admin</option>
+                    <c:if test="${user.status.statusId != 1}">
+                        <option value="1"><fmt:message key="status.admin" /></option>
                     </c:if>
-                    <c:if test="${user.statusId != 2}">
-                        <option value="2">Movie Fan</option>
+                    <c:if test="${user.status.statusId != 2}">
+                        <option value="2"><fmt:message key="status.movie_fan" /></option>
                     </c:if>
-                    <c:if test="${user.statusId != 3}">
-                        <option value="3">Alien Specialist</option>
+                    <c:if test="${user.status.statusId != 3}">
+                        <option value="3"><fmt:message key="status.alien_specialist" /></option>
                     </c:if>
-                    <c:if test="${user.statusId != 4}">
-                        <option value="4">User</option>
+                    <c:if test="${user.status.statusId != 4}">
+                        <option value="4"><fmt:message key="status.user" /></option>
                     </c:if>
                 </select>
             </label>

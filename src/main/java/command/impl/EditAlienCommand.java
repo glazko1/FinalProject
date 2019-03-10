@@ -4,10 +4,13 @@ import command.Command;
 import command.exception.CommandException;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
+import service.exception.alien.InvalidAlienInformationException;
+import service.exception.alien.InvalidAlienNameException;
 import service.impl.AlienSpecialist;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class EditAlienCommand implements Command {
 
@@ -31,8 +34,11 @@ public class EditAlienCommand implements Command {
         String movie = request.getParameter("movie");
         String planet = request.getParameter("planet");
         String description = request.getParameter("description");
+        HttpSession session = request.getSession();
         try {
             service.editAlien(alienId, movie, planet, description);
+        } catch (InvalidAlienInformationException e) {
+            session.setAttribute("message", "message.invalid_info");
         } catch (ServiceException e) {
             throw new CommandException(e);
         }

@@ -12,6 +12,10 @@ public class Alien {
     private double averageRating;
     private String imagePath;
 
+    public Alien(long alienId) {
+        this.alienId = alienId;
+    }
+
     public Alien(long alienId, String alienName, Movie movie, String planet, String description, double averageRating, String imagePath) {
         this.alienId = alienId;
         this.alienName = alienName;

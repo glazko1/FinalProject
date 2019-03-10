@@ -7,7 +7,11 @@ import entity.Alien;
 import entity.Feedback;
 import entity.Movie;
 import entity.User;
+import entity.UserStatus;
 import pool.DatabaseConnectionPool;
+import util.builder.AlienBuilder;
+import util.builder.MovieBuilder;
+import util.builder.UserBuilder;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,7 +30,7 @@ public class FeedbackSQL implements FeedbackDAO {
 
     private FeedbackSQL() {}
 
-    private static final String GET_FEEDBACK_BY_ID_SQL = "SELECT f.FeedbackId, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, a.ImagePath, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN Alien a ON f.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User u ON f.UserId = u.UserId WHERE f.FeedbackId = ?";
+    private static final String GET_FEEDBACK_BY_ID_SQL = "SELECT f.FeedbackId, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, a.ImagePath, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN Alien a ON f.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User u ON f.UserId = u.UserId WHERE f.FeedbackId = ?";
     private static final String GET_FEEDBACKS_BY_ALIEN_ID_SQL = "SELECT f.FeedbackId, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, a.ImagePath, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN Alien a ON f.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User u ON f.UserId = u.UserId WHERE f.AlienId = ? ORDER BY FeedbackDateTime DESC";
     private static final String ADD_NEW_FEEDBACK_SQL = "INSERT INTO Feedback (FeedbackId, AlienId, UserId, Rating, FeedbackText, FeedbackDateTime) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String DELETE_FEEDBACK_SQL = "DELETE FROM Feedback WHERE FeedbackId = ?";
@@ -96,26 +100,34 @@ public class FeedbackSQL implements FeedbackDAO {
     }
 
     private Feedback getNextFeedback(ResultSet set) throws SQLException {
+        int statusId = set.getInt(11) - 1;
+        UserStatus status = UserStatus.values()[statusId];
+        UserBuilder builder = new UserBuilder(set.getLong(7));
+        User user = builder.withUsername(set.getString(8))
+                .withFirstName(set.getString(9))
+                .withLastName(set.getString(10))
+                .withStatus(status)
+                .hasEmail(set.getString(12))
+                .isBanned(set.getBoolean(13))
+                .hasBirthDate(set.getTimestamp(14))
+                .build();
+        MovieBuilder movieBuilder = new MovieBuilder(set.getLong(2));
+        Movie movie = movieBuilder.withTitle(set.getString(3))
+                .withRunningTime(set.getInt(4))
+                .withBudget(set.getInt(5))
+                .hasReleaseDate(set.getTimestamp(6))
+                .build();
+        AlienBuilder alienBuilder = new AlienBuilder(set.getLong(15));
+        Alien alien = alienBuilder.withName(set.getString(16))
+                .fromMovie(movie)
+                .fromPlanet(set.getString(17))
+                .hasDescription(set.getString(18))
+                .withAverageRating(set.getDouble(19))
+                .withPathToImage(set.getString(20))
+                .build();
         return new Feedback(set.getLong(1),
-                new Alien(set.getLong(2),
-                        set.getString(3),
-                        new Movie(set.getLong(8),
-                                set.getString(9),
-                                set.getInt(10),
-                                set.getInt(11),
-                                set.getTimestamp(12)),
-                        set.getString(4),
-                        set.getString(5),
-                        set.getDouble(6),
-                        set.getString(7)),
-                new User(set.getLong(13),
-                        set.getString(14),
-                        set.getString(15),
-                        set.getString(16),
-                        set.getInt(17),
-                        set.getString(18),
-                        set.getBoolean(19),
-                        set.getTimestamp(20)),
+                alien,
+                user,
                 set.getInt(21),
                 set.getString(22),
                 set.getTimestamp(23));

@@ -14,4 +14,5 @@ public interface MovieDAO {
     void addNewMovie(Movie movie) throws DAOException;
     List<Movie> getAllMoviesSorted(String sortedBy, String sortType) throws DAOException;
     void editMovie(long movieId, int runningTime, int budget, Date releaseDate) throws DAOException;
+    void deleteMovie(long movieId) throws DAOException;
 }
