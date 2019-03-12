@@ -33,7 +33,7 @@ public class AddMovieCommandTest {
         when(mockRequest.getParameter("runningTime")).thenReturn("100");
         when(mockRequest.getParameter("budget")).thenReturn("2000000");
         when(mockRequest.getParameter("releaseDate")).thenReturn("2000-01-01");
-        doThrow(ServiceException.class).when(service).addMovie(anyString(), anyInt(), anyInt(), any());
+        doThrow(ServiceException.class).when(service).addMovie(anyString(), anyString(), anyString(), any());
         command.execute();
         //then
         //expecting CommandException
@@ -51,7 +51,7 @@ public class AddMovieCommandTest {
         when(mockRequest.getParameter("runningTime")).thenReturn("100");
         when(mockRequest.getParameter("budget")).thenReturn("2000000");
         when(mockRequest.getParameter("releaseDate")).thenReturn("2000-01-01");
-        doNothing().when(service).addMovie(anyString(), anyInt(), anyInt(), any());
+        doNothing().when(service).addMovie(anyString(), anyString(), anyString(), any());
         String result = command.execute();
         //then
         assertEquals(result, "main");

@@ -22,7 +22,9 @@ import service.exception.ServiceException;
 import service.exception.alien.InvalidAlienInformationException;
 import service.exception.alien.InvalidAlienNameException;
 import util.builder.AlienBuilder;
+import util.builder.NotificationBuilder;
 import util.generator.IdGenerator;
+import util.validator.AlienInformationValidator;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -38,9 +40,7 @@ public class AlienSpecialist implements AlienSpecialistService {
 
     private AlienSpecialist() {}
 
-    private static final String ALIEN_NAME_FORMAT_REGEX = ".{2,30}";
-    private static final String PLANET_FORMAT_REGEX = ".{4,20}";
-    private static final String DESCRIPTION_FORMAT_REGEX = ".{1,255}";
+    private AlienInformationValidator validator = AlienInformationValidator.getInstance();
     private UserDAO userDAO = UserSQL.getInstance();
     private AlienDAO alienDAO = AlienSQL.getInstance();
     private MovieDAO movieDAO = MovieSQL.getInstance();
@@ -50,9 +50,7 @@ public class AlienSpecialist implements AlienSpecialistService {
 
     @Override
     public void addAlien(long id, String alienName, String planet, String description, String movieTitle, String imagePath) throws ServiceException {
-        if (!alienName.matches(ALIEN_NAME_FORMAT_REGEX) ||
-                !planet.matches(PLANET_FORMAT_REGEX) ||
-                !description.matches(DESCRIPTION_FORMAT_REGEX)) {
+        if (!validator.validate(alienName, planet, description)) {
             throw new InvalidAlienInformationException("Information is not valid!");
         }
         try {
@@ -75,8 +73,7 @@ public class AlienSpecialist implements AlienSpecialistService {
 
     @Override
     public void editAlien(long alienId, String movieTitle, String planet, String description) throws ServiceException {
-        if (!planet.matches(PLANET_FORMAT_REGEX) ||
-                !description.matches(DESCRIPTION_FORMAT_REGEX)) {
+        if (!validator.validate(planet, description)) {
             throw new InvalidAlienInformationException("Information is not valid!");
         }
         try {
@@ -132,7 +129,11 @@ public class AlienSpecialist implements AlienSpecialistService {
             User user = userDAO.getUser(userId);
             long notificationId = generator.generateId();
             Timestamp notificationDateTime = new Timestamp(System.currentTimeMillis());
-            Notification notification = new Notification(notificationId, user, notificationText, notificationDateTime);
+            NotificationBuilder builder = new NotificationBuilder(notificationId);
+            Notification notification = builder.toUser(user)
+                    .withText(notificationText)
+                    .withNotificationDateTime(notificationDateTime)
+                    .build();
             notificationDAO.addNewNotification(notification);
         } catch (DAOException e) {
             throw new ServiceException(e);
@@ -147,7 +148,12 @@ public class AlienSpecialist implements AlienSpecialistService {
             Timestamp notificationDateTime = new Timestamp(System.currentTimeMillis());
             users.forEach(u -> {
                 long notificationId = generator.generateId();
-                notifications.add(new Notification(notificationId, u, notificationText, notificationDateTime));
+                NotificationBuilder builder = new NotificationBuilder(notificationId);
+                Notification notification = builder.toUser(u)
+                        .withText(notificationText)
+                        .withNotificationDateTime(notificationDateTime)
+                        .build();
+                notifications.add(notification);
             });
             for (Notification notification : notifications) {
                 notificationDAO.addNewNotification(notification);
@@ -164,6 +170,10 @@ public class AlienSpecialist implements AlienSpecialistService {
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
+    }
+
+    public void setValidator(AlienInformationValidator validator) {
+        this.validator = validator;
     }
 
     void setUserDAO(UserDAO userDAO) {

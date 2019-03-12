@@ -3,9 +3,14 @@ package dao.impl;
 import connection.ProxyConnection;
 import dao.EditDAO;
 import dao.exception.DAOException;
-import entity.*;
+import entity.Alien;
+import entity.Edit;
+import entity.Movie;
+import entity.User;
+import entity.UserStatus;
 import pool.DatabaseConnectionPool;
 import util.builder.AlienBuilder;
+import util.builder.EditBuilder;
 import util.builder.MovieBuilder;
 import util.builder.UserBuilder;
 
@@ -119,10 +124,11 @@ public class EditSQL implements EditDAO {
                 .withAverageRating(set.getDouble(6))
                 .withPathToImage(set.getString(7))
                 .build();
-        return new Edit(set.getLong(1),
-                alien,
-                user,
-                set.getString(21),
-                set.getTimestamp(22));
+        EditBuilder editBuilder = new EditBuilder(set.getLong(1));
+        return editBuilder.aboutAlien(alien)
+                .suggestedBy(user)
+                .withText(set.getString(21))
+                .withEditDateTime(set.getTimestamp(22))
+                .build();
     }
 }

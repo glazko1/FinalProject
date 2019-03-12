@@ -10,6 +10,7 @@ import entity.User;
 import entity.UserStatus;
 import pool.DatabaseConnectionPool;
 import util.builder.AlienBuilder;
+import util.builder.FeedbackBuilder;
 import util.builder.MovieBuilder;
 import util.builder.UserBuilder;
 
@@ -31,7 +32,7 @@ public class FeedbackSQL implements FeedbackDAO {
     private FeedbackSQL() {}
 
     private static final String GET_FEEDBACK_BY_ID_SQL = "SELECT f.FeedbackId, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, a.ImagePath, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN Alien a ON f.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User u ON f.UserId = u.UserId WHERE f.FeedbackId = ?";
-    private static final String GET_FEEDBACKS_BY_ALIEN_ID_SQL = "SELECT f.FeedbackId, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, a.ImagePath, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN Alien a ON f.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User u ON f.UserId = u.UserId WHERE f.AlienId = ? ORDER BY FeedbackDateTime DESC";
+    private static final String GET_FEEDBACKS_BY_ALIEN_ID_SQL = "SELECT f.FeedbackId, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, a.ImagePath, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN Alien a ON f.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User u ON f.UserId = u.UserId WHERE f.AlienId = ? ORDER BY FeedbackDateTime DESC";
     private static final String ADD_NEW_FEEDBACK_SQL = "INSERT INTO Feedback (FeedbackId, AlienId, UserId, Rating, FeedbackText, FeedbackDateTime) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String DELETE_FEEDBACK_SQL = "DELETE FROM Feedback WHERE FeedbackId = ?";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
@@ -125,11 +126,12 @@ public class FeedbackSQL implements FeedbackDAO {
                 .withAverageRating(set.getDouble(19))
                 .withPathToImage(set.getString(20))
                 .build();
-        return new Feedback(set.getLong(1),
-                alien,
-                user,
-                set.getInt(21),
-                set.getString(22),
-                set.getTimestamp(23));
+        FeedbackBuilder feedbackBuilder = new FeedbackBuilder(set.getLong(1));
+        return feedbackBuilder.aboutAlien(alien)
+                .leftByUser(user)
+                .withRating(set.getInt(21))
+                .withText(set.getString(22))
+                .withFeedbackDateTime(set.getTimestamp(23))
+                .build();
     }
 }

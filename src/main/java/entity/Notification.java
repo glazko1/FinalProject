@@ -11,11 +11,8 @@ public class Notification {
     private String notificationText;
     private Timestamp notificationDateTime;
 
-    public Notification(long notificationId, User user, String notificationText, Timestamp notificationDateTime) {
+    public Notification(long notificationId) {
         this.notificationId = notificationId;
-        this.user = user;
-        this.notificationText = notificationText;
-        this.notificationDateTime = notificationDateTime;
     }
 
     public long getNotificationId() {

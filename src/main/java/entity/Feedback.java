@@ -13,13 +13,8 @@ public class Feedback {
     private String feedbackText;
     private Timestamp feedbackDateTime;
 
-    public Feedback(long feedbackId, Alien alien, User user, int rating, String feedbackText, Timestamp feedbackDateTime) {
+    public Feedback(long feedbackId) {
         this.feedbackId = feedbackId;
-        this.alien = alien;
-        this.user = user;
-        this.rating = rating;
-        this.feedbackText = feedbackText;
-        this.feedbackDateTime = feedbackDateTime;
     }
 
     public long getFeedbackId() {

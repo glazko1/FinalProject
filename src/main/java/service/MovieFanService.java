@@ -6,7 +6,7 @@ import java.sql.Date;
 
 public interface MovieFanService {
 
-    void addMovie(String title, int runningTime, int budget, Date releaseDate) throws ServiceException;
-    void editMovie(long movieId, int runningTime, int budget, Date releaseDate) throws ServiceException;
+    void addMovie(String title, String runningTime, String budget, Date releaseDate) throws ServiceException;
+    void editMovie(long movieId, String runningTime, String budget, Date releaseDate) throws ServiceException;
     void deleteMovie(long movieId) throws ServiceException;
 }

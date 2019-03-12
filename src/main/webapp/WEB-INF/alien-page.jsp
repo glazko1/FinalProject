@@ -121,6 +121,7 @@
     </c:forEach>
 </div>
 <div class="right-column">
+    <br><br>
     <img src="${alien.imagePath}" align="center" alt="${alien.alienName}" height="300" style="border: 2px solid white;"><br><br>
     ${alien.alienName}
 </div>

@@ -31,9 +31,12 @@ import service.exception.user.InvalidEmailException;
 import service.exception.user.InvalidPasswordException;
 import service.exception.user.InvalidUserInformationException;
 import service.exception.user.InvalidUsernameException;
+import util.builder.EditBuilder;
+import util.builder.FeedbackBuilder;
 import util.builder.UserBuilder;
 import util.generator.IdGenerator;
 import util.hasher.PasswordHashKeeper;
+import util.validator.UserInformationValidator;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -49,10 +52,7 @@ public class Common implements CommonService {
 
     private Common() {}
 
-    private static final String USERNAME_FORMAT_REGEX = ".{6,15}";
-    private static final String NAME_FORMAT_REGEX = ".{2,30}";
-    private static final String EMAIL_FORMAT_REGEX = "[a-z][[a-z][0-9][-][_]]{3,15}[@][a-z]{2,10}[.][a-z]{2,4}";
-    private static final String PASSWORD_FORMAT_REGEX = ".{8,30}";
+    private UserInformationValidator validator = UserInformationValidator.getInstance();
     private UserDAO userDAO = UserSQL.getInstance();
     private AlienDAO alienDAO = AlienSQL.getInstance();
     private MovieDAO movieDAO = MovieSQL.getInstance();
@@ -64,12 +64,11 @@ public class Common implements CommonService {
 
     @Override
     public User signIn(String username, String password) throws ServiceException {
-        if (!username.matches(USERNAME_FORMAT_REGEX) ||
-                !password.matches(PASSWORD_FORMAT_REGEX)) {
+        if (!validator.validate(username, password)) {
             throw new InvalidUserInformationException("Information is not valid!");
         }
+        String encoded = keeper.generateHash(username, password);
         try {
-            String encoded = keeper.generateHash(username, password);
             User user = userDAO.getUser(username, encoded);
             if (user.isBanned()) {
                 throw new BannedUserException("User is banned!");
@@ -85,26 +84,21 @@ public class Common implements CommonService {
     @Override
     public void signUp(String username, String firstName, String lastName, String email,
                        String password, String confirmedPassword, Date birthDate) throws ServiceException {
-        if (!username.matches(USERNAME_FORMAT_REGEX) ||
-                !firstName.matches(NAME_FORMAT_REGEX) ||
-                !lastName.matches(NAME_FORMAT_REGEX) ||
-                !email.matches(EMAIL_FORMAT_REGEX) ||
-                !password.matches(PASSWORD_FORMAT_REGEX) ||
-                !password.equals(confirmedPassword)) {
+        if (!validator.validate(username, firstName, lastName, email, password, confirmedPassword)) {
             throw new InvalidUserInformationException("Information is not valid!");
         }
+        long id = generator.generateId();
+        UserBuilder builder = new UserBuilder(id);
+        User user = builder.withUsername(username)
+                .withFirstName(firstName)
+                .withLastName(lastName)
+                .withStatus(UserStatus.USER)
+                .hasEmail(email)
+                .isBanned(false)
+                .hasBirthDate(new Timestamp(birthDate.getTime() + 11000 * 1000))
+                .build();
         String encoded = keeper.generateHash(username, password);
         try {
-            long id = generator.generateId();
-            UserBuilder builder = new UserBuilder(id);
-            User user = builder.withUsername(username)
-                    .withFirstName(firstName)
-                    .withLastName(lastName)
-                    .withStatus(UserStatus.USER)
-                    .hasEmail(email)
-                    .isBanned(false)
-                    .hasBirthDate(new Timestamp(birthDate.getTime() + 11000 * 1000))
-                    .build();
             userDAO.addNewUser(user, encoded);
         } catch (UsedUsernameException e) {
             throw new InvalidUsernameException(e);
@@ -155,12 +149,18 @@ public class Common implements CommonService {
 
     @Override
     public void addFeedback(long alienId, String username, int rating, String feedbackText) throws ServiceException {
+        long id = generator.generateId();
         try {
-            long id = generator.generateId();
             User user = userDAO.getUser(username);
             Alien alien = alienDAO.getAlienById(alienId);
             Timestamp feedbackDateTime = new Timestamp(System.currentTimeMillis());
-            Feedback feedback = new Feedback(id, alien, user, rating, feedbackText, feedbackDateTime);
+            FeedbackBuilder builder = new FeedbackBuilder(id);
+            Feedback feedback = builder.aboutAlien(alien)
+                    .leftByUser(user)
+                    .withRating(rating)
+                    .withText(feedbackText)
+                    .withFeedbackDateTime(feedbackDateTime)
+                    .build();
             feedbackDAO.addNewFeedback(feedback);
         } catch (DAOException e) {
             throw new ServiceException(e);
@@ -187,9 +187,7 @@ public class Common implements CommonService {
 
     @Override
     public void editUser(long userId, String firstName, String lastName, String email) throws ServiceException {
-        if (!firstName.matches(NAME_FORMAT_REGEX) ||
-                !lastName.matches(NAME_FORMAT_REGEX) ||
-                !email.matches(EMAIL_FORMAT_REGEX)) {
+        if (!validator.validate(firstName, lastName, email)) {
             throw new InvalidUserInformationException("Information is not valid!");
         }
         try {
@@ -204,10 +202,7 @@ public class Common implements CommonService {
     @Override
     public void changePassword(long userId, String currentPassword, String newPassword,
                                String confirmedPassword) throws ServiceException {
-        if (!currentPassword.matches(PASSWORD_FORMAT_REGEX) ||
-                !newPassword.matches(PASSWORD_FORMAT_REGEX) ||
-                !confirmedPassword.matches(PASSWORD_FORMAT_REGEX) ||
-                !newPassword.equals(confirmedPassword)) {
+        if (!validator.validatePasswords(currentPassword, newPassword, confirmedPassword)) {
             throw new InvalidUserInformationException("Information is not valid!");
         }
         try {
@@ -226,12 +221,7 @@ public class Common implements CommonService {
 
     @Override
     public void restorePassword(String username, String firstName, String lastName, String email, String newPassword, String confirmedPassword) throws ServiceException {
-        if (!username.matches(USERNAME_FORMAT_REGEX) ||
-                !firstName.matches(NAME_FORMAT_REGEX) ||
-                !lastName.matches(NAME_FORMAT_REGEX) ||
-                !email.matches(EMAIL_FORMAT_REGEX) ||
-                !newPassword.matches(PASSWORD_FORMAT_REGEX) ||
-                !newPassword.equals(confirmedPassword)) {
+        if (!validator.validate(username, firstName, lastName, email, newPassword, confirmedPassword)) {
             throw new InvalidUserInformationException("Information is not valid!");
         }
         try {
@@ -287,7 +277,12 @@ public class Common implements CommonService {
             Alien alien = alienDAO.getAlienById(alienId);
             User user = userDAO.getUser(userId);
             Timestamp editDateTime = new Timestamp(System.currentTimeMillis());
-            Edit edit = new Edit(editId, alien, user, description, editDateTime);
+            EditBuilder builder = new EditBuilder(editId);
+            Edit edit = builder.aboutAlien(alien)
+                    .suggestedBy(user)
+                    .withText(description)
+                    .withEditDateTime(editDateTime)
+                    .build();
             editDAO.addNewEdit(edit);
         } catch (DAOException e) {
             throw new ServiceException(e);
@@ -310,6 +305,10 @@ public class Common implements CommonService {
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
+    }
+
+    public void setValidator(UserInformationValidator validator) {
+        this.validator = validator;
     }
 
     void setUserDAO(UserDAO userDAO) {

@@ -7,6 +7,9 @@ import dao.MovieDAO;
 import dao.NotificationDAO;
 import dao.UserDAO;
 import dao.exception.DAOException;
+import dao.exception.user.InvalidUsernameOrPasswordException;
+import dao.exception.user.UsedEmailException;
+import dao.exception.user.UsedUsernameException;
 import dao.impl.AlienSQL;
 import dao.impl.EditSQL;
 import dao.impl.FeedbackSQL;
@@ -21,10 +24,17 @@ import entity.Notification;
 import entity.User;
 import javafx.util.Pair;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import service.exception.ServiceException;
+import service.exception.user.InvalidEmailException;
+import service.exception.user.InvalidPasswordException;
+import service.exception.user.InvalidUserInformationException;
+import service.exception.user.InvalidUsernameException;
 import util.generator.IdGenerator;
 import util.hasher.PasswordHashKeeper;
+import util.validator.UserInformationValidator;
 
 import java.sql.Date;
 import java.util.List;
@@ -43,6 +53,7 @@ import static org.testng.Assert.assertEquals;
 public class CommonTest {
 
     private Common service = Common.getInstance();
+    private UserInformationValidator validator = mock(UserInformationValidator.class);
     private UserDAO userDAO = mock(UserSQL.class);
     private AlienDAO alienDAO = mock(AlienSQL.class);
     private MovieDAO movieDAO = mock(MovieSQL.class);
@@ -54,6 +65,7 @@ public class CommonTest {
 
     @BeforeClass
     public void init() {
+        service.setValidator(validator);
         service.setUserDAO(userDAO);
         service.setAlienDAO(alienDAO);
         service.setMovieDAO(movieDAO);
@@ -68,28 +80,21 @@ public class CommonTest {
     public void signIn_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
+        when(validator.validate(anyString(), anyString())).thenReturn(true);
         doThrow(DAOException.class).when(userDAO).getUser(anyString(), anyString());
         service.signIn("Username", "Password");
         //then
         //expecting ServiceException
     }
 
-    @Test(expectedExceptions = ServiceException.class)
-    public void signIn_shortUsername_ServiceException() throws ServiceException {
+    @Test(expectedExceptions = InvalidUserInformationException.class)
+    public void signIn_invalidParameters_InvalidUserInformationException() throws ServiceException {
         //given
         //when
-        service.signIn("User", "Password");
+        when(validator.validate(anyString(), anyString())).thenReturn(false);
+        service.signIn("Invalid", "Info");
         //then
-        //expecting ServiceException
-    }
-
-    @Test(expectedExceptions = ServiceException.class)
-    public void signIn_shortPassword_ServiceException() throws ServiceException {
-        //given
-        //when
-        service.signIn("Username", "Short");
-        //then
-        //expecting ServiceException
+        //expecting InvalidUserInformationException
     }
 
     @Test(expectedExceptions = ServiceException.class)
@@ -97,6 +102,7 @@ public class CommonTest {
         //given
         User user = mock(User.class);
         //when
+        when(validator.validate(anyString(), anyString())).thenReturn(true);
         doReturn(user).when(userDAO).getUser(anyString(), anyString());
         when(user.isBanned()).thenReturn(true);
         service.signIn("Username", "Password");
@@ -109,6 +115,7 @@ public class CommonTest {
         //given
         User user = mock(User.class);
         //when
+        when(validator.validate(anyString(), anyString())).thenReturn(true);
         doReturn(user).when(userDAO).getUser(anyString(), anyString());
         when(user.isBanned()).thenReturn(false);
         User result = service.signIn("Username", "Password");
@@ -120,6 +127,7 @@ public class CommonTest {
     public void signUp_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
+        when(validator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
         doThrow(DAOException.class).when(userDAO).addNewUser(any(User.class), anyString());
         service.signUp("Username", "First", "Last",
                 "email@gmail.com", "Password", "Password",
@@ -128,76 +136,49 @@ public class CommonTest {
         //expecting ServiceException
     }
 
-    @Test(expectedExceptions = ServiceException.class)
-    public void signUp_shortUsername_ServiceException() throws ServiceException {
+    @Test(expectedExceptions = InvalidUsernameException.class)
+    public void signUp_usedUsernameExceptionFromDAO_InvalidUsernameException() throws DAOException, ServiceException {
         //given
         //when
-        service.signUp("User", "First", "Last",
+        when(validator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
+        doThrow(UsedUsernameException.class).when(userDAO).addNewUser(any(User.class), anyString());
+        service.signUp("Username", "First", "Last",
                 "email@gmail.com", "Password", "Password",
                 Date.valueOf("2000-01-01"));
         //then
-        //expecting ServiceException
+        //expecting InvalidUsernameException
     }
 
-    @Test(expectedExceptions = ServiceException.class)
-    public void signUp_shortFirstName_ServiceException() throws ServiceException {
+    @Test(expectedExceptions = InvalidEmailException.class)
+    public void signUp_usedEmailExceptionFromDAO_InvalidEmailException() throws DAOException, ServiceException {
         //given
         //when
-        service.signUp("Username", "F", "Last",
+        when(validator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
+        doThrow(UsedEmailException.class).when(userDAO).addNewUser(any(User.class), anyString());
+        service.signUp("Username", "First", "Last",
                 "email@gmail.com", "Password", "Password",
                 Date.valueOf("2000-01-01"));
         //then
-        //expecting ServiceException
+        //expecting InvalidEmailException
     }
 
-    @Test(expectedExceptions = ServiceException.class)
-    public void signUp_shortLastName_ServiceException() throws ServiceException {
+    @Test(expectedExceptions = InvalidUserInformationException.class)
+    public void signUp_invalidParameters_InvalidUserInformationException() throws ServiceException {
         //given
         //when
-        service.signUp("Username", "First", "L",
+        when(validator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(false);
+        service.signUp("Invalid", "First", "Last",
                 "email@gmail.com", "Password", "Password",
                 Date.valueOf("2000-01-01"));
         //then
-        //expecting ServiceException
-    }
-
-    @Test(expectedExceptions = ServiceException.class)
-    public void signUp_invalidEmail_ServiceException() throws ServiceException {
-        //given
-        //when
-        service.signUp("Username", "First", "Last",
-                "invalid@email,ru", "Password", "Password",
-                Date.valueOf("2000-01-01"));
-        //then
-        //expecting ServiceException
-    }
-
-    @Test(expectedExceptions = ServiceException.class)
-    public void signUp_shortPassword_ServiceException() throws ServiceException {
-        //given
-        //when
-        service.signUp("Username", "First", "Last",
-                "invalid@email,ru", "Short", "Short",
-                Date.valueOf("2000-01-01"));
-        //then
-        //expecting ServiceException
-    }
-
-    @Test(expectedExceptions = ServiceException.class)
-    public void signUp_passwordsDoNotMatch_ServiceException() throws ServiceException {
-        //given
-        //when
-        service.signUp("Username", "First", "Last",
-                "invalid@email,ru", "Password", "OtherPassword",
-                Date.valueOf("2000-01-01"));
-        //then
-        //expecting ServiceException
+        //expecting InvalidUserInformationException
     }
 
     @Test
     public void signUp_validParameters_void() throws DAOException, ServiceException {
         //given
         //when
+        when(validator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
         doNothing().when(userDAO).addNewUser(any(User.class), anyString());
         service.signUp("Username", "First", "Last",
                 "email@gmail.com", "Password", "Password",
@@ -361,43 +342,39 @@ public class CommonTest {
     public void editUser_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
+        when(validator.validate(anyString(), anyString(), anyString())).thenReturn(true);
         doThrow(ServiceException.class).when(userDAO).editUser(anyLong(), anyString(), anyString(), anyString());
         service.editUser(1, "First", "Last", "email@gmail.com");
         //then
         //expecting ServiceException
     }
 
-    @Test(expectedExceptions = ServiceException.class)
-    public void editUser_shortFirstName_ServiceException() throws ServiceException {
+    @Test(expectedExceptions = InvalidEmailException.class)
+    public void editUser_usedEmailExceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        service.editUser(1, "F", "Last", "email@gmail.com");
+        when(validator.validate(anyString(), anyString(), anyString())).thenReturn(true);
+        doThrow(UsedEmailException.class).when(userDAO).editUser(anyLong(), anyString(), anyString(), anyString());
+        service.editUser(1, "First", "Last", "email@gmail.com");
         //then
         //expecting ServiceException
     }
 
-    @Test(expectedExceptions = ServiceException.class)
-    public void editUser_shortLastName_ServiceException() throws ServiceException {
+    @Test(expectedExceptions = InvalidUserInformationException.class)
+    public void editUser_invalidParameters_void() throws ServiceException {
         //given
         //when
-        service.editUser(1, "First", "L", "email@gmail.com");
+        when(validator.validate(anyString(), anyString(), anyString())).thenReturn(false);
+        service.editUser(1, "First", "Last", "email@gmail.com");
         //then
-        //expecting ServiceException
-    }
-
-    @Test(expectedExceptions = ServiceException.class)
-    public void editUser_invalidEmail_ServiceException() throws ServiceException {
-        //given
-        //when
-        service.editUser(1, "First", "Last", "email@gmail@com");
-        //then
-        //expecting ServiceException
+        //expecting InvalidUserInformationException
     }
 
     @Test
     public void editUser_validParameters_void() throws DAOException, ServiceException {
         //given
         //when
+        when(validator.validate(anyString(), anyString(), anyString())).thenReturn(true);
         doNothing().when(userDAO).editUser(anyLong(), anyString(), anyString(), anyString());
         service.editUser(1, "First", "Last", "email@gmail.com");
         //then
@@ -408,46 +385,32 @@ public class CommonTest {
     public void changePassword_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
+        when(validator.validatePasswords(anyString(), anyString(), anyString())).thenReturn(true);
         doThrow(ServiceException.class).when(userDAO).getUser(anyLong());
         service.changePassword(1, "currentP", "newPassword", "newPassword");
         //then
         //expecting ServiceException
     }
 
-    @Test(expectedExceptions = ServiceException.class)
-    public void changePassword_shortCurrentPassword_ServiceException() throws ServiceException {
+    @Test(expectedExceptions = InvalidPasswordException.class)
+    public void changePassword_invalidUsernameOrPasswordExceptionFromDAO_InvalidPasswordException() throws DAOException, ServiceException {
         //given
         //when
-        service.changePassword(1, "short", "newPassword", "newPassword");
+        when(validator.validatePasswords(anyString(), anyString(), anyString())).thenReturn(true);
+        doThrow(InvalidUsernameOrPasswordException.class).when(userDAO).getUser(anyLong());
+        service.changePassword(1, "currentP", "newPassword", "newPassword");
         //then
-        //expecting ServiceException
+        //expecting InvalidPasswordException
     }
 
-    @Test(expectedExceptions = ServiceException.class)
-    public void changePassword_shortNewPassword_ServiceException() throws ServiceException {
+    @Test(expectedExceptions = InvalidUserInformationException.class)
+    public void changePassword_invalidParameters_InvalidUserInformationException() throws ServiceException {
         //given
         //when
-        service.changePassword(1, "currentP", "short", "newPassword");
+        when(validator.validatePasswords(anyString(), anyString(), anyString())).thenReturn(false);
+        service.changePassword(1, "currentP", "newPassword", "newPassword");
         //then
-        //expecting ServiceException
-    }
-
-    @Test(expectedExceptions = ServiceException.class)
-    public void changePassword_shortConfirmedPassword_ServiceException() throws ServiceException {
-        //given
-        //when
-        service.changePassword(1, "currentP", "newPassword", "short");
-        //then
-        //expecting ServiceException
-    }
-
-    @Test(expectedExceptions = ServiceException.class)
-    public void changePassword_passwordsDoNotMatch_ServiceException() throws ServiceException {
-        //given
-        //when
-        service.changePassword(1, "currentP", "newPassword", "otherPassword");
-        //then
-        //expecting ServiceException
+        //expecting InvalidUserInformationException
     }
 
     @Test
@@ -455,6 +418,7 @@ public class CommonTest {
         //given
         User user = mock(User.class);
         //when
+        when(validator.validatePasswords(anyString(), anyString(), anyString())).thenReturn(true);
         doReturn(user).when(userDAO).getUser(anyLong());
         doReturn(user).when(userDAO).getUser(anyString(), anyString());
         doReturn("encoded").when(keeper).generateHash(anyString(), anyString());
@@ -467,6 +431,7 @@ public class CommonTest {
     public void restorePassword_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
+        when(validator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
         doThrow(ServiceException.class).when(userDAO).getUser(anyString(), anyString(), anyString(), anyString());
         service.restorePassword("Username", "First", "Last", "email@gmail.com",
                 "newPassword", "newPassword");
@@ -474,64 +439,16 @@ public class CommonTest {
         //expecting ServiceException
     }
 
-    @Test(expectedExceptions = ServiceException.class)
-    public void restorePassword_shortUsername_ServiceException() throws ServiceException {
+    @Test(expectedExceptions = InvalidUserInformationException.class)
+    public void restorePassword_invalidParameters_InvalidUserInformationException() throws ServiceException {
         //given
+        User user = mock(User.class);
         //when
-        service.restorePassword("User", "First", "Last", "email@gmail.com",
-                "newPassword", "newPassword");
-        //then
-        //expecting ServiceException
-    }
-
-    @Test(expectedExceptions = ServiceException.class)
-    public void restorePassword_shortFirstName_ServiceException() throws ServiceException {
-        //given
-        //when
-        service.restorePassword("Username", "F", "Last", "email@gmail.com",
-                "newPassword", "newPassword");
-        //then
-        //expecting ServiceException
-    }
-
-    @Test(expectedExceptions = ServiceException.class)
-    public void restorePassword_shortLastName_ServiceException() throws ServiceException {
-        //given
-        //when
-        service.restorePassword("Username", "First", "L", "email@gmail.com",
-                "newPassword", "newPassword");
-        //then
-        //expecting ServiceException
-    }
-
-    @Test(expectedExceptions = ServiceException.class)
-    public void restorePassword_invalidEmail_ServiceException() throws ServiceException {
-        //given
-        //when
-        service.restorePassword("Username", "First", "Last", "email@gmail=com",
-                "newPassword", "newPassword");
-        //then
-        //expecting ServiceException
-    }
-
-    @Test(expectedExceptions = ServiceException.class)
-    public void restorePassword_shortNewPassword_ServiceException() throws ServiceException {
-        //given
-        //when
+        when(validator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(false);
         service.restorePassword("Username", "First", "Last", "email@gmail.com",
-                "new", "newPassword");
+                "newPassword", "newPassword");
         //then
-        //expecting ServiceException
-    }
-
-    @Test(expectedExceptions = ServiceException.class)
-    public void restorePassword_passwordsDoNotMatch_ServiceException() throws ServiceException {
-        //given
-        //when
-        service.restorePassword("Username", "First", "Last", "email@gmail.com",
-                "newPassword", "confirmed");
-        //then
-        //expecting ServiceException
+        //expecting InvalidUserInformationException
     }
 
     @Test
@@ -539,6 +456,7 @@ public class CommonTest {
         //given
         User user = mock(User.class);
         //when
+        when(validator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
         doReturn(user).when(userDAO).getUser(anyString(), anyString(), anyString(), anyString());
         doReturn("encoded").when(keeper).generateHash(anyString(), anyString());
         doNothing().when(userDAO).changePassword(anyLong(), anyString());

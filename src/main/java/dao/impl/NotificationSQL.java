@@ -7,6 +7,7 @@ import entity.Notification;
 import entity.User;
 import entity.UserStatus;
 import pool.DatabaseConnectionPool;
+import util.builder.NotificationBuilder;
 import util.builder.UserBuilder;
 
 import java.sql.Connection;
@@ -67,8 +68,8 @@ public class NotificationSQL implements NotificationDAO {
     private Notification getNextNotification(ResultSet set) throws SQLException {
         int statusId = set.getInt(6) - 1;
         UserStatus status = UserStatus.values()[statusId];
-        UserBuilder builder = new UserBuilder(set.getLong(2));
-        User user = builder.withUsername(set.getString(3))
+        UserBuilder userBuilder = new UserBuilder(set.getLong(2));
+        User user = userBuilder.withUsername(set.getString(3))
                 .withFirstName(set.getString(4))
                 .withLastName(set.getString(5))
                 .withStatus(status)
@@ -76,9 +77,10 @@ public class NotificationSQL implements NotificationDAO {
                 .isBanned(set.getBoolean(8))
                 .hasBirthDate(set.getTimestamp(9))
                 .build();
-        return new Notification(set.getLong(1),
-                user,
-                set.getString(10),
-                set.getTimestamp(11));
+        NotificationBuilder notificationBuilder = new NotificationBuilder(set.getLong(1));
+        return notificationBuilder.toUser(user)
+                .withText(set.getString(10))
+                .withNotificationDateTime(set.getTimestamp(11))
+                .build();
     }
 }

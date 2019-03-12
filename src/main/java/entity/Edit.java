@@ -12,12 +12,8 @@ public class Edit {
     private String editText;
     private Timestamp editDateTime;
 
-    public Edit(long editId, Alien alien, User user, String editText, Timestamp editDateTime) {
+    public Edit(long editId) {
         this.editId = editId;
-        this.alien = alien;
-        this.user = user;
-        this.editText = editText;
-        this.editDateTime = editDateTime;
     }
 
     public long getEditId() {

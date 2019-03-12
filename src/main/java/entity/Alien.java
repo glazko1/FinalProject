@@ -16,16 +16,6 @@ public class Alien {
         this.alienId = alienId;
     }
 
-    public Alien(long alienId, String alienName, Movie movie, String planet, String description, double averageRating, String imagePath) {
-        this.alienId = alienId;
-        this.alienName = alienName;
-        this.movie = movie;
-        this.planet = planet;
-        this.description = description;
-        this.averageRating = averageRating;
-        this.imagePath = imagePath;
-    }
-
     public long getAlienId() {
         return alienId;
     }

@@ -35,7 +35,7 @@ public class MovieFanTest {
         //given
         //when
         doThrow(ServiceException.class).when(movieDAO).addNewMovie(any(Movie.class));
-        service.addMovie("Title", 100, 1000000, Date.valueOf("2000-01-01"));
+        service.addMovie("Title", "100", "1000000", Date.valueOf("2000-01-01"));
         //then
         //expecting ServiceException
     }
@@ -45,7 +45,7 @@ public class MovieFanTest {
         //given
         //when
         doNothing().when(movieDAO).addNewMovie(any(Movie.class));
-        service.addMovie("Title", 100, 1000000, Date.valueOf("2000-01-01"));
+        service.addMovie("Title", "100", "1000000", Date.valueOf("2000-01-01"));
         //then
     }
 
@@ -54,7 +54,7 @@ public class MovieFanTest {
         //given
         //when
         doThrow(ServiceException.class).when(movieDAO).editMovie(anyLong(), anyInt(), anyInt(), any(Date.class));
-        service.editMovie(1, 100, 1000000, Date.valueOf("2000-01-01"));
+        service.editMovie(1, "100", "1000000", Date.valueOf("2000-01-01"));
         //then
         //expecting ServiceException
     }
@@ -64,7 +64,7 @@ public class MovieFanTest {
         //given
         //when
         doNothing().when(movieDAO).editMovie(anyLong(), anyInt(), anyInt(), any(Date.class));
-        service.editMovie(1, 100, 1000000, Date.valueOf("2000-01-01"));
+        service.editMovie(1, "100", "1000000", Date.valueOf("2000-01-01"));
         //then
     }
 }

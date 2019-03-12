@@ -19,6 +19,7 @@ import entity.User;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import service.exception.ServiceException;
+import util.validator.AlienInformationValidator;
 
 import java.util.List;
 
@@ -29,11 +30,13 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 public class AlienSpecialistTest {
 
     private AlienSpecialist service = AlienSpecialist.getInstance();
+    private AlienInformationValidator validator = mock(AlienInformationValidator.class);
     private UserDAO userDAO = mock(UserSQL.class);
     private AlienDAO alienDAO = mock(AlienSQL.class);
     private MovieDAO movieDAO = mock(MovieSQL.class);
@@ -42,6 +45,7 @@ public class AlienSpecialistTest {
 
     @BeforeClass
     public void init() {
+        service.setValidator(validator);
         service.setUserDAO(userDAO);
         service.setAlienDAO(alienDAO);
         service.setMovieDAO(movieDAO);
@@ -53,6 +57,7 @@ public class AlienSpecialistTest {
     public void addAlien_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
+        when(validator.validate(anyString(), anyString(), anyString())).thenReturn(true);
         doThrow(DAOException.class).when(movieDAO).getMovieByTitle(anyString());
         service.addAlien(1, "AlienName", "Planet",
                 "Description", "Title", "Path");
@@ -65,6 +70,7 @@ public class AlienSpecialistTest {
         //given
         Movie movie = mock(Movie.class);
         //when
+        when(validator.validate(anyString(), anyString(), anyString())).thenReturn(true);
         doReturn(movie).when(movieDAO).getMovieByTitle(anyString());
         doNothing().when(alienDAO).addNewAlien(any(Alien.class));
         service.addAlien(1, "AlienName", "Planet", "Description", "Title", "Path");
@@ -75,8 +81,9 @@ public class AlienSpecialistTest {
     public void editAlien_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
+        when(validator.validate(anyString(), anyString())).thenReturn(true);
         doThrow(DAOException.class).when(movieDAO).getMovieByTitle(anyString());
-        service.editAlien(1, "", "", "");
+        service.editAlien(1, "MovieTitle", "Planet", "Description");
         //then
         //expecting ServiceException
     }
@@ -86,6 +93,7 @@ public class AlienSpecialistTest {
         //given
         Movie movie = mock(Movie.class);
         //when
+        when(validator.validate(anyString(), anyString())).thenReturn(true);
         doReturn(movie).when(movieDAO).getMovieByTitle(anyString());
         doNothing().when(alienDAO).editAlien(anyLong(), anyLong(), anyString(), anyString());
         service.editAlien(1, "Title", "Planet", "Description");

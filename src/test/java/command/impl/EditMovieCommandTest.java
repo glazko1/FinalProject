@@ -9,6 +9,7 @@ import service.impl.MovieFan;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.anyLong;
@@ -30,11 +31,9 @@ public class EditMovieCommandTest {
         //when
         when(mockRequest.getParameter("movieId")).thenReturn("1");
         when(mockRequest.getParameter("runningTime")).thenReturn("100");
-        when(mockRequest.getParameter("year")).thenReturn("2000");
-        when(mockRequest.getParameter("month")).thenReturn("1");
-        when(mockRequest.getParameter("day")).thenReturn("1");
+        when(mockRequest.getParameter("releaseDate")).thenReturn("2000-01-01");
         when(mockRequest.getParameter("budget")).thenReturn("2000000");
-        doThrow(ServiceException.class).when(service).editMovie(anyLong(), anyInt(), anyInt(), any());
+        doThrow(ServiceException.class).when(service).editMovie(anyLong(), anyString(), anyString(), any());
         command.execute();
         //then
         //expecting CommandException
@@ -50,11 +49,9 @@ public class EditMovieCommandTest {
         //when
         when(mockRequest.getParameter("movieId")).thenReturn("1");
         when(mockRequest.getParameter("runningTime")).thenReturn("100");
-        when(mockRequest.getParameter("year")).thenReturn("2000");
-        when(mockRequest.getParameter("month")).thenReturn("1");
-        when(mockRequest.getParameter("day")).thenReturn("1");
+        when(mockRequest.getParameter("releaseDate")).thenReturn("2000-01-01");
         when(mockRequest.getParameter("budget")).thenReturn("2000000");
-        doNothing().when(service).editMovie(anyLong(), anyInt(), anyInt(), any());
+        doNothing().when(service).editMovie(anyLong(), anyString(), anyString(), any());
         String result = command.execute();
         //then
         assertEquals(result, "main");
