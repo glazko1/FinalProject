@@ -2,7 +2,46 @@ package command.factory;
 
 import command.Command;
 import command.exception.CommandException;
-import command.impl.*;
+import command.impl.AcceptEditCommand;
+import command.impl.AddAlienCommand;
+import command.impl.AddFeedbackCommand;
+import command.impl.AddMovieCommand;
+import command.impl.ChangeBanStatusCommand;
+import command.impl.ChangePasswordCommand;
+import command.impl.ChangeUserStatusCommand;
+import command.impl.DeleteAlienCommand;
+import command.impl.DeleteFeedbackCommand;
+import command.impl.DeleteMovieCommand;
+import command.impl.EditAlienCommand;
+import command.impl.EditMovieCommand;
+import command.impl.EditUserCommand;
+import command.impl.ForwardToChangePasswordCommand;
+import command.impl.ForwardToEditAlienCommand;
+import command.impl.ForwardToEditMovieCommand;
+import command.impl.ForwardToEditUserCommand;
+import command.impl.ForwardToNewAlienCommand;
+import command.impl.ForwardToNewMovieCommand;
+import command.impl.ForwardToRestorePasswordCommand;
+import command.impl.ForwardToSuggestEditCommand;
+import command.impl.LogoutCommand;
+import command.impl.RedirectToMainPageCommand;
+import command.impl.RejectEditCommand;
+import command.impl.RestorePasswordCommand;
+import command.impl.SignInCommand;
+import command.impl.SignUpCommand;
+import command.impl.SuggestEditCommand;
+import command.impl.ViewAlienCommand;
+import command.impl.ViewAllAliensCommand;
+import command.impl.ViewAllAliensSortedCommand;
+import command.impl.ViewAllMoviesCommand;
+import command.impl.ViewAllMoviesSortedCommand;
+import command.impl.ViewAllSuggestedEditsCommand;
+import command.impl.ViewAllUsersCommand;
+import command.impl.ViewAllUsersSortedCommand;
+import command.impl.ViewMovieCommand;
+import command.impl.ViewNotificationsCommand;
+import command.impl.ViewSuggestedEditCommand;
+import command.impl.ViewUserCommand;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +56,15 @@ public class CommandFactory {
 
     private CommandFactory() {}
 
+    /**
+     * Creates and returns command in accordance with its given name. Can return
+     * object of any class extending {@link Command} interface.
+     * @param name command's name.
+     * @param request HTTP-request.
+     * @param response HTTP-response.
+     * @return some command  in accordance with name.
+     * @throws CommandException if there is no command with given name.
+     */
     public Command createCommand(String name, HttpServletRequest request, HttpServletResponse response) throws CommandException {
         switch (name) {
             case "signIn":
@@ -97,6 +145,8 @@ public class CommandFactory {
                 return new EditMovieCommand(request, response);
             case "deleteMovie":
                 return new DeleteMovieCommand(request, response);
+            case "viewAllUsersSorted":
+                return new ViewAllUsersSortedCommand(request, response);
             default:
                 break;
         }

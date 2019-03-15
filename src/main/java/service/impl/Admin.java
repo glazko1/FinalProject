@@ -48,6 +48,15 @@ public class Admin implements AdminService {
         }
     }
 
+    @Override
+    public List<User> viewAllUsersSorted(String sortedBy, String sortType) throws ServiceException {
+        try {
+            return userDAO.getAllUsersSorted(sortedBy, sortType);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
     void setUserDAO(UserDAO userDAO) {
         this.userDAO = userDAO;
     }

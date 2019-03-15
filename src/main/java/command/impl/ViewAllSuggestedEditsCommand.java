@@ -17,11 +17,22 @@ public class ViewAllSuggestedEditsCommand implements Command {
     private HttpServletRequest request;
     private HttpServletResponse response;
 
+    /**
+     * Constructs command with default service, specified request and response.
+     * @param request HTTP-request.
+     * @param response HTTP-response.
+     */
     public ViewAllSuggestedEditsCommand(HttpServletRequest request, HttpServletResponse response) {
         this(AlienSpecialist.getInstance(), request, response);
     }
 
-    public ViewAllSuggestedEditsCommand(AlienSpecialistService service, HttpServletRequest request, HttpServletResponse response) {
+    /**
+     * Constructs command with specified service, request and response.
+     * @param service service layer class with opportunities of alien specialists.
+     * @param request HTTP-request.
+     * @param response HTTP-response.
+     */
+    ViewAllSuggestedEditsCommand(AlienSpecialistService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;
         this.request = request;
         this.response = response;

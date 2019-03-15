@@ -25,17 +25,40 @@ public class AddAlienCommand implements Command {
     private HttpServletResponse response;
     private ContentWriter writer;
 
+    /**
+     * Constructs command with default service and content writer, specified request
+     * and response.
+     * @param request HTTP-request.
+     * @param response HTTP-response.
+     */
     public AddAlienCommand(HttpServletRequest request, HttpServletResponse response) {
         this(AlienSpecialist.getInstance(), request, response);
     }
 
-    public AddAlienCommand(AlienSpecialistService service, HttpServletRequest request, HttpServletResponse response) {
+    /**
+     * Constructs command with specified service, request and response, default content
+     * writer.
+     * @param service service layer class with opportunities of alien specialists.
+     * @param request HTTP-request.
+     * @param response HTTP-response.
+     */
+    AddAlienCommand(AlienSpecialistService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;
         this.request = request;
         this.response = response;
         this.writer = ContentWriter.getInstance();
     }
 
+    /**
+     * Executes command of adding a new alien to app. Request provides information
+     * about the alien: name, planet, description, movie and its picture. Service method
+     * is called to add information, {@link ContentWriter} adds picture to app, then
+     * service sends notifications to all users. Method informs person about errors
+     * while adding by showing a message (if {@link InvalidAlienNameException} or
+     * {@link InvalidAlienInformationException} were caught).
+     * @return url to redirect from servlet.
+     * @throws CommandException if {@link ServiceException} was caught.
+     */
     @Override
     public String execute() throws CommandException {
         String alienName = request.getParameter("alienName");

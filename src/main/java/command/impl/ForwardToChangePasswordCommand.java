@@ -16,16 +16,34 @@ public class ForwardToChangePasswordCommand implements Command {
     private HttpServletRequest request;
     private HttpServletResponse response;
 
+    /**
+     * Constructs command with default service, specified request and response.
+     * @param request HTTP-request.
+     * @param response HTTP-response.
+     */
     public ForwardToChangePasswordCommand(HttpServletRequest request, HttpServletResponse response) {
         this(Common.getInstance(), request, response);
     }
 
-    public ForwardToChangePasswordCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
+    /**
+     * Constructs command with specified service, request and response.
+     * @param service service layer class with opportunities of alien specialists.
+     * @param request HTTP-request.
+     * @param response HTTP-response.
+     */
+    ForwardToChangePasswordCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;
         this.request = request;
         this.response = response;
     }
 
+    /**
+     * Executes command forwarding user to the page of password change. Request
+     * provides information about user's ID, then service layer is called to get
+     * information about user (his username), and it's put into request.
+     * @return url to forward from servlet.
+     * @throws CommandException if {@link ServiceException} was caught.
+     */
     @Override
     public String execute() throws CommandException {
         long userId = Long.parseLong(request.getParameter("userId"));

@@ -37,7 +37,7 @@
 <div class="center-column">
     <table border="1" cellpadding="4" cellspacing="0" align="center">
         <tr>
-            <c:if test="${sessionScope.status == 1}">
+            <c:if test="${sessionScope.status.statusId == 1}">
                 <th align="center">
                     <form method="get" action="mainWindow" style="display: inline; margin: 0;">
                         <input type="hidden" name="sortedBy" value="alienId">
@@ -90,7 +90,7 @@
         </tr>
         <c:forEach items="${aliens}" var="alien">
             <tr>
-                <c:if test="${sessionScope.status == 1}">
+                <c:if test="${sessionScope.status.statusId == 1}">
                     <td align="center">${alien.alienId}</td>
                 </c:if>
                 <td align="center">
@@ -109,7 +109,7 @@
             </tr>
         </c:forEach>
     </table>
-    <c:if test="${sessionScope.status == 1 || sessionScope.status == 3}">
+    <c:if test="${sessionScope.status.statusId == 1 || sessionScope.status.statusId == 3}">
         <form method="get" action="mainWindow">
             <br><button type="submit" name="button" value="forwardToNewAlien"><fmt:message key="message.add_alien" /></button>
         </form>

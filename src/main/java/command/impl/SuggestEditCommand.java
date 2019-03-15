@@ -15,16 +15,34 @@ public class SuggestEditCommand implements Command {
     private HttpServletRequest request;
     private HttpServletResponse response;
 
+    /**
+     * Constructs command with default service, specified request and response.
+     * @param request HTTP-request.
+     * @param response HTTP-response.
+     */
     public SuggestEditCommand(HttpServletRequest request, HttpServletResponse response) {
         this(Common.getInstance(), request, response);
     }
 
-    public SuggestEditCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
+    /**
+     * Constructs command with specified service, request and response.
+     * @param service service layer class with opportunities of alien specialists.
+     * @param request HTTP-request.
+     * @param response HTTP-response.
+     */
+    SuggestEditCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;
         this.request = request;
         this.response = response;
     }
 
+    /**
+     * Executes command of suggesting an edit to alien's description. Request
+     * provides information about alien's and user's ID and suggested description.
+     * Service layer is called to add new edit.
+     * @return url to redirect from servlet.
+     * @throws CommandException if {@link ServiceException} was caught.
+     */
     @Override
     public String execute() throws CommandException {
         long alienId = Long.parseLong(request.getParameter("alienId"));

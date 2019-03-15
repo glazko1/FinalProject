@@ -9,7 +9,6 @@
 <head>
     <title>${user.firstName} ${user.lastName}</title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
-    <script src="js/scripts.js"></script>
 </head>
 <body>
 <div class="header">
@@ -73,7 +72,7 @@
     </c:if>
     <form method="post" action="mainWindow">
         <input type="hidden" name="userId" value=${user.userId}>
-        <c:if test="${sessionScope.status == 1 && user.userId != sessionScope.userId && user.status.statusId != 1}">
+        <c:if test="${sessionScope.status.statusId == 1 && user.userId != sessionScope.userId && user.status.statusId != 1}">
             <button type="submit" name="button" value="changeBanStatus">
                 <c:if test="${user.banned == false}"><fmt:message key="button.ban_user" /></c:if>
                 <c:if test="${user.banned == true}"><fmt:message key="button.unban_user" /></c:if>

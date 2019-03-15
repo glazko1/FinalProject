@@ -18,16 +18,35 @@ public class EditMovieCommand implements Command {
     private HttpServletRequest request;
     private HttpServletResponse response;
 
+    /**
+     * Constructs command with default service, specified request and response.
+     * @param request HTTP-request.
+     * @param response HTTP-response.
+     */
     public EditMovieCommand(HttpServletRequest request, HttpServletResponse response) {
         this(MovieFan.getInstance(), request, response);
     }
 
+    /**
+     * Constructs command with specified service, request and response.
+     * @param service service layer class with opportunities of alien specialists.
+     * @param request HTTP-request.
+     * @param response HTTP-response.
+     */
     EditMovieCommand(MovieFanService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;
         this.request = request;
         this.response = response;
     }
 
+    /**
+     * Executes command of movie information change. Request provides movie ID and
+     * new information: running time, budget and release date. Then service layer is
+     * called to save changes. Informs person about errors (if {@link
+     * InvalidMovieInformationException} was caught).
+     * @return url to redirect from servlet.
+     * @throws CommandException if {@link ServiceException} was caught.
+     */
     @Override
     public String execute() throws CommandException {
         long movieId = Long.parseLong(request.getParameter("movieId"));

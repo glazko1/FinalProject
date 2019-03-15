@@ -5,7 +5,6 @@ import command.exception.CommandException;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
 import service.exception.alien.InvalidAlienInformationException;
-import service.exception.alien.InvalidAlienNameException;
 import service.impl.AlienSpecialist;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,16 +17,35 @@ public class EditAlienCommand implements Command {
     private HttpServletRequest request;
     private HttpServletResponse response;
 
+    /**
+     * Constructs command with default service, specified request and response.
+     * @param request HTTP-request.
+     * @param response HTTP-response.
+     */
     public EditAlienCommand(HttpServletRequest request, HttpServletResponse response) {
         this(AlienSpecialist.getInstance(), request, response);
     }
 
-    public EditAlienCommand(AlienSpecialistService service, HttpServletRequest request, HttpServletResponse response) {
+    /**
+     * Constructs command with specified service, request and response.
+     * @param service service layer class with opportunities of alien specialists.
+     * @param request HTTP-request.
+     * @param response HTTP-response.
+     */
+    EditAlienCommand(AlienSpecialistService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;
         this.request = request;
         this.response = response;
     }
 
+    /**
+     * Executes command of alien information change. Request provides alien's ID and
+     * new information: movie, planet and description. Then service layer is called
+     * to save changes. Informs person about errors (if {@link
+     * InvalidAlienInformationException} was caught).
+     * @return url to redirect from servlet.
+     * @throws CommandException if {@link ServiceException} was caught.
+     */
     @Override
     public String execute() throws CommandException {
         long alienId = Long.parseLong(request.getParameter("alienId"));

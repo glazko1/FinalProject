@@ -2,14 +2,16 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
+import entity.User;
 import service.AdminService;
 import service.exception.ServiceException;
 import service.impl.Admin;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
-public class ChangeUserStatusCommand implements Command {
+public class ViewAllUsersSortedCommand implements Command {
 
     private AdminService service;
     private HttpServletRequest request;
@@ -20,7 +22,7 @@ public class ChangeUserStatusCommand implements Command {
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
-    public ChangeUserStatusCommand(HttpServletRequest request, HttpServletResponse response) {
+    public ViewAllUsersSortedCommand(HttpServletRequest request, HttpServletResponse response) {
         this(Admin.getInstance(), request, response);
     }
 
@@ -30,28 +32,24 @@ public class ChangeUserStatusCommand implements Command {
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
-    ChangeUserStatusCommand(AdminService service, HttpServletRequest request, HttpServletResponse response) {
+    ViewAllUsersSortedCommand(AdminService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;
         this.request = request;
         this.response = response;
     }
 
-    /**
-     * Executes command of changing user's status (admin, movie fan, alien specialist,
-     * user). Request provides information about user's ID and new status, then
-     * service layer is called to save changes.
-     * @return url to redirect from servlet.
-     * @throws CommandException if {@link ServiceException} was caught.
-     */
     @Override
     public String execute() throws CommandException {
-        long userId = Long.parseLong(request.getParameter("userId"));
-        int statusId = Integer.parseInt(request.getParameter("status"));
+        String sortedBy = request.getParameter("sortedBy");
+        String sortType = request.getParameter("sortType");
         try {
-            service.changeUserStatus(userId, statusId);
+            List<User> users = service.viewAllUsersSorted(sortedBy, sortType);
+            request.setAttribute("users", users);
+            request.setAttribute("sortedBy", sortedBy);
+            request.setAttribute("sortType", sortType);
         } catch (ServiceException e) {
             throw new CommandException(e);
         }
-        return "main";
+        return "user-table";
     }
 }

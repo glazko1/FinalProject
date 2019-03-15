@@ -37,9 +37,42 @@
 <div class="center-column">
     <table border="1" cellpadding="4" cellspacing="0" align="center">
         <tr>
-            <th align="center">ID</th>
-            <th align="center"><fmt:message key="message.username" /></th>
-            <th align="center"><fmt:message key="message.email" /></th>
+            <th align="center">
+                <form method="get" action="mainWindow">
+                    <input type="hidden" name="sortedBy" value="userId">
+                    <c:if test="${sortedBy == 'userId' && sortType == 'ASC'}">
+                        <input type="hidden" name="sortType" value="DESC">
+                    </c:if>
+                    <c:if test="${sortedBy != 'userId' || sortType == 'DESC'}">
+                        <input type="hidden" name="sortType" value="ASC">
+                    </c:if>
+                    <button class="underlined" type="submit" name="button" value="viewAllUsersSorted" style="font-weight: bold">ID</button>
+                </form>
+            </th>
+            <th align="center">
+                <form method="get" action="mainWindow">
+                    <input type="hidden" name="sortedBy" value="username">
+                    <c:if test="${sortedBy == 'username' && sortType == 'ASC'}">
+                        <input type="hidden" name="sortType" value="DESC">
+                    </c:if>
+                    <c:if test="${sortedBy != 'username' || sortType == 'DESC'}">
+                        <input type="hidden" name="sortType" value="ASC">
+                    </c:if>
+                    <button class="underlined" type="submit" name="button" value="viewAllUsersSorted" style="font-weight: bold"><fmt:message key="message.username" /></button>
+                </form>
+            </th>
+            <th align="center">
+                <form method="get" action="mainWindow">
+                    <input type="hidden" name="sortedBy" value="email">
+                    <c:if test="${sortedBy == 'email' && sortType == 'ASC'}">
+                        <input type="hidden" name="sortType" value="DESC">
+                    </c:if>
+                    <c:if test="${sortedBy != 'email' || sortType == 'DESC'}">
+                        <input type="hidden" name="sortType" value="ASC">
+                    </c:if>
+                    <button class="underlined" type="submit" name="button" value="viewAllUsersSorted" style="font-weight: bold"><fmt:message key="message.email" /></button>
+                </form>
+            </th>
         </tr>
         <c:forEach items="${users}" var="user">
             <tr>

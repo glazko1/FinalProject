@@ -43,6 +43,12 @@ public class UserSQL implements UserDAO {
     private static final String CHANGE_PASSWORD_SQL = "UPDATE User SET Password = ? WHERE UserId = ?";
     private static final String GET_USER_BY_USERNAME_FIRST_NAME_LAST_NAME_EMAIL = "SELECT UserId, Username, FirstName, LastName, Password, StatusId, Email, Banned, BirthDate FROM User WHERE Username = ? AND FirstName = ? AND LastName = ? AND Email = ?";
     private static final String GET_USER_BY_EMAIL_EXCEPT_CURRENT_SQL = "SELECT UserId FROM User WHERE Email = ? AND UserId <> ?";
+    private static final String GET_ALL_USERS_SORTED_BY_ID_ASC_SQL = "SELECT UserId, Username, FirstName, LastName, StatusId, Email, Banned, BirthDate FROM User ORDER BY UserId ASC";
+    private static final String GET_ALL_USERS_SORTED_BY_ID_DESC_SQL = "SELECT UserId, Username, FirstName, LastName, StatusId, Email, Banned, BirthDate FROM User ORDER BY UserId DESC";
+    private static final String GET_ALL_USERS_SORTED_BY_USERNAME_ASC_SQL = "SELECT UserId, Username, FirstName, LastName, StatusId, Email, Banned, BirthDate FROM User ORDER BY Username ASC";
+    private static final String GET_ALL_USERS_SORTED_BY_USERNAME_DESC_SQL = "SELECT UserId, Username, FirstName, LastName, StatusId, Email, Banned, BirthDate FROM User ORDER BY Username DESC";
+    private static final String GET_ALL_USERS_SORTED_BY_EMAIL_ASC_SQL = "SELECT UserId, Username, FirstName, LastName, StatusId, Email, Banned, BirthDate FROM User ORDER BY Email ASC";
+    private static final String GET_ALL_USERS_SORTED_BY_EMAIL_DESC_SQL = "SELECT UserId, Username, FirstName, LastName, StatusId, Email, Banned, BirthDate FROM User ORDER BY Email DESC";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
     @Override
@@ -286,6 +292,51 @@ public class UserSQL implements UserDAO {
                 ", first name " + firstName +
                 ", last name" + lastName +
                 "e-mail" + email + "in DAO!");
+    }
+
+    @Override
+    public List<User> getAllUsersSorted(String sortedBy, String sortType) throws DAOException {
+        PreparedStatement statement = null;
+        List<User> users = new ArrayList<>();
+        try (ProxyConnection proxyConnection = pool.getConnection()) {
+            Connection connection = proxyConnection.getConnection();
+            String sql = getSortingSql(sortedBy, sortType);
+            statement = connection.prepareStatement(sql);
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                User user = getNextUser(set);
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e);
+            }
+        }
+        return users;
+    }
+
+    private String getSortingSql(String sortedBy, String sortType) throws DAOException {
+        switch (sortedBy) {
+            case "userId":
+                return "ASC".equals(sortType) ?
+                        GET_ALL_USERS_SORTED_BY_ID_ASC_SQL :
+                        GET_ALL_USERS_SORTED_BY_ID_DESC_SQL;
+            case "username":
+                return "ASC".equals(sortType) ?
+                        GET_ALL_USERS_SORTED_BY_USERNAME_ASC_SQL :
+                        GET_ALL_USERS_SORTED_BY_USERNAME_DESC_SQL;
+            case "email":
+                return "ASC".equals(sortType) ?
+                        GET_ALL_USERS_SORTED_BY_EMAIL_ASC_SQL :
+                        GET_ALL_USERS_SORTED_BY_EMAIL_DESC_SQL;
+            default:
+                break;
+        }
+        throw new DAOException("No sorting SQL for parameters " + sortedBy + " and " + sortType);
     }
 
     private User getNextUser(ResultSet set) throws SQLException {

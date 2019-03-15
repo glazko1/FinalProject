@@ -48,13 +48,13 @@
             <fmt:message key="button.view_movies" />
         </button>
         <br><br>
-        <c:if test="${sessionScope.status == 1}">
+        <c:if test="${sessionScope.status.statusId == 1}">
             <button type="submit" name="button" value="viewAllUsers" style="height: 200px; width: 200px; margin-right: 25px">
                 <img src="img/user.png" align="center" alt="" height="150px"><br>
                 <fmt:message key="button.view_users" />
             </button>
         </c:if>
-        <c:if test="${sessionScope.status == 1 || sessionScope.status == 3}">
+        <c:if test="${sessionScope.status.statusId == 1 || sessionScope.status.statusId == 3}">
             <button type="submit" name="button" value="viewAllSuggestedEdits" style="height: 200px; width: 200px;">
                 <img src="img/edit.png" align="center" alt="" height="150px"><br>
                 <fmt:message key="button.view_suggested_edits" />

@@ -18,4 +18,5 @@ public interface UserDAO {
     void editUser(long userId, String firstName, String lastName, String email) throws DAOException;
     void changePassword(long userId, String newPassword) throws DAOException;
     User getUser(String username, String firstName, String lastName, String email) throws DAOException;
+    List<User> getAllUsersSorted(String sortedBy, String sortType) throws DAOException;
 }

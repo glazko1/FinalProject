@@ -56,14 +56,14 @@
             <td align="center">${alien.averageRating}</td>
         </tr>
     </table>
-    <c:if test="${sessionScope.status == 1 || sessionScope.status == 3}">
+    <c:if test="${sessionScope.status.statusId == 1 || sessionScope.status.statusId == 3}">
         <br><form method="get" action="mainWindow">
             <input type="hidden" name="alienId" value="${alien.alienId}">
             <button type="submit" name="button" value="forwardToEditAlien"><fmt:message key="button.edit_information" /></button><br><br>
             <button type="submit" name="button" value="deleteAlien"><fmt:message key="button.delete_alien" /></button>
         </form>
     </c:if>
-    <c:if test="${sessionScope.status == 2 || sessionScope.status == 4}">
+    <c:if test="${sessionScope.status.statusId == 2 || sessionScope.status.statusId == 4}">
         <br><form method="get" action="mainWindow">
             <input type="hidden" name="alienId" value="${alien.alienId}">
             <button type="submit" name="button" value="forwardToSuggestEdit"><fmt:message key="button.suggest_edit" /></button>
@@ -104,7 +104,7 @@
             <input type="hidden" name="userId" value="${feedback.user.userId}">
             <button class="underlined" type="submit" name="button" value="viewUser" style="font-size: 14px;">${feedback.user.username}</button>
         </form> ${feedback.feedbackDateTime}
-        <c:if test="${feedback.user.userId == sessionScope.userId || sessionScope.status == 1}">
+        <c:if test="${feedback.user.userId == sessionScope.userId || sessionScope.status.statusId == 1}">
             <form method="post" action="mainWindow" style="display: inline; margin: 0;">
                 <input type="hidden" name="feedbackId" value="${feedback.feedbackId}">
                 <input type="hidden" name="alienId" value="${alien.alienId}">

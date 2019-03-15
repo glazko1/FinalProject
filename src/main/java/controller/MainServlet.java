@@ -17,21 +17,22 @@ import java.io.IOException;
 
 @WebServlet("/mainWindow")
 @MultipartConfig
-public class MainWindowServlet extends HttpServlet {
+public class MainServlet extends HttpServlet {
 
-    private static final Logger LOGGER = LogManager.getLogger(MainWindowServlet.class);
+    private static final Logger LOGGER = LogManager.getLogger(MainServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("button");
+        System.out.println(action);
         CommandFactory factory = CommandFactory.getInstance();
         try {
-            Command command = factory.createCommand(action, request, response);
-            String path = command.execute();
             HttpSession session = request.getSession();
             if (session.getAttribute("status") == null) {
                 response.sendRedirect("index");
             } else {
+                Command command = factory.createCommand(action, request, response);
+                String path = command.execute();
                 request.getRequestDispatcher(path).forward(request, response);
             }
         } catch (CommandException e) {
@@ -43,11 +44,17 @@ public class MainWindowServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("button");
+        System.out.println(action);
         CommandFactory factory = CommandFactory.getInstance();
         try {
-            Command command = factory.createCommand(action, request, response);
-            String path = command.execute();
-            response.sendRedirect(path);
+            HttpSession session = request.getSession();
+            if (session.getAttribute("status") == null) {
+                response.sendRedirect("index");
+            } else {
+                Command command = factory.createCommand(action, request, response);
+                String path = command.execute();
+                response.sendRedirect(path);
+            }
         } catch (CommandException e) {
             LOGGER.error(e.getMessage());
             response.sendRedirect("error");

@@ -18,16 +18,35 @@ public class ForwardToEditAlienCommand implements Command {
     private HttpServletRequest request;
     private HttpServletResponse response;
 
+    /**
+     * Constructs command with default service, specified request and response.
+     * @param request HTTP-request.
+     * @param response HTTP-response.
+     */
     public ForwardToEditAlienCommand(HttpServletRequest request, HttpServletResponse response) {
         this(Common.getInstance(), request, response);
     }
 
-    public ForwardToEditAlienCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
+    /**
+     * Constructs command with specified service, request and response.
+     * @param service service layer class with opportunities of alien specialists.
+     * @param request HTTP-request.
+     * @param response HTTP-response.
+     */
+    ForwardToEditAlienCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;
         this.request = request;
         this.response = response;
     }
 
+    /**
+     * Executes command forwarding to the page of alien's information change. Request
+     * provides information about alien's ID, then service layer is called to get
+     * information about alien (name, planet, description) and about all movies (to
+     * let person to choose from a movie list), then all info's put into request.
+     * @return url to forward from servlet.
+     * @throws CommandException if {@link ServiceException} was caught.
+     */
     @Override
     public String execute() throws CommandException {
         long alienId = Long.parseLong(request.getParameter("alienId"));

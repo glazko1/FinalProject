@@ -20,16 +20,36 @@ public class SignUpCommand implements Command {
     private HttpServletRequest request;
     private HttpServletResponse response;
 
+    /**
+     * Constructs command with default service, specified request and response.
+     * @param request HTTP-request.
+     * @param response HTTP-response.
+     */
     public SignUpCommand(HttpServletRequest request, HttpServletResponse response) {
         this(Common.getInstance(), request, response);
     }
 
-    public SignUpCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
+    /**
+     * Constructs command with specified service, request and response.
+     * @param service service layer class with opportunities of alien specialists.
+     * @param request HTTP-request.
+     * @param response HTTP-response.
+     */
+    SignUpCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;
         this.request = request;
         this.response = response;
     }
 
+    /**
+     * Executes user's sign up command. Gets entered by user information: username,
+     * first name, last name, e-mail, password, confirmed password and birth date.
+     * Checks and writes information about new user by service layer. Informs user about
+     * error if {@link InvalidUsernameException}, {@link InvalidEmailException} or
+     * {@link InvalidUserInformationException} were caught.
+     * @return url to redirect from servlet.
+     * @throws CommandException if {@link ServiceException} was caught.
+     */
     @Override
     public String execute() throws CommandException {
         String username = request.getParameter("newUsername");

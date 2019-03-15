@@ -36,7 +36,7 @@
 <div class="center-column">
     <table border="1" cellpadding="4" cellspacing="0" align="center">
         <tr>
-            <c:if test="${sessionScope.status == 1}">
+            <c:if test="${sessionScope.status.statusId == 1}">
                 <th align="center">
                     <form method="get" action="mainWindow" style="display: inline; margin: 0;">
                         <input type="hidden" name="sortedBy" value="movieId">
@@ -77,7 +77,7 @@
         </tr>
         <c:forEach items="${movies}" var="movie">
             <tr>
-                <c:if test="${sessionScope.status == 1}">
+                <c:if test="${sessionScope.status.statusId == 1}">
                     <td align="center">${movie.movieId}</td>
                 </c:if>
                 <td align="center">
@@ -90,7 +90,7 @@
             </tr>
         </c:forEach>
     </table>
-    <c:if test="${sessionScope.status == 1 || sessionScope.status == 2}">
+    <c:if test="${sessionScope.status.statusId == 1 || sessionScope.status.statusId == 2}">
         <form method="get" action="mainWindow">
             <br><button type="submit" name="button" value="forwardToNewMovie"><fmt:message key="message.add_movie" /></button>
         </form>
