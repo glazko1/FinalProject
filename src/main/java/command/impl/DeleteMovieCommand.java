@@ -2,9 +2,11 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
+import entity.UserStatus;
 import service.MovieFanService;
 import service.exception.ServiceException;
 import service.impl.MovieFan;
+import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +16,7 @@ public class DeleteMovieCommand implements Command {
     private MovieFanService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
+    private UserAccessChecker checker;
 
     /**
      * Constructs command with default service, specified request and response.
@@ -21,7 +24,7 @@ public class DeleteMovieCommand implements Command {
      * @param response HTTP-response.
      */
     public DeleteMovieCommand(HttpServletRequest request, HttpServletResponse response) {
-        this(MovieFan.getInstance(), request, response);
+        this(MovieFan.getInstance(), request, response, UserAccessChecker.getInstance());
     }
 
     /**
@@ -30,10 +33,11 @@ public class DeleteMovieCommand implements Command {
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
-    DeleteMovieCommand(MovieFanService service, HttpServletRequest request, HttpServletResponse response) {
+    DeleteMovieCommand(MovieFanService service, HttpServletRequest request, HttpServletResponse response, UserAccessChecker checker) {
         this.service = service;
         this.request = request;
         this.response = response;
+        this.checker = checker;
     }
 
     /**
@@ -44,6 +48,10 @@ public class DeleteMovieCommand implements Command {
      */
     @Override
     public String execute() throws CommandException {
+        if (!checker.checkStatus(UserStatus.MOVIE_FAN, request) &&
+                !checker.checkStatus(UserStatus.ADMIN, request)) {
+            return "main";
+        }
         long movieId = Long.parseLong(request.getParameter("movieId"));
         try {
             service.deleteMovie(movieId);

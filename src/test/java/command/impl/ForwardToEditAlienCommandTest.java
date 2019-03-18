@@ -8,11 +8,13 @@ import org.testng.annotations.Test;
 import service.CommonService;
 import service.exception.ServiceException;
 import service.impl.Common;
+import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -27,9 +29,11 @@ public class ForwardToEditAlienCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        Command command = new ForwardToEditAlienCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new ForwardToEditAlienCommand(service, mockRequest, mockResponse, checker);
         //when
         when(mockRequest.getParameter("alienId")).thenReturn("1");
+        when(checker.checkStatus(any(), any())).thenReturn(true);
         doThrow(ServiceException.class).when(service).viewAlien(anyLong());
         command.execute();
         //then
@@ -44,9 +48,11 @@ public class ForwardToEditAlienCommandTest {
         CommonService service = mock(Common.class);
         Alien alien = mock(Alien.class);
         List<Movie> movies = (List<Movie>) mock(List.class);
-        Command command = new ForwardToEditAlienCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new ForwardToEditAlienCommand(service, mockRequest, mockResponse, checker);
         //when
         when(mockRequest.getParameter("alienId")).thenReturn("1");
+        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(service.viewAlien(anyLong())).thenReturn(alien);
         when(service.viewAllMovies()).thenReturn(movies);
         String result = command.execute();

@@ -6,10 +6,12 @@ import org.testng.annotations.Test;
 import service.AdminService;
 import service.exception.ServiceException;
 import service.impl.Admin;
+import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.doNothing;
@@ -26,8 +28,10 @@ public class ChangeUserStatusCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         AdminService service = mock(Admin.class);
-        Command command = new ChangeUserStatusCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new ChangeUserStatusCommand(service, mockRequest, mockResponse, checker);
         //when
+        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("userId")).thenReturn("1");
         when(mockRequest.getParameter("status")).thenReturn("1");
         doThrow(ServiceException.class).when(service).changeUserStatus(anyLong(), anyInt());
@@ -42,8 +46,10 @@ public class ChangeUserStatusCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         AdminService service = mock(Admin.class);
-        Command command = new ChangeUserStatusCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new ChangeUserStatusCommand(service, mockRequest, mockResponse, checker);
         //when
+        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("userId")).thenReturn("1");
         when(mockRequest.getParameter("status")).thenReturn("1");
         doNothing().when(service).changeUserStatus(anyLong(), anyInt());

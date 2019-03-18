@@ -6,6 +6,7 @@ import service.CommonService;
 import service.exception.user.InvalidPasswordException;
 import service.exception.ServiceException;
 import service.impl.Common;
+import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ public class ChangePasswordCommand implements Command {
     private CommonService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
+    private UserAccessChecker checker;
 
     /**
      * Constructs command with default service, specified request and response.
@@ -23,7 +25,7 @@ public class ChangePasswordCommand implements Command {
      * @param response HTTP-response.
      */
     public ChangePasswordCommand(HttpServletRequest request, HttpServletResponse response) {
-        this(Common.getInstance(), request, response);
+        this(Common.getInstance(), request, response, UserAccessChecker.getInstance());
     }
 
     /**
@@ -32,10 +34,11 @@ public class ChangePasswordCommand implements Command {
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
-    ChangePasswordCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
+    ChangePasswordCommand(CommonService service, HttpServletRequest request, HttpServletResponse response, UserAccessChecker checker) {
         this.service = service;
         this.request = request;
         this.response = response;
+        this.checker = checker;
     }
 
     /**
@@ -49,6 +52,9 @@ public class ChangePasswordCommand implements Command {
     @Override
     public String execute() throws CommandException {
         long userId = Long.parseLong(request.getParameter("userId"));
+        if (!checker.checkAccess(userId, request)) {
+            return "main";
+        }
         String currentPassword = request.getParameter("currentPassword");
         String newPassword = request.getParameter("newPassword");
         String confirmedPassword = request.getParameter("confirmedPassword");

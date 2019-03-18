@@ -48,6 +48,16 @@ public class AlienSQL implements AlienDAO {
     private static final String GET_ALIEN_BY_NAME_SQL = "SELECT a.AlienId, a.AlienName, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, a.Planet, a.Description, a.AverageRating, a.ImagePath FROM Alien a JOIN Movie m ON a.MovieId = m.MovieId WHERE AlienName = ?";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
+    /**
+     * Creates (by call of private method getNextAlien()) and returns alien
+     * according to information in database and given parameter (alien's ID).
+     * Gets proxy connection from database pool, prepares statement on it (by
+     * SQL-string) and gets result set with alien.
+     * @param alienId ID of alien to find.
+     * @return alien with given ID.
+     * @throws DAOException if {@link SQLException} was caught or there are no
+     * aliens with given ID in database.
+     */
     @Override
     public Alien getAlienById(long alienId) throws DAOException {
         PreparedStatement statement = null;
@@ -71,6 +81,13 @@ public class AlienSQL implements AlienDAO {
         throw new DAOException("No alien with ID " + alienId + " in DAO!");
     }
 
+    /**
+     * Creates and returns list of aliens existing in database. Gets proxy
+     * connection from database pool, prepares statement on it (by SQL-string)
+     * and gets result set with all aliens in database.
+     * @return list of aliens existing in database.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public List<Alien> getAllAliens() throws DAOException {
         PreparedStatement statement = null;
@@ -95,6 +112,14 @@ public class AlienSQL implements AlienDAO {
         return aliens;
     }
 
+    /**
+     * Adds new alien to database according to all fields in given object. Alien
+     * can't be added if alien with such name already exists. Gets proxy connection
+     * from database pool, prepares statement on it (by SQL-string) and executes.
+     * @param alien object with information about new alien.
+     * @throws UsedAlienNameException if alien with such name already exists.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void addNewAlien(Alien alien) throws DAOException {
         PreparedStatement statement = null;
@@ -123,6 +148,14 @@ public class AlienSQL implements AlienDAO {
         }
     }
 
+    /**
+     * Updates alien's average rating according to given parameter (alien's ID and
+     * new average rating). Gets proxy connection from database pool, prepares
+     * statement on it (by SQL-string) and executes.
+     * @param alienId alien's ID to update rating.
+     * @param averageRating new average rating.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void updateAverageRating(long alienId, double averageRating) throws DAOException {
         PreparedStatement statement = null;
@@ -143,6 +176,16 @@ public class AlienSQL implements AlienDAO {
         }
     }
 
+    /**
+     * Updates information (movie, planet and description) about alien with given ID
+     * according to given parameters. Gets proxy connection from database pool,
+     * prepares statement on it (by SQL-string) and executes.
+     * @param alienId ID of alien to edit.
+     * @param movieId new movie ID.
+     * @param planet new alien's home planet.
+     * @param description new description.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void editAlien(long alienId, long movieId, String planet, String description) throws DAOException {
         PreparedStatement statement = null;
@@ -165,6 +208,16 @@ public class AlienSQL implements AlienDAO {
         }
     }
 
+    /**
+     * Creates and returns list of aliens existing in database sorted by given
+     * parameter (may be ID, name, movie title or planet) ascending or descending.
+     * Gets proxy connection from database pool, prepares statement on it (by
+     * SQL-string) and gets result set with all aliens in database.
+     * @param sortedBy sorting parameter (ID, name, movie title or planet).
+     * @param sortType type of sorting (ascending/descending).
+     * @return sorted list of aliens.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public List<Alien> getAllAliensSorted(String sortedBy, String sortType) throws DAOException {
         PreparedStatement statement = null;
@@ -190,6 +243,14 @@ public class AlienSQL implements AlienDAO {
         return aliens;
     }
 
+    /**
+     * Updates alien's description according to given parameters (alien's ID and
+     * text of description). Gets proxy connection from database pool, prepares
+     * statement (by SQL-string) and executes it.
+     * @param alienId ID of alien to update description.
+     * @param description new text of description.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void updateDescription(long alienId, String description) throws DAOException {
         PreparedStatement statement = null;
@@ -210,6 +271,12 @@ public class AlienSQL implements AlienDAO {
         }
     }
 
+    /**
+     * Deletes alien with given ID from database. With deleting of alien, all
+     * linked with him feedbacks are deleted too.
+     * @param alienId ID of alien to delete.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void deleteAlien(long alienId) throws DAOException {
         PreparedStatement statement = null;

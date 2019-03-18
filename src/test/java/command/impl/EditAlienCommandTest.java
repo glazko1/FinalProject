@@ -6,10 +6,12 @@ import org.testng.annotations.Test;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
 import service.impl.AlienSpecialist;
+import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -26,10 +28,12 @@ public class EditAlienCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         AlienSpecialistService service = mock(AlienSpecialist.class);
-        Command command = new EditAlienCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new EditAlienCommand(service, mockRequest, mockResponse, checker);
         //when
-        when(mockRequest.getParameter("alienId")).thenReturn("1");
+        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("movie")).thenReturn("Movie");
+        when(mockRequest.getParameter("alienId")).thenReturn("1");
         when(mockRequest.getParameter("planet")).thenReturn("Planet");
         when(mockRequest.getParameter("description")).thenReturn("Description");
         doThrow(ServiceException.class).when(service).editAlien(anyLong(), anyString(), anyString(), anyString());
@@ -44,10 +48,12 @@ public class EditAlienCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         AlienSpecialistService service = mock(AlienSpecialist.class);
-        Command command = new EditAlienCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new EditAlienCommand(service, mockRequest, mockResponse, checker);
         //when
-        when(mockRequest.getParameter("alienId")).thenReturn("1");
+        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("movie")).thenReturn("Movie");
+        when(mockRequest.getParameter("alienId")).thenReturn("1");
         when(mockRequest.getParameter("planet")).thenReturn("Planet");
         when(mockRequest.getParameter("description")).thenReturn("Description");
         doNothing().when(service).editAlien(anyLong(), anyString(), anyString(), anyString());

@@ -2,10 +2,12 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
+import entity.UserStatus;
 import service.MovieFanService;
 import service.exception.ServiceException;
 import service.exception.movie.InvalidMovieInformationException;
 import service.impl.MovieFan;
+import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +19,7 @@ public class EditMovieCommand implements Command {
     private MovieFanService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
+    private UserAccessChecker checker;
 
     /**
      * Constructs command with default service, specified request and response.
@@ -24,7 +27,7 @@ public class EditMovieCommand implements Command {
      * @param response HTTP-response.
      */
     public EditMovieCommand(HttpServletRequest request, HttpServletResponse response) {
-        this(MovieFan.getInstance(), request, response);
+        this(MovieFan.getInstance(), request, response, UserAccessChecker.getInstance());
     }
 
     /**
@@ -33,10 +36,11 @@ public class EditMovieCommand implements Command {
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
-    EditMovieCommand(MovieFanService service, HttpServletRequest request, HttpServletResponse response) {
+    EditMovieCommand(MovieFanService service, HttpServletRequest request, HttpServletResponse response, UserAccessChecker checker) {
         this.service = service;
         this.request = request;
         this.response = response;
+        this.checker = checker;
     }
 
     /**
@@ -49,8 +53,12 @@ public class EditMovieCommand implements Command {
      */
     @Override
     public String execute() throws CommandException {
-        long movieId = Long.parseLong(request.getParameter("movieId"));
+        if (!checker.checkStatus(UserStatus.MOVIE_FAN, request) &&
+                !checker.checkStatus(UserStatus.ADMIN, request)) {
+            return "main";
+        }
         String runningTime = request.getParameter("runningTime");
+        long movieId = Long.parseLong(request.getParameter("movieId"));
         String releaseDate = request.getParameter("releaseDate");
         Date date = Date.valueOf(releaseDate);
         String budget = request.getParameter("budget");

@@ -5,6 +5,7 @@ import command.exception.CommandException;
 import org.testng.annotations.Test;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
+import util.checker.UserAccessChecker;
 import util.writer.ContentWriter;
 
 import javax.servlet.ServletContext;
@@ -13,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -24,7 +24,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 import static org.testng.Assert.assertEquals;
 
 public class AddAlienCommandTest {
@@ -35,10 +34,13 @@ public class AddAlienCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         AlienSpecialistService service = mock(AlienSpecialistService.class);
+        ContentWriter writer = mock(ContentWriter.class);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
         ServletContext context = mock(ServletContext.class);
         Part part = mock(Part.class);
-        Command command = new AddAlienCommand(service, mockRequest, mockResponse);
+        Command command = new AddAlienCommand(service, mockRequest, mockResponse, writer, checker);
         //when
+        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("alienName")).thenReturn("AlienName");
         when(mockRequest.getParameter("planet")).thenReturn("Planet");
         when(mockRequest.getParameter("description")).thenReturn("Description");
@@ -58,12 +60,13 @@ public class AddAlienCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         AlienSpecialistService service = mock(AlienSpecialistService.class);
+        ContentWriter writer = mock(ContentWriter.class);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
         ServletContext context = mock(ServletContext.class);
         Part part = mock(Part.class);
-        ContentWriter writer = mock(ContentWriter.class);
-        AddAlienCommand command = new AddAlienCommand(service, mockRequest, mockResponse);
+        AddAlienCommand command = new AddAlienCommand(service, mockRequest, mockResponse, writer, checker);
         //when
-        command.setWriter(writer);
+        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("alienName")).thenReturn("AlienName");
         when(mockRequest.getParameter("planet")).thenReturn("Planet");
         when(mockRequest.getParameter("description")).thenReturn("Description");

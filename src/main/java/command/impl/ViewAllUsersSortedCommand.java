@@ -9,6 +9,7 @@ import service.impl.Admin;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ViewAllUsersSortedCommand implements Command {
@@ -38,6 +39,13 @@ public class ViewAllUsersSortedCommand implements Command {
         this.response = response;
     }
 
+    /**
+     * Executes command of getting information about all users sorted by parameter
+     * and type, provided by request. List of users is provided by service layer,
+     * then it's put into request with sorting parameters.
+     * @return url to redirect from servlet.
+     * @throws CommandException if {@link ServiceException} was caught.
+     */
     @Override
     public String execute() throws CommandException {
         String sortedBy = request.getParameter("sortedBy");

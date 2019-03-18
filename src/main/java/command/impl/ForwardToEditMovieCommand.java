@@ -3,9 +3,11 @@ package command.impl;
 import command.Command;
 import command.exception.CommandException;
 import entity.Movie;
+import entity.UserStatus;
 import service.CommonService;
 import service.exception.ServiceException;
 import service.impl.Common;
+import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +17,7 @@ public class ForwardToEditMovieCommand implements Command {
     private CommonService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
+    private UserAccessChecker checker;
 
     /**
      * Constructs command with default service, specified request and response.
@@ -22,7 +25,7 @@ public class ForwardToEditMovieCommand implements Command {
      * @param response HTTP-response.
      */
     public ForwardToEditMovieCommand(HttpServletRequest request, HttpServletResponse response) {
-        this(Common.getInstance(), request, response);
+        this(Common.getInstance(), request, response, UserAccessChecker.getInstance());
     }
 
     /**
@@ -31,10 +34,11 @@ public class ForwardToEditMovieCommand implements Command {
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
-    ForwardToEditMovieCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
+    ForwardToEditMovieCommand(CommonService service, HttpServletRequest request, HttpServletResponse response, UserAccessChecker checker) {
         this.service = service;
         this.request = request;
         this.response = response;
+        this.checker = checker;
     }
 
     /**
@@ -48,6 +52,10 @@ public class ForwardToEditMovieCommand implements Command {
     @Override
     public String execute() throws CommandException {
         long movieId = Long.parseLong(request.getParameter("movieId"));
+        if (!checker.checkStatus(UserStatus.MOVIE_FAN, request) ||
+                !checker.checkStatus(UserStatus.ADMIN, request)) {
+            return "main";
+        }
         try {
             Movie movie = service.viewMovie(movieId);
             request.setAttribute("movieId", movie.getMovieId());

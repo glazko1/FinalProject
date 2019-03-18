@@ -5,10 +5,12 @@ import command.exception.CommandException;
 import org.testng.annotations.Test;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
+import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -25,8 +27,10 @@ public class AcceptEditCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         AlienSpecialistService service = mock(AlienSpecialistService.class);
-        Command command = new AcceptEditCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new AcceptEditCommand(service, mockRequest, mockResponse, checker);
         //when
+        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("editId")).thenReturn("1");
         when(mockRequest.getParameter("userId")).thenReturn("1");
         doThrow(ServiceException.class).when(service).acceptEdit(anyLong());
@@ -41,8 +45,10 @@ public class AcceptEditCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         AlienSpecialistService service = mock(AlienSpecialistService.class);
-        Command command = new AcceptEditCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new AcceptEditCommand(service, mockRequest, mockResponse, checker);
         //when
+        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("editId")).thenReturn("1");
         when(mockRequest.getParameter("userId")).thenReturn("1");
         doNothing().when(service).acceptEdit(anyLong());

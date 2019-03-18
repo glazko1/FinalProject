@@ -6,12 +6,12 @@ import org.testng.annotations.Test;
 import service.MovieFanService;
 import service.exception.ServiceException;
 import service.impl.MovieFan;
+import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -27,8 +27,10 @@ public class AddMovieCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         MovieFanService service = mock(MovieFan.class);
-        Command command = new AddMovieCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new AddMovieCommand(service, mockRequest, mockResponse, checker);
         //when
+        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("title")).thenReturn("Title");
         when(mockRequest.getParameter("runningTime")).thenReturn("100");
         when(mockRequest.getParameter("budget")).thenReturn("2000000");
@@ -45,8 +47,10 @@ public class AddMovieCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         MovieFanService service = mock(MovieFan.class);
-        Command command = new AddMovieCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new AddMovieCommand(service, mockRequest, mockResponse, checker);
         //when
+        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("title")).thenReturn("Title");
         when(mockRequest.getParameter("runningTime")).thenReturn("100");
         when(mockRequest.getParameter("budget")).thenReturn("2000000");

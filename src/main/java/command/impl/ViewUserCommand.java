@@ -37,6 +37,13 @@ public class ViewUserCommand implements Command {
         this.response = response;
     }
 
+    /**
+     * Executes command of getting a user. User's ID is provided by request, then
+     * service layer returns user (all information) and it's put into request to show
+     * on page.
+     * @return url to redirect from servlet.
+     * @throws CommandException if {@link ServiceException} was caught.
+     */
     @Override
     public String execute() throws CommandException {
         long id = Long.parseLong(request.getParameter("userId"));

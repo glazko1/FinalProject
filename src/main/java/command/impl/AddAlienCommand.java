@@ -2,11 +2,13 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
+import entity.UserStatus;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
 import service.exception.alien.InvalidAlienInformationException;
 import service.exception.alien.InvalidAlienNameException;
 import service.impl.AlienSpecialist;
+import util.checker.UserAccessChecker;
 import util.generator.IdGenerator;
 import util.writer.ContentWriter;
 
@@ -24,6 +26,7 @@ public class AddAlienCommand implements Command {
     private HttpServletRequest request;
     private HttpServletResponse response;
     private ContentWriter writer;
+    private UserAccessChecker checker;
 
     /**
      * Constructs command with default service and content writer, specified request
@@ -32,7 +35,7 @@ public class AddAlienCommand implements Command {
      * @param response HTTP-response.
      */
     public AddAlienCommand(HttpServletRequest request, HttpServletResponse response) {
-        this(AlienSpecialist.getInstance(), request, response);
+        this(AlienSpecialist.getInstance(), request, response, ContentWriter.getInstance(), UserAccessChecker.getInstance());
     }
 
     /**
@@ -42,11 +45,12 @@ public class AddAlienCommand implements Command {
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
-    AddAlienCommand(AlienSpecialistService service, HttpServletRequest request, HttpServletResponse response) {
+    AddAlienCommand(AlienSpecialistService service, HttpServletRequest request, HttpServletResponse response, ContentWriter writer, UserAccessChecker checker) {
         this.service = service;
         this.request = request;
         this.response = response;
-        this.writer = ContentWriter.getInstance();
+        this.writer = writer;
+        this.checker = checker;
     }
 
     /**
@@ -61,6 +65,10 @@ public class AddAlienCommand implements Command {
      */
     @Override
     public String execute() throws CommandException {
+        if (!checker.checkStatus(UserStatus.ALIEN_SPECIALIST, request) &&
+                !checker.checkStatus(UserStatus.ADMIN, request)) {
+            return "main";
+        }
         String alienName = request.getParameter("alienName");
         String planet = request.getParameter("planet");
         String description = request.getParameter("description");
@@ -85,9 +93,5 @@ public class AddAlienCommand implements Command {
             throw new CommandException(e);
         }
         return "main";
-    }
-
-    void setWriter(ContentWriter writer) {
-        this.writer = writer;
     }
 }

@@ -27,12 +27,12 @@ public class MainServlet extends HttpServlet {
         System.out.println(action);
         CommandFactory factory = CommandFactory.getInstance();
         try {
+            Command command = factory.createCommand(action, request, response);
+            String path = command.execute();
             HttpSession session = request.getSession();
             if (session.getAttribute("status") == null) {
                 response.sendRedirect("index");
             } else {
-                Command command = factory.createCommand(action, request, response);
-                String path = command.execute();
                 request.getRequestDispatcher(path).forward(request, response);
             }
         } catch (CommandException e) {
@@ -47,12 +47,12 @@ public class MainServlet extends HttpServlet {
         System.out.println(action);
         CommandFactory factory = CommandFactory.getInstance();
         try {
+            Command command = factory.createCommand(action, request, response);
+            String path = command.execute();
             HttpSession session = request.getSession();
             if (session.getAttribute("status") == null) {
                 response.sendRedirect("index");
             } else {
-                Command command = factory.createCommand(action, request, response);
-                String path = command.execute();
                 response.sendRedirect(path);
             }
         } catch (CommandException e) {

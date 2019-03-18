@@ -37,6 +37,12 @@ public class ViewMovieCommand implements Command {
         this.response = response;
     }
 
+    /**
+     * Executes command of getting a movie. Movie ID is provided by request, then
+     * service layer returns movie and it's put into request to show on page.
+     * @return url to redirect from servlet.
+     * @throws CommandException if {@link ServiceException} was caught.
+     */
     @Override
     public String execute() throws CommandException {
         long movieId = Long.parseLong(request.getParameter("movieId"));

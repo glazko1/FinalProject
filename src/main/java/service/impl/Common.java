@@ -26,6 +26,8 @@ import entity.UserStatus;
 import javafx.util.Pair;
 import service.CommonService;
 import service.exception.ServiceException;
+import service.exception.edit.InvalidEditInformationException;
+import service.exception.feedback.InvalidFeedbackInformationException;
 import service.exception.user.BannedUserException;
 import service.exception.user.InvalidEmailException;
 import service.exception.user.InvalidPasswordException;
@@ -36,6 +38,8 @@ import util.builder.FeedbackBuilder;
 import util.builder.UserBuilder;
 import util.generator.IdGenerator;
 import util.hasher.PasswordHashKeeper;
+import util.validator.EditInformationValidator;
+import util.validator.FeedbackInformationValidator;
 import util.validator.UserInformationValidator;
 
 import java.sql.Date;
@@ -52,7 +56,9 @@ public class Common implements CommonService {
 
     private Common() {}
 
-    private UserInformationValidator validator = UserInformationValidator.getInstance();
+    private UserInformationValidator userValidator = UserInformationValidator.getInstance();
+    private FeedbackInformationValidator feedbackValidator = FeedbackInformationValidator.getInstance();
+    private EditInformationValidator editValidator = EditInformationValidator.getInstance();
     private UserDAO userDAO = UserSQL.getInstance();
     private AlienDAO alienDAO = AlienSQL.getInstance();
     private MovieDAO movieDAO = MovieSQL.getInstance();
@@ -64,7 +70,7 @@ public class Common implements CommonService {
 
     @Override
     public User signIn(String username, String password) throws ServiceException {
-        if (!validator.validate(username, password)) {
+        if (!userValidator.validate(username, password)) {
             throw new InvalidUserInformationException("Information is not valid!");
         }
         String encoded = keeper.generateHash(username, password);
@@ -84,7 +90,7 @@ public class Common implements CommonService {
     @Override
     public void signUp(String username, String firstName, String lastName, String email,
                        String password, String confirmedPassword, Date birthDate) throws ServiceException {
-        if (!validator.validate(username, firstName, lastName, email, password, confirmedPassword)) {
+        if (!userValidator.validate(username, firstName, lastName, email, password, confirmedPassword)) {
             throw new InvalidUserInformationException("Information is not valid!");
         }
         long id = generator.generateId();
@@ -149,6 +155,9 @@ public class Common implements CommonService {
 
     @Override
     public void addFeedback(long alienId, String username, int rating, String feedbackText) throws ServiceException {
+        if (!feedbackValidator.validate(feedbackText)) {
+            throw new InvalidFeedbackInformationException("Information is not valid!");
+        }
         long id = generator.generateId();
         try {
             User user = userDAO.getUser(username);
@@ -187,7 +196,7 @@ public class Common implements CommonService {
 
     @Override
     public void editUser(long userId, String firstName, String lastName, String email) throws ServiceException {
-        if (!validator.validate(firstName, lastName, email)) {
+        if (!userValidator.validate(firstName, lastName, email)) {
             throw new InvalidUserInformationException("Information is not valid!");
         }
         try {
@@ -202,7 +211,7 @@ public class Common implements CommonService {
     @Override
     public void changePassword(long userId, String currentPassword, String newPassword,
                                String confirmedPassword) throws ServiceException {
-        if (!validator.validatePasswords(currentPassword, newPassword, confirmedPassword)) {
+        if (!userValidator.validatePasswords(currentPassword, newPassword, confirmedPassword)) {
             throw new InvalidUserInformationException("Information is not valid!");
         }
         try {
@@ -221,7 +230,7 @@ public class Common implements CommonService {
 
     @Override
     public void restorePassword(String username, String firstName, String lastName, String email, String newPassword, String confirmedPassword) throws ServiceException {
-        if (!validator.validate(username, firstName, lastName, email, newPassword, confirmedPassword)) {
+        if (!userValidator.validate(username, firstName, lastName, email, newPassword, confirmedPassword)) {
             throw new InvalidUserInformationException("Information is not valid!");
         }
         try {
@@ -272,6 +281,9 @@ public class Common implements CommonService {
 
     @Override
     public void suggestEdit(long userId, long alienId, String description) throws ServiceException {
+        if (!editValidator.validate(description)) {
+            throw new InvalidEditInformationException("Information is not valid!");
+        }
         long editId = generator.generateId();
         try {
             Alien alien = alienDAO.getAlienById(alienId);
@@ -307,8 +319,8 @@ public class Common implements CommonService {
         }
     }
 
-    public void setValidator(UserInformationValidator validator) {
-        this.validator = validator;
+    void setUserValidator(UserInformationValidator userValidator) {
+        this.userValidator = userValidator;
     }
 
     void setUserDAO(UserDAO userDAO) {

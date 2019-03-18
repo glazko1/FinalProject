@@ -24,8 +24,6 @@ import entity.Notification;
 import entity.User;
 import javafx.util.Pair;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import service.exception.ServiceException;
 import service.exception.user.InvalidEmailException;
@@ -65,7 +63,7 @@ public class CommonTest {
 
     @BeforeClass
     public void init() {
-        service.setValidator(validator);
+        service.setUserValidator(validator);
         service.setUserDAO(userDAO);
         service.setAlienDAO(alienDAO);
         service.setMovieDAO(movieDAO);

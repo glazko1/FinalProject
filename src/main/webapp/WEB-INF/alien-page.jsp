@@ -92,7 +92,9 @@
             <tr>
                 <td><fmt:message key="message.feedback" /></td>
                 <td>
-                    <label><input type="text" name="feedbackText"></label>
+                    <label>
+                        <input type="text" required pattern=".{1,255}" name="feedbackText" title="<fmt:message key="message.description_format" />">
+                    </label>
                 </td>
             </tr>
         </table><br>

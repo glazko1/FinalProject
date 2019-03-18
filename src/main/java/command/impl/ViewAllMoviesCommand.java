@@ -38,6 +38,12 @@ public class ViewAllMoviesCommand implements Command {
         this.response = response;
     }
 
+    /**
+     * Executes command of getting information about all movies. List of movies is
+     * provided by service layer, then it's put into request.
+     * @return url to redirect from servlet.
+     * @throws CommandException if {@link ServiceException} was caught.
+     */
     @Override
     public String execute() throws CommandException {
         try {

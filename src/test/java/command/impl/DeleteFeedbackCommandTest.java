@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 import service.CommonService;
 import service.exception.ServiceException;
 import service.impl.Common;
+import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,7 +26,8 @@ public class DeleteFeedbackCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        Command command = new DeleteFeedbackCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new DeleteFeedbackCommand(service, mockRequest, mockResponse, checker);
         //when
         when(mockRequest.getParameter("feedbackId")).thenReturn("1");
         when(mockRequest.getParameter("alienId")).thenReturn("1");
@@ -41,7 +43,8 @@ public class DeleteFeedbackCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        Command command = new DeleteFeedbackCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new DeleteFeedbackCommand(service, mockRequest, mockResponse, checker);
         //when
         when(mockRequest.getParameter("feedbackId")).thenReturn("1");
         when(mockRequest.getParameter("alienId")).thenReturn("1");

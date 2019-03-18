@@ -54,7 +54,7 @@
     <p>${alien.description}</p>
     <h2><fmt:message key="button.suggest_description" /></h2>
     <form method="post" action="mainWindow">
-        <label><input type="text" name="description"></label><br><br>
+        <label><input type="text" required pattern=".{1,255}" name="description" title="<fmt:message key="message.name_format" />"></label><br><br>
         <input type="hidden" name="userId" value="${sessionScope.userId}">
         <input type="hidden" name="alienId" value="${alien.alienId}">
         <button type="submit" name="button" value="suggestEdit"><fmt:message key="button.submit" /></button>

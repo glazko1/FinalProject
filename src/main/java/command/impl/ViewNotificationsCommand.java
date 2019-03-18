@@ -38,6 +38,13 @@ public class ViewNotificationsCommand implements Command {
         this.response = response;
     }
 
+    /**
+     * Executes command of getting a user's notifications. User's ID is provided by
+     * request, then service layer returns all notifications and they're put into
+     * request to show on page.
+     * @return url to redirect from servlet.
+     * @throws CommandException if {@link ServiceException} was caught.
+     */
     @Override
     public String execute() throws CommandException {
         long userId = Long.parseLong(request.getParameter("userId"));

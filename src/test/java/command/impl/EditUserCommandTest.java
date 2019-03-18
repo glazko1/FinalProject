@@ -8,6 +8,7 @@ import service.exception.ServiceException;
 import service.exception.user.InvalidEmailException;
 import service.exception.user.InvalidUserInformationException;
 import service.impl.Common;
+import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +30,8 @@ public class EditUserCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        Command command = new EditUserCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new EditUserCommand(service, mockRequest, mockResponse, checker);
         //when
         when(mockRequest.getParameter("userId")).thenReturn("1");
         when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
@@ -48,7 +50,8 @@ public class EditUserCommandTest {
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
         HttpSession session = mock(HttpSession.class);
-        Command command = new EditUserCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new EditUserCommand(service, mockRequest, mockResponse, checker);
         //when
         when(mockRequest.getParameter("userId")).thenReturn("1");
         when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
@@ -68,7 +71,8 @@ public class EditUserCommandTest {
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
         HttpSession session = mock(HttpSession.class);
-        Command command = new EditUserCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new EditUserCommand(service, mockRequest, mockResponse, checker);
         //when
         when(mockRequest.getParameter("userId")).thenReturn("1");
         when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
@@ -87,7 +91,8 @@ public class EditUserCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        Command command = new EditUserCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new EditUserCommand(service, mockRequest, mockResponse, checker);
         //when
         when(mockRequest.getParameter("userId")).thenReturn("1");
         when(mockRequest.getParameter("firstName")).thenReturn("FirstName");

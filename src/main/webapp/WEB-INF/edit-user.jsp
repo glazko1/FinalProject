@@ -42,19 +42,25 @@
             <tr>
                 <th align="center"><fmt:message key="message.first_name" /></th>
                 <td align="center">
-                    <label><input type="text" name="firstName" value="${firstName}"></label>
+                    <label>
+                        <input type="text" required pattern=".{2,30}" name="firstName" value="${firstName} title="<fmt:message key="message.name_format" />"">
+                    </label>
                 </td>
             </tr>
             <tr>
                 <th align="center"><fmt:message key="message.last_name" /></th>
                 <td align="center">
-                    <label><input type="text" name="lastName" value="${lastName}"></label>
+                    <label>
+                        <input type="text" required pattern=".{2,30}" name="lastName" value="${lastName} title="<fmt:message key="message.name_format" />"">
+                    </label>
                 </td>
             </tr>
             <tr>
                 <th align="center"><fmt:message key="message.email" /></th>
                 <td align="center">
-                    <label><input type="text" name="email" value="${email}"></label>
+                    <label>
+                        <input type="text" name="email" value="${email}">
+                    </label>
                 </td>
             </tr>
         </table>

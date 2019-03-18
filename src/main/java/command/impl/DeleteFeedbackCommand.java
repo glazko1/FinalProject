@@ -2,9 +2,11 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
+import entity.UserStatus;
 import service.CommonService;
 import service.exception.ServiceException;
 import service.impl.Common;
+import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +16,7 @@ public class DeleteFeedbackCommand implements Command {
     private CommonService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
+    private UserAccessChecker checker;
 
     /**
      * Constructs command with default service, specified request and response.
@@ -21,7 +24,7 @@ public class DeleteFeedbackCommand implements Command {
      * @param response HTTP-response.
      */
     public DeleteFeedbackCommand(HttpServletRequest request, HttpServletResponse response) {
-        this(Common.getInstance(), request, response);
+        this(Common.getInstance(), request, response, UserAccessChecker.getInstance());
     }
 
     /**
@@ -30,10 +33,11 @@ public class DeleteFeedbackCommand implements Command {
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
-    DeleteFeedbackCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
+    DeleteFeedbackCommand(CommonService service, HttpServletRequest request, HttpServletResponse response, UserAccessChecker checker) {
         this.service = service;
         this.request = request;
         this.response = response;
+        this.checker = checker;
     }
 
     /**

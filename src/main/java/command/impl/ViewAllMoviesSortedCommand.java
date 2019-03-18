@@ -38,6 +38,13 @@ public class ViewAllMoviesSortedCommand implements Command {
         this.response = response;
     }
 
+    /**
+     * Executes command of getting information about all movies sorted by parameter
+     * and type, provided by request. List of movies is provided by service layer,
+     * then it's put into request with sorting parameters.
+     * @return url to redirect from servlet.
+     * @throws CommandException if {@link ServiceException} was caught.
+     */
     @Override
     public String execute() throws CommandException {
         String sortedBy = request.getParameter("sortedBy");

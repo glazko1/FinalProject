@@ -7,10 +7,12 @@ import org.testng.annotations.Test;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
 import service.impl.AlienSpecialist;
+import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -25,8 +27,10 @@ public class ViewSuggestedEditCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         AlienSpecialistService service = mock(AlienSpecialist.class);
-        Command command = new ViewSuggestedEditCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new ViewSuggestedEditCommand(service, mockRequest, mockResponse, checker);
         //when
+        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("editId")).thenReturn("1");
         doThrow(ServiceException.class).when(service).viewSuggestedEdit(anyLong());
         command.execute();
@@ -41,8 +45,10 @@ public class ViewSuggestedEditCommandTest {
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         AlienSpecialistService service = mock(AlienSpecialist.class);
         Edit edit = mock(Edit.class);
-        Command command = new ViewSuggestedEditCommand(service, mockRequest, mockResponse);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new ViewSuggestedEditCommand(service, mockRequest, mockResponse, checker);
         //when
+        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("editId")).thenReturn("1");
         when(service.viewSuggestedEdit(anyLong())).thenReturn(edit);
         String result = command.execute();

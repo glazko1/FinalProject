@@ -27,37 +27,49 @@
             <tr>
                 <td align="center"><fmt:message key="message.username" /></td>
                 <td align="center">
-                    <label><input type="text" name="username"></label>
+                    <label>
+                        <input type="text" required pattern=".{6,15}" name="username" title="<fmt:message key="message.username_format" />">
+                    </label>
                 </td>
             </tr>
             <tr>
                 <td align="center"><fmt:message key="message.first_name" /></td>
                 <td align="center">
-                    <label><input type="text" name="firstName"></label>
+                    <label>
+                        <input type="text" required pattern=".{2,30}" name="firstName" title="<fmt:message key="message.name_format" />">
+                    </label>
                 </td>
             </tr>
             <tr>
                 <td align="center"><fmt:message key="message.last_name" /></td>
                 <td align="center">
-                    <label><input type="text" name="lastName"></label>
+                    <label>
+                        <input type="text" required pattern=".{2,30}" name="lastName" title="<fmt:message key="message.name_format" />">
+                    </label>
                 </td>
             </tr>
             <tr>
                 <td align="center"><fmt:message key="message.email" /></td>
                 <td align="center">
-                    <label><input type="email" name="email"></label>
+                    <label>
+                        <input type="email" name="email">
+                    </label>
                 </td>
             </tr>
             <tr>
                 <td align="center"><fmt:message key="message.new_password" /></td>
                 <td align="center">
-                    <label><input type="password" name="newPassword"></label>
+                    <label>
+                        <input type="password" required pattern=".{8,30}" name="newPassword" title="<fmt:message key="message.password_format" />">
+                    </label>
                 </td>
             </tr>
             <tr>
                 <td align="center"><fmt:message key="message.confirm_password" /></td>
                 <td align="center">
-                    <label><input type="password" name="confirmedPassword"></label>
+                    <label>
+                        <input type="password" required pattern=".{8,30}" name="confirmedPassword" title="<fmt:message key="message.password_format" />">
+                    </label>
                 </td>
             </tr>
         </table><br>
