@@ -37,6 +37,13 @@ public class EditSQL implements EditDAO {
     private static final String DELETE_EDIT_SQL = "DELETE FROM Edit WHERE EditId = ?";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
+    /**
+     * Adds new edit to database according to all fields in given object. Gets
+     * proxy connection from database pool, prepares statement on it (by SQL-string)
+     * and executes.
+     * @param edit object with information about new edit.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void addNewEdit(Edit edit) throws DAOException {
         try (ProxyConnection proxyConnection = pool.getConnection()) {
@@ -53,6 +60,13 @@ public class EditSQL implements EditDAO {
         }
     }
 
+    /**
+     * Creates and returns list of edits existing in database. Gets proxy
+     * connection from database pool, prepares statement on it (by SQL-string) and
+     * gets result set with all edits in database.
+     * @return list of edits existing in database.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public List<Edit> getAllSuggestedEdits() throws DAOException {
         List<Edit> edits = new ArrayList<>();
@@ -70,6 +84,15 @@ public class EditSQL implements EditDAO {
         return edits;
     }
 
+    /**
+     * Creates and returns edit according to information in database and given
+     * parameter (edit ID). Gets proxy connection from database pool, prepares
+     * statement on it (by SQL-string) and gets result set with edit.
+     * @param editId ID of edit to find.
+     * @return edit with given ID.
+     * @throws DAOException if {@link SQLException} was caught or there is no
+     * edit with given ID in database.
+     */
     @Override
     public Edit getSuggestedEdit(long editId) throws DAOException {
         try (ProxyConnection proxyConnection = pool.getConnection()) {
@@ -86,6 +109,11 @@ public class EditSQL implements EditDAO {
         throw new DAOException("No edit with ID " + editId + " in DAO!");
     }
 
+    /**
+     * Deletes edit with given ID from database.
+     * @param editId ID of edit to delete.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void deleteEdit(long editId) throws DAOException {
         try (ProxyConnection proxyConnection = pool.getConnection()) {

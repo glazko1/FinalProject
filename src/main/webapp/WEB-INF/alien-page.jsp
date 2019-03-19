@@ -108,6 +108,7 @@
         </form> ${feedback.feedbackDateTime}
         <c:if test="${feedback.user.userId == sessionScope.userId || sessionScope.status.statusId == 1}">
             <form method="post" action="mainWindow" style="display: inline; margin: 0;">
+                <input type="hidden" name="userId" value="${feedback.user.userId}">
                 <input type="hidden" name="feedbackId" value="${feedback.feedbackId}">
                 <input type="hidden" name="alienId" value="${alien.alienId}">
                 <button type="submit" name="button" value="deleteFeedback" style="font-size: 14px;"><fmt:message key="message.delete" /></button>

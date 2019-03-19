@@ -41,6 +41,21 @@ public class ChangeUserStatusCommandTest {
     }
 
     @Test
+    public void execute_noAccess_main() throws CommandException {
+        //given
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        AdminService service = mock(Admin.class);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new ChangeUserStatusCommand(service, mockRequest, mockResponse, checker);
+        //when
+        when(checker.checkStatus(any(), any())).thenReturn(false);
+        String result = command.execute();
+        //then
+        assertEquals(result, "main");
+    }
+
+    @Test
     public void execute_validParameters_main() throws ServiceException, CommandException {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);

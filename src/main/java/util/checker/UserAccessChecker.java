@@ -17,6 +17,9 @@ public class UserAccessChecker {
 
     public boolean checkAccess(long requiredId, HttpServletRequest request) {
         HttpSession session = request.getSession();
+        if (session.getAttribute("userId") == null) {
+            return false;
+        }
         long id = Long.parseLong(String.valueOf(session.getAttribute("userId")));
         return id == requiredId;
     }

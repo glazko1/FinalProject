@@ -38,7 +38,7 @@
     <table border="1" cellpadding="4" cellspacing="0" align="center">
         <tr>
             <th align="center">
-                <form method="get" action="mainWindow">
+                <form method="get" action="mainWindow" style="display: inline; margin: 0;">
                     <input type="hidden" name="sortedBy" value="userId">
                     <c:if test="${sortedBy == 'userId' && sortType == 'ASC'}">
                         <input type="hidden" name="sortType" value="DESC">
@@ -50,7 +50,7 @@
                 </form>
             </th>
             <th align="center">
-                <form method="get" action="mainWindow">
+                <form method="get" action="mainWindow" style="display: inline; margin: 0;">
                     <input type="hidden" name="sortedBy" value="username">
                     <c:if test="${sortedBy == 'username' && sortType == 'ASC'}">
                         <input type="hidden" name="sortType" value="DESC">
@@ -62,7 +62,7 @@
                 </form>
             </th>
             <th align="center">
-                <form method="get" action="mainWindow">
+                <form method="get" action="mainWindow" style="display: inline; margin: 0;">
                     <input type="hidden" name="sortedBy" value="email">
                     <c:if test="${sortedBy == 'email' && sortType == 'ASC'}">
                         <input type="hidden" name="sortType" value="DESC">

@@ -18,6 +18,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
 
 public class ViewAllSuggestedEditsCommandTest {
 
@@ -38,6 +39,21 @@ public class ViewAllSuggestedEditsCommandTest {
     }
 
     @Test
+    public void execute_noAccess_main() throws CommandException {
+        //given
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        AlienSpecialistService service = mock(AlienSpecialistService.class);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new ViewAllSuggestedEditsCommand(service, mockRequest, mockResponse, checker);
+        //when
+        when(checker.checkStatus(any(), any())).thenReturn(false);
+        String result = command.execute();
+        //then
+        assertEquals(result, "main");
+    }
+
+    @Test
     public void execute_validParameters_suggestedEditTable() throws ServiceException, CommandException {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
@@ -51,6 +67,6 @@ public class ViewAllSuggestedEditsCommandTest {
         when(service.viewAllSuggestedEdits()).thenReturn(edits);
         String result = command.execute();
         //then
-        Assert.assertEquals(result, "suggested-edit-table");
+        assertEquals(result, "suggested-edit-table");
     }
 }

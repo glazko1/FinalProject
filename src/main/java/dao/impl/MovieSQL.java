@@ -44,6 +44,15 @@ public class MovieSQL implements MovieDAO {
     private static final String DELETE_MOVIE_SQL = "DELETE FROM Movie WHERE MovieId = ?";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
+    /**
+     * Creates and returns movie according to information in database and given
+     * parameter (movie ID). Gets proxy connection from database pool, prepares
+     * statement on it (by SQL-string) and gets result set with movie.
+     * @param movieId ID of movie to find.
+     * @return movie with given ID.
+     * @throws DAOException if {@link SQLException} was caught or there is no
+     * movie with given ID in database.
+     */
     @Override
     public Movie getMovieById(long movieId) throws DAOException {
         PreparedStatement statement = null;
@@ -67,6 +76,15 @@ public class MovieSQL implements MovieDAO {
         throw new DAOException("No movie with id " + movieId + " in DAO!");
     }
 
+    /**
+     * Creates and returns movie according to information in database and given
+     * parameter (movie title). Gets proxy connection from database pool, prepares
+     * statement on it (by SQL-string) and gets result set with movie.
+     * @param title title of movie to find.
+     * @return movie with given title.
+     * @throws DAOException if {@link SQLException} was caught or there is no
+     * movie with given ID in database.
+     */
     @Override
     public Movie getMovieByTitle(String title) throws DAOException {
         PreparedStatement statement = null;
@@ -90,6 +108,13 @@ public class MovieSQL implements MovieDAO {
         throw new DAOException("No movie with title " + title + " in DAO!");
     }
 
+    /**
+     * Creates and returns list of movies existing in database. Gets proxy
+     * connection from database pool, prepares statement on it (by SQL-string) and
+     * gets result set with all movies in database.
+     * @return list of movies existing in database.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public List<Movie> getAllMovies() throws DAOException {
         PreparedStatement statement = null;
@@ -114,6 +139,15 @@ public class MovieSQL implements MovieDAO {
         return movies;
     }
 
+    /**
+     * Adds new movie to database according to all fields in given object. Movie
+     * can't be added if movie with the same title already exists. Gets proxy
+     * connection from database pool, prepares statement on it (by SQL-string)
+     * and executes.
+     * @param movie object with information about new movie.
+     * @throws UsedMovieTitleException if movie with the same title already exists.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void addNewMovie(Movie movie) throws DAOException {
         PreparedStatement statement = null;
@@ -140,6 +174,16 @@ public class MovieSQL implements MovieDAO {
         }
     }
 
+    /**
+     * Creates and returns list of movies existing in database sorted by given
+     * parameter (may be ID, title or running time) ascending or descending.
+     * Gets proxy connection from database pool, prepares statement on it (by
+     * SQL-string) and gets result set with all movies in database.
+     * @param sortedBy sorting parameter (ID, title or running time).
+     * @param sortType type of sorting (ascending/descending).
+     * @return sorted list of movies.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public List<Movie> getAllMoviesSorted(String sortedBy, String sortType) throws DAOException {
         PreparedStatement statement = null;
@@ -165,6 +209,16 @@ public class MovieSQL implements MovieDAO {
         return movies;
     }
 
+    /**
+     * Updates information (running time, budget or release date) about movie with
+     * given ID according to given parameters. Gets proxy connection from database
+     * pool, prepares statement on it (by SQL-string) and executes.
+     * @param movieId ID of movie to edit.
+     * @param runningTime new value of rummning time.
+     * @param budget new value of budget.
+     * @param releaseDate new release date.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void editMovie(long movieId, int runningTime, int budget, Date releaseDate) throws DAOException {
         PreparedStatement statement = null;
@@ -187,6 +241,11 @@ public class MovieSQL implements MovieDAO {
         }
     }
 
+    /**
+     * Deletes movie with given ID from database.
+     * @param movieId ID of movie to delete.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void deleteMovie(long movieId) throws DAOException {
         PreparedStatement statement = null;

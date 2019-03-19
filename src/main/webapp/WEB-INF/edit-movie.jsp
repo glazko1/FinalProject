@@ -43,7 +43,7 @@
                 <th align="center"><fmt:message key="message.running_time" /></th>
                 <td align="center">
                     <label>
-                        <input type="number" required min="1" max="250" step="1" name="runningTime" title="<fmt:message key="message.running_time_format" />" />
+                        <input type="number" required min="1" max="250" step="1" name="runningTime" value="${runningTime}" title="<fmt:message key="message.running_time_format" />" />
                     </label>
                 </td>
             </tr>
@@ -51,7 +51,7 @@
                 <th align="center"><fmt:message key="message.budget" /></th>
                 <td align="center">
                     <label>
-                        <input type="number" required min="1000000" max="500000000" step="1000000" name="budget" title="<fmt:message key="message.budget_format" />" />
+                        <input type="number" required min="1000000" max="500000000" step="1000000" name="budget" value="${budget}" title="<fmt:message key="message.budget_format" />" />
                     </label>
                 </td>
             </tr>

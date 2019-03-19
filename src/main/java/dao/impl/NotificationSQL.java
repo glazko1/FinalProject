@@ -31,6 +31,14 @@ public class NotificationSQL implements NotificationDAO {
     private static final String ADD_NEW_NOTIFICATION_SQL = "INSERT INTO Notification (NotificationId, UserId, NotificationText, NotificationDateTime) VALUES (?, ?, ?, ?)";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
+    /**
+     * Creates and returns list of notifications sent to specified user (user's ID is
+     * given as parameter). Gets proxy connection from database pool, prepares statement
+     * on it (by SQL-string) and gets result set with all notifications to this user.
+     * @param userId ID of user to find notifications.
+     * @return list of notifications sent to specified user.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public List<Notification> getNotificationsByUserId(long userId) throws DAOException {
         List<Notification> notifications = new ArrayList<>();
@@ -49,6 +57,13 @@ public class NotificationSQL implements NotificationDAO {
         return notifications;
     }
 
+    /**
+     * Adds new notification to database according to all fields in given object. Gets
+     * proxy connection from database pool, prepares statement on it (by SQL-string)
+     * and executes.
+     * @param notification object with information about new notification.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void addNewNotification(Notification notification) throws DAOException {
         try (ProxyConnection proxyConnection = pool.getConnection()) {

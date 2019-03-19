@@ -6,6 +6,7 @@ import entity.Notification;
 import service.CommonService;
 import service.exception.ServiceException;
 import service.impl.Common;
+import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ public class ViewNotificationsCommand implements Command {
     private CommonService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
+    private UserAccessChecker checker;
 
     /**
      * Constructs command with default service, specified request and response.
@@ -23,7 +25,7 @@ public class ViewNotificationsCommand implements Command {
      * @param response HTTP-response.
      */
     public ViewNotificationsCommand(HttpServletRequest request, HttpServletResponse response) {
-        this(Common.getInstance(), request, response);
+        this(Common.getInstance(), request, response, UserAccessChecker.getInstance());
     }
 
     /**
@@ -32,10 +34,11 @@ public class ViewNotificationsCommand implements Command {
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
-    ViewNotificationsCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
+    ViewNotificationsCommand(CommonService service, HttpServletRequest request, HttpServletResponse response, UserAccessChecker checker) {
         this.service = service;
         this.request = request;
         this.response = response;
+        this.checker = checker;
     }
 
     /**
@@ -48,6 +51,9 @@ public class ViewNotificationsCommand implements Command {
     @Override
     public String execute() throws CommandException {
         long userId = Long.parseLong(request.getParameter("userId"));
+        if (!checker.checkAccess(userId, request)) {
+            return "main";
+        }
         try {
             List<Notification> notifications = service.viewNotifications(userId);
             request.setAttribute("notifications", notifications);

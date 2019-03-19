@@ -31,28 +31,21 @@ public class FeedbackSQL implements FeedbackDAO {
 
     private FeedbackSQL() {}
 
-    private static final String GET_FEEDBACK_BY_ID_SQL = "SELECT f.FeedbackId, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, a.ImagePath, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN Alien a ON f.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User u ON f.UserId = u.UserId WHERE f.FeedbackId = ?";
     private static final String GET_FEEDBACKS_BY_ALIEN_ID_SQL = "SELECT f.FeedbackId, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, a.ImagePath, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN Alien a ON f.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User u ON f.UserId = u.UserId WHERE f.AlienId = ? ORDER BY FeedbackDateTime DESC";
     private static final String ADD_NEW_FEEDBACK_SQL = "INSERT INTO Feedback (FeedbackId, AlienId, UserId, Rating, FeedbackText, FeedbackDateTime) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String DELETE_FEEDBACK_SQL = "DELETE FROM Feedback WHERE FeedbackId = ?";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
-    @Override
-    public Feedback getFeedbackById(long feedbackId) throws DAOException {
-        try (ProxyConnection proxyConnection = pool.getConnection()) {
-            Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_FEEDBACK_BY_ID_SQL);
-            statement.setLong(1, feedbackId);
-            ResultSet set = statement.executeQuery();
-            if (set.next()) {
-                return getNextFeedback(set);
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-        throw new DAOException("No feedback with ID " + feedbackId + " in DAO!");
-    }
-
+    /**
+     * Creates and returns list of feedbacks about specified alien (alien's ID is
+     * given as parameter). Such a feedback list is used in pair with information
+     * about alien to show on page. Gets proxy connection from database pool,
+     * prepares statement on it (by SQL-string) and gets result set with all
+     * feedbacks about alien in database.
+     * @param alienId ID of alien to find feedbacks about.
+     * @return list of feedbacks about specified alien.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public List<Feedback> getFeedbacksByAlienId(long alienId) throws DAOException {
         List<Feedback> feedbacks = new ArrayList<>();
@@ -71,6 +64,13 @@ public class FeedbackSQL implements FeedbackDAO {
         return feedbacks;
     }
 
+    /**
+     * Adds new feedback to database according to all fields in given object. Gets
+     * proxy connection from database pool, prepares statement on it (by SQL-string)
+     * and executes.
+     * @param feedback object with information about new feedback.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void addNewFeedback(Feedback feedback) throws DAOException {
         try (ProxyConnection proxyConnection = pool.getConnection()) {
@@ -88,6 +88,11 @@ public class FeedbackSQL implements FeedbackDAO {
         }
     }
 
+    /**
+     * Deletes feedback with given ID from database.
+     * @param feedbackId ID of feedback to delete.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void deleteFeedback(long feedbackId) throws DAOException {
         try (ProxyConnection proxyConnection = pool.getConnection()) {

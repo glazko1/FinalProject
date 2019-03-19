@@ -40,6 +40,22 @@ public class ForwardToChangePasswordCommandTest {
     }
 
     @Test
+    public void execute_noAccess_main() throws CommandException {
+        //given
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        CommonService service = mock(Common.class);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new ForwardToChangePasswordCommand(service, mockRequest, mockResponse, checker);
+        //when
+        when(mockRequest.getParameter("userId")).thenReturn("1");
+        when(checker.checkAccess(anyLong(), any())).thenReturn(false);
+        String result = command.execute();
+        //then
+        assertEquals(result, "main");
+    }
+
+    @Test
     public void execute_validParameters_changePassword() throws ServiceException, CommandException {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);

@@ -55,7 +55,23 @@ public class AddAlienCommandTest {
     }
 
     @Test
-    public void execute_validParameters_main() throws ServiceException, CommandException, Exception {
+    public void execute_noAccess_main() throws CommandException {
+        //given
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        AlienSpecialistService service = mock(AlienSpecialistService.class);
+        ContentWriter writer = mock(ContentWriter.class);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        AddAlienCommand command = new AddAlienCommand(service, mockRequest, mockResponse, writer, checker);
+        //when
+        when(checker.checkStatus(any(), any())).thenReturn(false);
+        String result = command.execute();
+        //then
+        assertEquals(result, "main");
+    }
+
+    @Test
+    public void execute_validParameters_main() throws ServiceException, CommandException, IOException, ServletException {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);

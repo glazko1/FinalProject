@@ -51,6 +51,15 @@ public class UserSQL implements UserDAO {
     private static final String GET_ALL_USERS_SORTED_BY_EMAIL_DESC_SQL = "SELECT UserId, Username, FirstName, LastName, StatusId, Email, Banned, BirthDate FROM User ORDER BY Email DESC";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
+    /**
+     * Creates and returns user according to information in database and given
+     * parameter (user's ID). Gets proxy connection from database pool, prepares
+     * statement on it (by SQL-string) and gets result set with user.
+     * @param userId ID of user to find.
+     * @return user with given ID.
+     * @throws DAOException if {@link SQLException} was caught or there is no
+     * user with given ID in database.
+     */
     @Override
     public User getUser(long userId) throws DAOException {
         PreparedStatement statement = null;
@@ -74,6 +83,16 @@ public class UserSQL implements UserDAO {
         throw new DAOException("No user with ID " + userId + " in DAO!");
     }
 
+    /**
+     * Creates and returns user according to information in database and given
+     * parameter (username and encoded password). Gets proxy connection from database
+     * pool, prepares statement on it (by SQL-string) and gets result set with user.
+     * @param username username of user to find.
+     * @param password encoded password entered by user.
+     * @return user with given username and encoded password.
+     * @throws InvalidUsernameOrPasswordException if username or password is incorrect.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public User getUser(String username, String password) throws DAOException {
         PreparedStatement statement = null;
@@ -98,6 +117,14 @@ public class UserSQL implements UserDAO {
         throw new InvalidUsernameOrPasswordException("Login or password is incorrect!");
     }
 
+    /**
+     * Creates and returns user according to information in database and given
+     * parameter (username). Gets proxy connection from database pool, prepares
+     * statement on it (by SQL-string) and gets result set with user.
+     * @param username username of user to find.
+     * @return user with given username.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public User getUser(String username) throws DAOException {
         PreparedStatement statement = null;
@@ -121,6 +148,13 @@ public class UserSQL implements UserDAO {
         throw new DAOException("No user with username " + username + " in DAO!");
     }
 
+    /**
+     * Creates and returns list of users existing in database. Gets proxy
+     * connection from database pool, prepares statement on it (by SQL-string)
+     * and gets result set with all aliens in database.
+     * @return list of users existing in database.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public List<User> getAllUsers() throws DAOException {
         PreparedStatement statement = null;
@@ -145,6 +179,17 @@ public class UserSQL implements UserDAO {
         return users;
     }
 
+    /**
+     * Adds new user to database according to all fields in given object and encoded
+     * password. User can't be added if username or e-mail is already in use. Gets
+     * proxy connection from database pool, prepares statement on it (by SQL-string)
+     * and executes.
+     * @param user object with information about new user.
+     * @param encoded new user's encoded password.
+     * @throws UsedUsernameException if username is already in use.
+     * @throws UsedEmailException if e-mail is already in use.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void addNewUser(User user, String encoded) throws DAOException {
         PreparedStatement statement = null;
@@ -179,6 +224,11 @@ public class UserSQL implements UserDAO {
         }
     }
 
+    /**
+     * Changes ban status of user (from banned to unbanned and vice versa).
+     * @param userId ID of user to change ban status.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void changeBanStatus(long userId) throws DAOException {
         PreparedStatement statement = null;
@@ -200,6 +250,12 @@ public class UserSQL implements UserDAO {
         }
     }
 
+    /**
+     * Changes status of user (administrator, movie fan, alien specialist and user).
+     * @param userId ID of user to change status.
+     * @param statusId ID of new user's status.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void changeUserStatus(long userId, int statusId) throws DAOException {
         PreparedStatement statement = null;
@@ -220,6 +276,16 @@ public class UserSQL implements UserDAO {
         }
     }
 
+    /**
+     * Updates information (first name, last name and e-mail) of user with given ID
+     * according to given parameters. Gets proxy connection from database pool,
+     * prepares statement on it (by SQL-string) and executes.
+     * @param userId ID of user to edit.
+     * @param firstName new first name.
+     * @param lastName new last name.
+     * @param email new e-mail.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void editUser(long userId, String firstName, String lastName, String email) throws DAOException {
         PreparedStatement statement = null;
@@ -245,6 +311,12 @@ public class UserSQL implements UserDAO {
         }
     }
 
+    /**
+     * Changes password of user with given ID.
+     * @param userId ID of user to change password.
+     * @param newPassword new encoded password.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public void changePassword(long userId, String newPassword) throws DAOException {
         PreparedStatement statement = null;
@@ -265,6 +337,20 @@ public class UserSQL implements UserDAO {
         }
     }
 
+    /**
+     * Creates and returns user according to information in database and given
+     * parameters (username, first name, last name, e-mail). Used in process of
+     * restoring password (all entered information should be correct). Gets proxy
+     * connection from database pool, prepares statement on it (by SQL-string) and
+     * gets result set with user.
+     * @param username username of user to find.
+     * @param firstName first name of user to find.
+     * @param lastName last name of user to find.
+     * @param email e-mail of user to find.
+     * @return user with given parameter.
+     * @throws DAOException if {@link SQLException} was caught or there is no user
+     * with given parameters in database.
+     */
     @Override
     public User getUser(String username, String firstName, String lastName, String email) throws DAOException {
         PreparedStatement statement = null;
@@ -294,6 +380,16 @@ public class UserSQL implements UserDAO {
                 "e-mail" + email + "in DAO!");
     }
 
+    /**
+     * Creates and returns list of users existing in database sorted by givem
+     * parameter (ID, username or e-mail) ascending or descending. Gets proxy
+     * connection from database pool, prepares statement on it (by SQL-string)
+     * and gets result set with all aliens in database.
+     * @param sortedBy sorting parameter (ID, name, movie title or planet).
+     * @param sortType type of sorting (ascending/descending).
+     * @return sorted list of users.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public List<User> getAllUsersSorted(String sortedBy, String sortType) throws DAOException {
         PreparedStatement statement = null;

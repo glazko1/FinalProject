@@ -30,12 +30,29 @@ public class ViewSuggestedEditCommandTest {
         UserAccessChecker checker = mock(UserAccessChecker.class);
         Command command = new ViewSuggestedEditCommand(service, mockRequest, mockResponse, checker);
         //when
-        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("editId")).thenReturn("1");
+        when(checker.checkStatus(any(), any())).thenReturn(true);
         doThrow(ServiceException.class).when(service).viewSuggestedEdit(anyLong());
         command.execute();
         //then
         //expecting CommandException
+    }
+
+    @Test
+    public void execute_noAccess_main() throws CommandException {
+        //given
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        AlienSpecialistService service = mock(AlienSpecialist.class);
+        Edit edit = mock(Edit.class);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new ViewSuggestedEditCommand(service, mockRequest, mockResponse, checker);
+        //when
+        when(mockRequest.getParameter("editId")).thenReturn("1");
+        when(checker.checkStatus(any(), any())).thenReturn(false);
+        String result = command.execute();
+        //then
+        assertEquals(result, "main");
     }
 
     @Test
@@ -48,8 +65,8 @@ public class ViewSuggestedEditCommandTest {
         UserAccessChecker checker = mock(UserAccessChecker.class);
         Command command = new ViewSuggestedEditCommand(service, mockRequest, mockResponse, checker);
         //when
-        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("editId")).thenReturn("1");
+        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(service.viewSuggestedEdit(anyLong())).thenReturn(edit);
         String result = command.execute();
         //then

@@ -55,8 +55,8 @@ public class AlienSQL implements AlienDAO {
      * SQL-string) and gets result set with alien.
      * @param alienId ID of alien to find.
      * @return alien with given ID.
-     * @throws DAOException if {@link SQLException} was caught or there are no
-     * aliens with given ID in database.
+     * @throws DAOException if {@link SQLException} was caught or there is no
+     * alien with given ID in database.
      */
     @Override
     public Alien getAlienById(long alienId) throws DAOException {
@@ -114,10 +114,10 @@ public class AlienSQL implements AlienDAO {
 
     /**
      * Adds new alien to database according to all fields in given object. Alien
-     * can't be added if alien with such name already exists. Gets proxy connection
+     * can't be added if alien with the same name already exists. Gets proxy connection
      * from database pool, prepares statement on it (by SQL-string) and executes.
      * @param alien object with information about new alien.
-     * @throws UsedAlienNameException if alien with such name already exists.
+     * @throws UsedAlienNameException if alien with the same name already exists.
      * @throws DAOException if {@link SQLException} was caught.
      */
     @Override

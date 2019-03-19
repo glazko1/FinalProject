@@ -53,6 +53,9 @@ public class EditUserCommand implements Command {
     @Override
     public String execute() throws CommandException {
         long userId = Long.parseLong(request.getParameter("userId"));
+        if (!checker.checkAccess(userId, request)) {
+            return "main";
+        }
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");

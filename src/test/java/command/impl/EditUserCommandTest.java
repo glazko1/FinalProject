@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -34,6 +35,7 @@ public class EditUserCommandTest {
         Command command = new EditUserCommand(service, mockRequest, mockResponse, checker);
         //when
         when(mockRequest.getParameter("userId")).thenReturn("1");
+        when(checker.checkAccess(anyLong(), any())).thenReturn(true);
         when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
         when(mockRequest.getParameter("lastName")).thenReturn("LastName");
         when(mockRequest.getParameter("email")).thenReturn("Email");
@@ -54,6 +56,7 @@ public class EditUserCommandTest {
         Command command = new EditUserCommand(service, mockRequest, mockResponse, checker);
         //when
         when(mockRequest.getParameter("userId")).thenReturn("1");
+        when(checker.checkAccess(anyLong(), any())).thenReturn(true);
         when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
         when(mockRequest.getParameter("lastName")).thenReturn("LastName");
         when(mockRequest.getParameter("email")).thenReturn("Email");
@@ -75,11 +78,28 @@ public class EditUserCommandTest {
         Command command = new EditUserCommand(service, mockRequest, mockResponse, checker);
         //when
         when(mockRequest.getParameter("userId")).thenReturn("1");
+        when(checker.checkAccess(anyLong(), any())).thenReturn(true);
         when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
         when(mockRequest.getParameter("lastName")).thenReturn("LastName");
         when(mockRequest.getParameter("email")).thenReturn("Email");
         when(mockRequest.getSession()).thenReturn(session);
         doThrow(InvalidUserInformationException.class).when(service).editUser(anyLong(), anyString(), anyString(), anyString());
+        String result = command.execute();
+        //then
+        assertEquals(result, "main");
+    }
+
+    @Test
+    public void execute_noAccess_main() throws CommandException {
+        //given
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        CommonService service = mock(Common.class);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new EditUserCommand(service, mockRequest, mockResponse, checker);
+        //when
+        when(mockRequest.getParameter("userId")).thenReturn("1");
+        when(checker.checkAccess(anyLong(), any())).thenReturn(false);
         String result = command.execute();
         //then
         assertEquals(result, "main");
@@ -95,6 +115,7 @@ public class EditUserCommandTest {
         Command command = new EditUserCommand(service, mockRequest, mockResponse, checker);
         //when
         when(mockRequest.getParameter("userId")).thenReturn("1");
+        when(checker.checkAccess(anyLong(), any())).thenReturn(true);
         when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
         when(mockRequest.getParameter("lastName")).thenReturn("LastName");
         when(mockRequest.getParameter("email")).thenReturn("Email");

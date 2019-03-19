@@ -52,7 +52,7 @@ public class ForwardToEditMovieCommand implements Command {
     @Override
     public String execute() throws CommandException {
         long movieId = Long.parseLong(request.getParameter("movieId"));
-        if (!checker.checkStatus(UserStatus.MOVIE_FAN, request) ||
+        if (!checker.checkStatus(UserStatus.MOVIE_FAN, request) &&
                 !checker.checkStatus(UserStatus.ADMIN, request)) {
             return "main";
         }

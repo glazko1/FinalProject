@@ -1,7 +1,6 @@
 package dao;
 
 import dao.exception.DAOException;
-import dao.exception.user.InvalidUsernameOrPasswordException;
 import entity.User;
 
 import java.util.List;

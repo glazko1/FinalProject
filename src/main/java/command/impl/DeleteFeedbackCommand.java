@@ -2,7 +2,6 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
-import entity.UserStatus;
 import service.CommonService;
 import service.exception.ServiceException;
 import service.impl.Common;
@@ -49,6 +48,10 @@ public class DeleteFeedbackCommand implements Command {
      */
     @Override
     public String execute() throws CommandException {
+        long userId = Long.parseLong(request.getParameter("userId"));
+        if (!checker.checkAccess(userId, request)) {
+            return "main";
+        }
         long feedbackId = Long.parseLong(request.getParameter("feedbackId"));
         long alienId = Long.parseLong(request.getParameter("alienId"));
         try {

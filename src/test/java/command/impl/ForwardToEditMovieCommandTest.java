@@ -39,6 +39,22 @@ public class ForwardToEditMovieCommandTest {
     }
 
     @Test
+    public void execute_noAccess_main() throws CommandException {
+        //given
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        CommonService service = mock(Common.class);
+        UserAccessChecker checker = mock(UserAccessChecker.class);
+        Command command = new ForwardToEditMovieCommand(service, mockRequest, mockResponse, checker);
+        //when
+        when(mockRequest.getParameter("movieId")).thenReturn("1");
+        when(checker.checkStatus(any(), any())).thenReturn(false);
+        String result = command.execute();
+        //then
+        assertEquals(result, "main");
+    }
+
+    @Test
     public void execute_validParameters_main() throws ServiceException, CommandException {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
