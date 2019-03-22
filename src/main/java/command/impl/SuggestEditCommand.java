@@ -26,7 +26,7 @@ public class SuggestEditCommand implements Command {
 
     /**
      * Constructs command with specified service, request and response.
-     * @param service service layer class with opportunities of alien specialists.
+     * @param service service layer class with opportunities of user.
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
@@ -45,8 +45,8 @@ public class SuggestEditCommand implements Command {
      */
     @Override
     public String execute() throws CommandException {
-        long alienId = Long.parseLong(request.getParameter("alienId"));
-        long userId = Long.parseLong(request.getParameter("userId"));
+        String alienId = request.getParameter("alienId");
+        String userId = request.getParameter("userId");
         String description = request.getParameter("description");
         try {
             service.suggestEdit(userId, alienId, description);

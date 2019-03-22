@@ -26,12 +26,15 @@ import javafx.util.Pair;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import service.exception.ServiceException;
+import service.exception.edit.InvalidEditInformationException;
+import service.exception.feedback.InvalidFeedbackInformationException;
 import service.exception.user.InvalidEmailException;
 import service.exception.user.InvalidPasswordException;
 import service.exception.user.InvalidUserInformationException;
 import service.exception.user.InvalidUsernameException;
-import util.generator.IdGenerator;
 import util.hasher.PasswordHashKeeper;
+import util.validator.EditInformationValidator;
+import util.validator.FeedbackInformationValidator;
 import util.validator.UserInformationValidator;
 
 import java.sql.Date;
@@ -39,7 +42,6 @@ import java.util.List;
 
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -51,26 +53,28 @@ import static org.testng.Assert.assertEquals;
 public class CommonTest {
 
     private Common service = Common.getInstance();
-    private UserInformationValidator validator = mock(UserInformationValidator.class);
+    private UserInformationValidator userValidator = mock(UserInformationValidator.class);
+    private FeedbackInformationValidator feedbackValidator = mock(FeedbackInformationValidator.class);
+    private EditInformationValidator editValidator = mock(EditInformationValidator.class);
     private UserDAO userDAO = mock(UserSQL.class);
     private AlienDAO alienDAO = mock(AlienSQL.class);
     private MovieDAO movieDAO = mock(MovieSQL.class);
     private FeedbackDAO feedbackDAO = mock(FeedbackSQL.class);
     private EditDAO editDAO = mock(EditSQL.class);
     private NotificationDAO notificationDAO = mock(NotificationSQL.class);
-    private IdGenerator idGenerator = mock(IdGenerator.class);
     private PasswordHashKeeper keeper = mock(PasswordHashKeeper.class);
 
     @BeforeClass
     public void init() {
-        service.setUserValidator(validator);
+        service.setUserValidator(userValidator);
+        service.setFeedbackValidator(feedbackValidator);
+        service.setEditValidator(editValidator);
         service.setUserDAO(userDAO);
         service.setAlienDAO(alienDAO);
         service.setMovieDAO(movieDAO);
         service.setFeedbackDAO(feedbackDAO);
         service.setEditDAO(editDAO);
         service.setNotificationDAO(notificationDAO);
-        service.setGenerator(idGenerator);
         service.setKeeper(keeper);
     }
 
@@ -78,7 +82,7 @@ public class CommonTest {
     public void signIn_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        when(validator.validate(anyString(), anyString())).thenReturn(true);
+        when(userValidator.validate(anyString(), anyString())).thenReturn(true);
         doThrow(DAOException.class).when(userDAO).getUser(anyString(), anyString());
         service.signIn("Username", "Password");
         //then
@@ -89,7 +93,7 @@ public class CommonTest {
     public void signIn_invalidParameters_InvalidUserInformationException() throws ServiceException {
         //given
         //when
-        when(validator.validate(anyString(), anyString())).thenReturn(false);
+        when(userValidator.validate(anyString(), anyString())).thenReturn(false);
         service.signIn("Invalid", "Info");
         //then
         //expecting InvalidUserInformationException
@@ -100,7 +104,7 @@ public class CommonTest {
         //given
         User user = mock(User.class);
         //when
-        when(validator.validate(anyString(), anyString())).thenReturn(true);
+        when(userValidator.validate(anyString(), anyString())).thenReturn(true);
         doReturn(user).when(userDAO).getUser(anyString(), anyString());
         when(user.isBanned()).thenReturn(true);
         service.signIn("Username", "Password");
@@ -113,7 +117,7 @@ public class CommonTest {
         //given
         User user = mock(User.class);
         //when
-        when(validator.validate(anyString(), anyString())).thenReturn(true);
+        when(userValidator.validate(anyString(), anyString())).thenReturn(true);
         doReturn(user).when(userDAO).getUser(anyString(), anyString());
         when(user.isBanned()).thenReturn(false);
         User result = service.signIn("Username", "Password");
@@ -125,7 +129,7 @@ public class CommonTest {
     public void signUp_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        when(validator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
+        when(userValidator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
         doThrow(DAOException.class).when(userDAO).addNewUser(any(User.class), anyString());
         service.signUp("Username", "First", "Last",
                 "email@gmail.com", "Password", "Password",
@@ -138,7 +142,7 @@ public class CommonTest {
     public void signUp_usedUsernameExceptionFromDAO_InvalidUsernameException() throws DAOException, ServiceException {
         //given
         //when
-        when(validator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
+        when(userValidator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
         doThrow(UsedUsernameException.class).when(userDAO).addNewUser(any(User.class), anyString());
         service.signUp("Username", "First", "Last",
                 "email@gmail.com", "Password", "Password",
@@ -151,7 +155,7 @@ public class CommonTest {
     public void signUp_usedEmailExceptionFromDAO_InvalidEmailException() throws DAOException, ServiceException {
         //given
         //when
-        when(validator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
+        when(userValidator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
         doThrow(UsedEmailException.class).when(userDAO).addNewUser(any(User.class), anyString());
         service.signUp("Username", "First", "Last",
                 "email@gmail.com", "Password", "Password",
@@ -164,7 +168,7 @@ public class CommonTest {
     public void signUp_invalidParameters_InvalidUserInformationException() throws ServiceException {
         //given
         //when
-        when(validator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(false);
+        when(userValidator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(false);
         service.signUp("Invalid", "First", "Last",
                 "email@gmail.com", "Password", "Password",
                 Date.valueOf("2000-01-01"));
@@ -176,7 +180,7 @@ public class CommonTest {
     public void signUp_validParameters_void() throws DAOException, ServiceException {
         //given
         //when
-        when(validator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
+        when(userValidator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
         doNothing().when(userDAO).addNewUser(any(User.class), anyString());
         service.signUp("Username", "First", "Last",
                 "email@gmail.com", "Password", "Password",
@@ -230,8 +234,8 @@ public class CommonTest {
     public void viewAlien_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        doThrow(ServiceException.class).when(alienDAO).getAlienById(anyLong());
-        service.viewAlien(anyLong());
+        doThrow(ServiceException.class).when(alienDAO).getAlienById(anyString());
+        service.viewAlien(anyString());
         //then
         //expecting ServiceException
     }
@@ -241,8 +245,8 @@ public class CommonTest {
         //given
         Alien alien = mock(Alien.class);
         //when
-        doReturn(alien).when(alienDAO).getAlienById(anyLong());
-        Alien result = service.viewAlien(anyLong());
+        doReturn(alien).when(alienDAO).getAlienById(anyString());
+        Alien result = service.viewAlien(anyString());
         //then
         assertEquals(result, alien);
     }
@@ -251,8 +255,8 @@ public class CommonTest {
     public void viewAlienWithFeedbacks_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        doThrow(ServiceException.class).when(alienDAO).getAlienById(anyLong());
-        service.viewAlienWithFeedbacks(anyLong());
+        doThrow(ServiceException.class).when(alienDAO).getAlienById(anyString());
+        service.viewAlienWithFeedbacks(anyString());
         //then
         //expecting ServiceException
     }
@@ -264,9 +268,9 @@ public class CommonTest {
         List<Feedback> feedbacks = (List<Feedback>) mock(List.class);
         Pair<Alien, List<Feedback>> pair = new Pair<>(alien, feedbacks);
         //when
-        doReturn(alien).when(alienDAO).getAlienById(anyLong());
-        doReturn(feedbacks).when(feedbackDAO).getFeedbacksByAlienId(anyLong());
-        Pair<Alien, List<Feedback>> result = service.viewAlienWithFeedbacks(anyLong());
+        doReturn(alien).when(alienDAO).getAlienById(anyString());
+        doReturn(feedbacks).when(feedbackDAO).getFeedbacksByAlienId(anyString());
+        Pair<Alien, List<Feedback>> result = service.viewAlienWithFeedbacks(anyString());
         //then
         assertEquals(result, pair);
     }
@@ -275,10 +279,21 @@ public class CommonTest {
     public void addFeedback_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
+        when(feedbackValidator.validate(anyString())).thenReturn(true);
         doThrow(ServiceException.class).when(userDAO).getUser(anyString());
-        service.addFeedback(1, "Username", 5, "Text");
+        service.addFeedback("1", "1", 5, "Text");
         //then
         //expecting ServiceException
+    }
+
+    @Test(expectedExceptions = InvalidFeedbackInformationException.class)
+    public void addFeedback_invalidParameters_InvalidFeedbackInformationException() throws ServiceException {
+        //given
+        //when
+        when(feedbackValidator.validate(anyString())).thenReturn(false);
+        service.addFeedback("1", "1", 5, "Text");
+        //then
+        //expecting InvalidFeedbackInformationException
     }
 
     @Test
@@ -287,10 +302,11 @@ public class CommonTest {
         User user = mock(User.class);
         Alien alien = mock(Alien.class);
         //when
+        when(feedbackValidator.validate(anyString())).thenReturn(true);
         doReturn(user).when(userDAO).getUser(anyString());
-        doReturn(alien).when(alienDAO).getAlienById(anyLong());
+        doReturn(alien).when(alienDAO).getAlienById(anyString());
         doNothing().when(feedbackDAO).addNewFeedback(any(Feedback.class));
-        service.addFeedback(1, "Username", 5, "Text");
+        service.addFeedback("1", "1", 5, "Text");
         //then
     }
 
@@ -298,8 +314,8 @@ public class CommonTest {
     public void viewMovie_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        doThrow(ServiceException.class).when(movieDAO).getMovieById(anyLong());
-        service.viewMovie(anyLong());
+        doThrow(ServiceException.class).when(movieDAO).getMovieById(anyString());
+        service.viewMovie(anyString());
         //then
         //expecting ServiceException
     }
@@ -309,8 +325,8 @@ public class CommonTest {
         //given
         Movie movie = mock(Movie.class);
         //when
-        doReturn(movie).when(movieDAO).getMovieById(anyLong());
-        Movie result = service.viewMovie(anyLong());
+        doReturn(movie).when(movieDAO).getMovieById(anyString());
+        Movie result = service.viewMovie(anyString());
         //then
         assertEquals(result, movie);
     }
@@ -319,8 +335,8 @@ public class CommonTest {
     public void viewUser_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        doThrow(ServiceException.class).when(userDAO).getUser(anyLong());
-        service.viewUser(anyLong());
+        doThrow(ServiceException.class).when(userDAO).getUser(anyString());
+        service.viewUser(anyString());
         //then
         //expecting ServiceException
     }
@@ -330,8 +346,8 @@ public class CommonTest {
         //given
         User user = mock(User.class);
         //when
-        doReturn(user).when(userDAO).getUser(anyLong());
-        User result = service.viewUser(anyLong());
+        doReturn(user).when(userDAO).getUser(anyString());
+        User result = service.viewUser(anyString());
         //then
         assertEquals(result, user);
     }
@@ -340,9 +356,9 @@ public class CommonTest {
     public void editUser_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        when(validator.validate(anyString(), anyString(), anyString())).thenReturn(true);
-        doThrow(ServiceException.class).when(userDAO).editUser(anyLong(), anyString(), anyString(), anyString());
-        service.editUser(1, "First", "Last", "email@gmail.com");
+        when(userValidator.validate(anyString(), anyString(), anyString())).thenReturn(true);
+        doThrow(ServiceException.class).when(userDAO).editUser(anyString(), anyString(), anyString(), anyString());
+        service.editUser("1", "First", "Last", "email@gmail.com");
         //then
         //expecting ServiceException
     }
@@ -351,9 +367,9 @@ public class CommonTest {
     public void editUser_usedEmailExceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        when(validator.validate(anyString(), anyString(), anyString())).thenReturn(true);
-        doThrow(UsedEmailException.class).when(userDAO).editUser(anyLong(), anyString(), anyString(), anyString());
-        service.editUser(1, "First", "Last", "email@gmail.com");
+        when(userValidator.validate(anyString(), anyString(), anyString())).thenReturn(true);
+        doThrow(UsedEmailException.class).when(userDAO).editUser(anyString(), anyString(), anyString(), anyString());
+        service.editUser("1", "First", "Last", "email@gmail.com");
         //then
         //expecting ServiceException
     }
@@ -362,8 +378,8 @@ public class CommonTest {
     public void editUser_invalidParameters_void() throws ServiceException {
         //given
         //when
-        when(validator.validate(anyString(), anyString(), anyString())).thenReturn(false);
-        service.editUser(1, "First", "Last", "email@gmail.com");
+        when(userValidator.validate(anyString(), anyString(), anyString())).thenReturn(false);
+        service.editUser("1", "First", "Last", "email@gmail.com");
         //then
         //expecting InvalidUserInformationException
     }
@@ -372,9 +388,9 @@ public class CommonTest {
     public void editUser_validParameters_void() throws DAOException, ServiceException {
         //given
         //when
-        when(validator.validate(anyString(), anyString(), anyString())).thenReturn(true);
-        doNothing().when(userDAO).editUser(anyLong(), anyString(), anyString(), anyString());
-        service.editUser(1, "First", "Last", "email@gmail.com");
+        when(userValidator.validate(anyString(), anyString(), anyString())).thenReturn(true);
+        doNothing().when(userDAO).editUser(anyString(), anyString(), anyString(), anyString());
+        service.editUser("1", "First", "Last", "email@gmail.com");
         //then
         //expecting ServiceException
     }
@@ -383,9 +399,9 @@ public class CommonTest {
     public void changePassword_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        when(validator.validatePasswords(anyString(), anyString(), anyString())).thenReturn(true);
-        doThrow(ServiceException.class).when(userDAO).getUser(anyLong());
-        service.changePassword(1, "currentP", "newPassword", "newPassword");
+        when(userValidator.validatePasswords(anyString(), anyString(), anyString())).thenReturn(true);
+        doThrow(ServiceException.class).when(userDAO).getUser(anyString());
+        service.changePassword("1", "currentP", "newPassword", "newPassword");
         //then
         //expecting ServiceException
     }
@@ -394,9 +410,9 @@ public class CommonTest {
     public void changePassword_invalidUsernameOrPasswordExceptionFromDAO_InvalidPasswordException() throws DAOException, ServiceException {
         //given
         //when
-        when(validator.validatePasswords(anyString(), anyString(), anyString())).thenReturn(true);
-        doThrow(InvalidUsernameOrPasswordException.class).when(userDAO).getUser(anyLong());
-        service.changePassword(1, "currentP", "newPassword", "newPassword");
+        when(userValidator.validatePasswords(anyString(), anyString(), anyString())).thenReturn(true);
+        doThrow(InvalidUsernameOrPasswordException.class).when(userDAO).getUser(anyString());
+        service.changePassword("1", "currentP", "newPassword", "newPassword");
         //then
         //expecting InvalidPasswordException
     }
@@ -405,8 +421,8 @@ public class CommonTest {
     public void changePassword_invalidParameters_InvalidUserInformationException() throws ServiceException {
         //given
         //when
-        when(validator.validatePasswords(anyString(), anyString(), anyString())).thenReturn(false);
-        service.changePassword(1, "currentP", "newPassword", "newPassword");
+        when(userValidator.validatePasswords(anyString(), anyString(), anyString())).thenReturn(false);
+        service.changePassword("1", "currentP", "newPassword", "newPassword");
         //then
         //expecting InvalidUserInformationException
     }
@@ -416,12 +432,12 @@ public class CommonTest {
         //given
         User user = mock(User.class);
         //when
-        when(validator.validatePasswords(anyString(), anyString(), anyString())).thenReturn(true);
-        doReturn(user).when(userDAO).getUser(anyLong());
+        when(userValidator.validatePasswords(anyString(), anyString(), anyString())).thenReturn(true);
+        doReturn(user).when(userDAO).getUser(anyString());
         doReturn(user).when(userDAO).getUser(anyString(), anyString());
         doReturn("encoded").when(keeper).generateHash(anyString(), anyString());
-        doNothing().when(userDAO).changePassword(anyLong(), anyString());
-        service.changePassword(1, "currentP", "newPassword", "newPassword");
+        doNothing().when(userDAO).changePassword(anyString(), anyString());
+        service.changePassword("1", "currentP", "newPassword", "newPassword");
         //then
     }
 
@@ -429,7 +445,7 @@ public class CommonTest {
     public void restorePassword_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        when(validator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
+        when(userValidator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
         doThrow(ServiceException.class).when(userDAO).getUser(anyString(), anyString(), anyString(), anyString());
         service.restorePassword("Username", "First", "Last", "email@gmail.com",
                 "newPassword", "newPassword");
@@ -442,7 +458,7 @@ public class CommonTest {
         //given
         User user = mock(User.class);
         //when
-        when(validator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(false);
+        when(userValidator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(false);
         service.restorePassword("Username", "First", "Last", "email@gmail.com",
                 "newPassword", "newPassword");
         //then
@@ -454,10 +470,10 @@ public class CommonTest {
         //given
         User user = mock(User.class);
         //when
-        when(validator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
+        when(userValidator.validate(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(true);
         doReturn(user).when(userDAO).getUser(anyString(), anyString(), anyString(), anyString());
         doReturn("encoded").when(keeper).generateHash(anyString(), anyString());
-        doNothing().when(userDAO).changePassword(anyLong(), anyString());
+        doNothing().when(userDAO).changePassword(anyString(), anyString());
         service.restorePassword("Username", "First", "Last", "email@gmail.com",
                 "newPassword", "newPassword");
         //then
@@ -467,8 +483,8 @@ public class CommonTest {
     public void recountAverageRating_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        doThrow(ServiceException.class).when(feedbackDAO).getFeedbacksByAlienId(anyLong());
-        service.recountAverageRating(anyLong());
+        doThrow(ServiceException.class).when(feedbackDAO).getFeedbacksByAlienId(anyString());
+        service.recountAverageRating(anyString());
         //then
         //expecting ServiceException
     }
@@ -478,10 +494,10 @@ public class CommonTest {
         //given
         List<Feedback> feedbacks = (List<Feedback>) mock(List.class);
         //when
-        doReturn(feedbacks).when(feedbackDAO).getFeedbacksByAlienId(anyLong());
+        doReturn(feedbacks).when(feedbackDAO).getFeedbacksByAlienId(anyString());
         when(feedbacks.isEmpty()).thenReturn(true);
-        doNothing().when(alienDAO).updateAverageRating(anyLong(), anyInt());
-        service.recountAverageRating(anyLong());
+        doNothing().when(alienDAO).updateAverageRating(anyString(), anyInt());
+        service.recountAverageRating(anyString());
         //then
     }
 
@@ -489,8 +505,8 @@ public class CommonTest {
     public void deleteFeedback_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        doThrow(ServiceException.class).when(feedbackDAO).deleteFeedback(anyLong());
-        service.deleteFeedback(anyLong());
+        doThrow(ServiceException.class).when(feedbackDAO).deleteFeedback(anyString());
+        service.deleteFeedback(anyString());
         //then
         //expecting ServiceException
     }
@@ -499,8 +515,8 @@ public class CommonTest {
     public void deleteFeedback_validParameters_void() throws DAOException, ServiceException {
         //given
         //when
-        doNothing().when(feedbackDAO).deleteFeedback(anyLong());
-        service.deleteFeedback(anyLong());
+        doNothing().when(feedbackDAO).deleteFeedback(anyString());
+        service.deleteFeedback(anyString());
         //then
     }
 
@@ -525,12 +541,23 @@ public class CommonTest {
         assertEquals(result, aliens);
     }
 
+    @Test(expectedExceptions = InvalidEditInformationException.class)
+    public void suggestEdit_invalidParameters_InvalidEditInformationException() throws ServiceException {
+        //given
+        //when
+        when(editValidator.validate(anyString())).thenReturn(false);
+        service.suggestEdit("1", "1", "text");
+        //then
+        //expecting InvalidEditInformationException
+    }
+
     @Test(expectedExceptions = ServiceException.class)
     public void suggestEdit_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        doThrow(ServiceException.class).when(alienDAO).getAlienById(anyLong());
-        service.suggestEdit(1, 1, "text");
+        when(editValidator.validate(anyString())).thenReturn(true);
+        doThrow(ServiceException.class).when(alienDAO).getAlienById(anyString());
+        service.suggestEdit("1", "1", "text");
         //then
         //expecting ServiceException
     }
@@ -541,10 +568,11 @@ public class CommonTest {
         Alien alien = mock(Alien.class);
         User user = mock(User.class);
         //when
-        doReturn(alien).when(alienDAO).getAlienById(anyLong());
-        doReturn(user).when(userDAO).getUser(anyLong());
+        when(editValidator.validate(anyString())).thenReturn(true);
+        doReturn(alien).when(alienDAO).getAlienById(anyString());
+        doReturn(user).when(userDAO).getUser(anyString());
         doNothing().when(editDAO).addNewEdit(any(Edit.class));
-        service.suggestEdit(1, 1, "text");
+        service.suggestEdit("1", "1", "text");
         //then
     }
 
@@ -552,8 +580,8 @@ public class CommonTest {
     public void viewNotifications_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        doThrow(ServiceException.class).when(notificationDAO).getNotificationsByUserId(anyLong());
-        service.viewNotifications(anyLong());
+        doThrow(ServiceException.class).when(notificationDAO).getNotificationsByUserId(anyString());
+        service.viewNotifications(anyString());
         //then
         //expecting ServiceException
     }
@@ -563,8 +591,8 @@ public class CommonTest {
         //given
         List<Notification> notifications = (List<Notification>) mock(List.class);
         //when
-        doReturn(notifications).when(notificationDAO).getNotificationsByUserId(anyLong());
-        List<Notification> result = service.viewNotifications(anyLong());
+        doReturn(notifications).when(notificationDAO).getNotificationsByUserId(anyString());
+        List<Notification> result = service.viewNotifications(anyString());
         //then
         assertEquals(result, notifications);
     }

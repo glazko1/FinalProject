@@ -30,7 +30,7 @@ public class ViewAlienCommand implements Command {
 
     /**
      * Constructs command with specified service, request and response.
-     * @param service service layer class with opportunities of alien specialists.
+     * @param service service layer class with opportunities of user.
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
@@ -49,7 +49,7 @@ public class ViewAlienCommand implements Command {
      */
     @Override
     public String execute() throws CommandException {
-        long id = Long.parseLong(request.getParameter("alienId"));
+        String id = request.getParameter("alienId");
         try {
             Pair<Alien, List<Feedback>> pair = service.viewAlienWithFeedbacks(id);
             request.setAttribute("alien", pair.getKey());

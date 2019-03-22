@@ -36,7 +36,6 @@ import service.exception.user.InvalidUsernameException;
 import util.builder.EditBuilder;
 import util.builder.FeedbackBuilder;
 import util.builder.UserBuilder;
-import util.generator.IdGenerator;
 import util.hasher.PasswordHashKeeper;
 import util.validator.EditInformationValidator;
 import util.validator.FeedbackInformationValidator;
@@ -66,7 +65,6 @@ public class Common implements CommonService {
     private EditDAO editDAO = EditSQL.getInstance();
     private NotificationDAO notificationDAO = NotificationSQL.getInstance();
     private PasswordHashKeeper keeper = PasswordHashKeeper.getInstance();
-    private IdGenerator generator = IdGenerator.getInstance();
 
     @Override
     public User signIn(String username, String password) throws ServiceException {
@@ -93,8 +91,7 @@ public class Common implements CommonService {
         if (!userValidator.validate(username, firstName, lastName, email, password, confirmedPassword)) {
             throw new InvalidUserInformationException("Information is not valid!");
         }
-        long id = generator.generateId();
-        UserBuilder builder = new UserBuilder(id);
+        UserBuilder builder = new UserBuilder();
         User user = builder.withUsername(username)
                 .withFirstName(firstName)
                 .withLastName(lastName)
@@ -134,7 +131,7 @@ public class Common implements CommonService {
     }
 
     @Override
-    public Alien viewAlien(long alienId) throws ServiceException {
+    public Alien viewAlien(String alienId) throws ServiceException {
         try {
             return alienDAO.getAlienById(alienId);
         } catch (DAOException e) {
@@ -143,7 +140,7 @@ public class Common implements CommonService {
     }
 
     @Override
-    public Pair<Alien, List<Feedback>> viewAlienWithFeedbacks(long alienId) throws ServiceException {
+    public Pair<Alien, List<Feedback>> viewAlienWithFeedbacks(String alienId) throws ServiceException {
         try {
             Alien alien = alienDAO.getAlienById(alienId);
             List<Feedback> feedbacks = feedbackDAO.getFeedbacksByAlienId(alienId);
@@ -154,16 +151,15 @@ public class Common implements CommonService {
     }
 
     @Override
-    public void addFeedback(long alienId, String username, int rating, String feedbackText) throws ServiceException {
+    public void addFeedback(String alienId, String userId, int rating, String feedbackText) throws ServiceException {
         if (!feedbackValidator.validate(feedbackText)) {
             throw new InvalidFeedbackInformationException("Information is not valid!");
         }
-        long id = generator.generateId();
         try {
-            User user = userDAO.getUser(username);
+            User user = userDAO.getUser(userId);
             Alien alien = alienDAO.getAlienById(alienId);
             Timestamp feedbackDateTime = new Timestamp(System.currentTimeMillis());
-            FeedbackBuilder builder = new FeedbackBuilder(id);
+            FeedbackBuilder builder = new FeedbackBuilder();
             Feedback feedback = builder.aboutAlien(alien)
                     .leftByUser(user)
                     .withRating(rating)
@@ -177,7 +173,7 @@ public class Common implements CommonService {
     }
 
     @Override
-    public Movie viewMovie(long movieId) throws ServiceException {
+    public Movie viewMovie(String movieId) throws ServiceException {
         try {
             return movieDAO.getMovieById(movieId);
         } catch (DAOException e) {
@@ -186,7 +182,7 @@ public class Common implements CommonService {
     }
 
     @Override
-    public User viewUser(long userId) throws ServiceException {
+    public User viewUser(String userId) throws ServiceException {
         try {
             return userDAO.getUser(userId);
         } catch (DAOException e) {
@@ -195,7 +191,7 @@ public class Common implements CommonService {
     }
 
     @Override
-    public void editUser(long userId, String firstName, String lastName, String email) throws ServiceException {
+    public void editUser(String userId, String firstName, String lastName, String email) throws ServiceException {
         if (!userValidator.validate(firstName, lastName, email)) {
             throw new InvalidUserInformationException("Information is not valid!");
         }
@@ -209,7 +205,7 @@ public class Common implements CommonService {
     }
 
     @Override
-    public void changePassword(long userId, String currentPassword, String newPassword,
+    public void changePassword(String userId, String currentPassword, String newPassword,
                                String confirmedPassword) throws ServiceException {
         if (!userValidator.validatePasswords(currentPassword, newPassword, confirmedPassword)) {
             throw new InvalidUserInformationException("Information is not valid!");
@@ -235,7 +231,7 @@ public class Common implements CommonService {
         }
         try {
             User user = userDAO.getUser(username, firstName, lastName, email);
-            long userId = user.getUserId();
+            String userId = user.getUserId();
             String encoded = keeper.generateHash(username, newPassword);
             userDAO.changePassword(userId, encoded);
         } catch (DAOException e) {
@@ -244,7 +240,7 @@ public class Common implements CommonService {
     }
 
     @Override
-    public void recountAverageRating(long alienId) throws ServiceException {
+    public void recountAverageRating(String alienId) throws ServiceException {
         try {
             List<Feedback> feedbacks = feedbackDAO.getFeedbacksByAlienId(alienId);
             double averageRating = 0.0;
@@ -262,7 +258,7 @@ public class Common implements CommonService {
     }
 
     @Override
-    public void deleteFeedback(long feedbackId) throws ServiceException {
+    public void deleteFeedback(String feedbackId) throws ServiceException {
         try {
             feedbackDAO.deleteFeedback(feedbackId);
         } catch (DAOException e) {
@@ -280,16 +276,15 @@ public class Common implements CommonService {
     }
 
     @Override
-    public void suggestEdit(long userId, long alienId, String description) throws ServiceException {
+    public void suggestEdit(String userId, String alienId, String description) throws ServiceException {
         if (!editValidator.validate(description)) {
             throw new InvalidEditInformationException("Information is not valid!");
         }
-        long editId = generator.generateId();
         try {
             Alien alien = alienDAO.getAlienById(alienId);
             User user = userDAO.getUser(userId);
             Timestamp editDateTime = new Timestamp(System.currentTimeMillis());
-            EditBuilder builder = new EditBuilder(editId);
+            EditBuilder builder = new EditBuilder();
             Edit edit = builder.aboutAlien(alien)
                     .suggestedBy(user)
                     .withText(description)
@@ -302,7 +297,7 @@ public class Common implements CommonService {
     }
 
     @Override
-    public List<Notification> viewNotifications(long userId) throws ServiceException {
+    public List<Notification> viewNotifications(String userId) throws ServiceException {
         try {
             return notificationDAO.getNotificationsByUserId(userId);
         } catch (DAOException e) {
@@ -319,8 +314,40 @@ public class Common implements CommonService {
         }
     }
 
+    @Override
+    public void reviewUserStatus(String userId) throws ServiceException {
+        try {
+            List<Feedback> feedbacks = feedbackDAO.getFeedbacksByUserId(userId);
+            boolean raiseStatus = true;
+            for (Feedback feedback : feedbacks) {
+                double rating = feedback.getRating();
+                Alien alien = feedback.getAlien();
+                double averageRating = alien.getAverageRating();
+                if (Math.abs(rating - averageRating) > 0.2) {
+                    raiseStatus = false;
+                }
+            }
+            User user = userDAO.getUser(userId);
+            if (user.getStatus() == UserStatus.USER &&
+                    feedbacks.size() > 10 &&
+                    raiseStatus) {
+                userDAO.changeUserStatus(userId, 3);
+            }
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
     void setUserValidator(UserInformationValidator userValidator) {
         this.userValidator = userValidator;
+    }
+
+    void setFeedbackValidator(FeedbackInformationValidator feedbackValidator) {
+        this.feedbackValidator = feedbackValidator;
+    }
+
+    void setEditValidator(EditInformationValidator editValidator) {
+        this.editValidator = editValidator;
     }
 
     void setUserDAO(UserDAO userDAO) {
@@ -349,9 +376,5 @@ public class Common implements CommonService {
 
     void setKeeper(PasswordHashKeeper keeper) {
         this.keeper = keeper;
-    }
-
-    void setGenerator(IdGenerator generator) {
-        this.generator = generator;
     }
 }

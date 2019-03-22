@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 
 public class UserBuilder {
 
-    private long userId;
+    private String userId;
     private String username;
     private String firstName;
     private String lastName;
@@ -16,7 +16,11 @@ public class UserBuilder {
     private boolean banned;
     private Timestamp birthDate;
 
-    public UserBuilder(long userId) {
+    public UserBuilder() {
+        this("");
+    }
+
+    public UserBuilder(String userId) {
         this.userId = userId;
     }
 

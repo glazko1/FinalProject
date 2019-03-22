@@ -6,7 +6,6 @@ import org.testng.annotations.Test;
 import service.MovieFanService;
 import service.exception.ServiceException;
 import service.impl.MovieFan;
-import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,10 +26,8 @@ public class AddMovieCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         MovieFanService service = mock(MovieFan.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new AddMovieCommand(service, mockRequest, mockResponse, checker);
+        Command command = new AddMovieCommand(service, mockRequest, mockResponse);
         //when
-        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("title")).thenReturn("Title");
         when(mockRequest.getParameter("runningTime")).thenReturn("100");
         when(mockRequest.getParameter("budget")).thenReturn("2000000");
@@ -42,30 +39,13 @@ public class AddMovieCommandTest {
     }
 
     @Test
-    public void execute_noAccess_main() throws CommandException {
-        //given
-        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-        MovieFanService service = mock(MovieFan.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new AddMovieCommand(service, mockRequest, mockResponse, checker);
-        //when
-        when(checker.checkStatus(any(), any())).thenReturn(false);
-        String result = command.execute();
-        //then
-        assertEquals(result, "main");
-    }
-
-    @Test
     public void execute_validParameters_main() throws ServiceException, CommandException {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         MovieFanService service = mock(MovieFan.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new AddMovieCommand(service, mockRequest, mockResponse, checker);
+        Command command = new AddMovieCommand(service, mockRequest, mockResponse);
         //when
-        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("title")).thenReturn("Title");
         when(mockRequest.getParameter("runningTime")).thenReturn("100");
         when(mockRequest.getParameter("budget")).thenReturn("2000000");

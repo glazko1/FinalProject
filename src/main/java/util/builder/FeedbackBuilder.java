@@ -8,14 +8,18 @@ import java.sql.Timestamp;
 
 public class FeedbackBuilder {
 
-    private long feedbackId;
+    private String feedbackId;
     private Alien alien;
     private User user;
     private int rating;
     private String feedbackText;
     private Timestamp feedbackDateTime;
 
-    public FeedbackBuilder(long feedbackId) {
+    public FeedbackBuilder() {
+        this("");
+    }
+
+    public FeedbackBuilder(String feedbackId) {
         this.feedbackId = feedbackId;
     }
 

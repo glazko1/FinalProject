@@ -11,7 +11,7 @@ import service.impl.Common;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.mockito.Mockito.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -28,7 +28,7 @@ public class ViewUserCommandTest {
         Command command = new ViewUserCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("userId")).thenReturn("1");
-        doThrow(ServiceException.class).when(service).viewUser(anyLong());
+        doThrow(ServiceException.class).when(service).viewUser(anyString());
         command.execute();
         //then
         //expecting CommandException
@@ -44,7 +44,7 @@ public class ViewUserCommandTest {
         Command command = new ViewUserCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("userId")).thenReturn("1");
-        when(service.viewUser(anyLong())).thenReturn(user);
+        when(service.viewUser(anyString())).thenReturn(user);
         String result = command.execute();
         //then
         assertEquals(result, "user-page");

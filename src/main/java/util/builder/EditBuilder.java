@@ -8,13 +8,17 @@ import java.sql.Timestamp;
 
 public class EditBuilder {
 
-    private long editId;
+    private String editId;
     private Alien alien;
     private User user;
     private String editText;
     private Timestamp editDateTime;
 
-    public EditBuilder(long editId) {
+    public EditBuilder() {
+        this("");
+    }
+
+    public EditBuilder(String editId) {
         this.editId = editId;
     }
 

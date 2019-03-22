@@ -35,7 +35,7 @@ public class UserSQL implements UserDAO {
     private static final String GET_USER_BY_USERNAME_AND_PASSWORD_SQL = "SELECT UserId, Username, FirstName, LastName, StatusId, Email, Banned, BirthDate FROM User WHERE Username = ? AND Password = ?";
     private static final String GET_USER_BY_USERNAME_SQL = "SELECT UserId, Username, FirstName, LastName, StatusId, Email, Banned, BirthDate FROM User WHERE Username = ?";
     private static final String GET_ALL_USERS_SQL = "SELECT UserId, Username, FirstName, LastName, StatusId, Email, Banned, BirthDate FROM User";
-    private static final String ADD_NEW_USER_SQL = "INSERT INTO User (UserId, Username, FirstName, LastName, Password, StatusId, Email, Banned, BirthDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String ADD_NEW_USER_SQL = "INSERT INTO User (UserId, Username, FirstName, LastName, Password, StatusId, Email, Banned, BirthDate) VALUES (UUID(), ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String GET_USER_BY_EMAIL_SQL = "SELECT UserId FROM User WHERE Email = ?";
     private static final String CHANGE_BAN_STATUS_SQL = "UPDATE User SET Banned = ? WHERE UserId = ?";
     private static final String CHANGE_USER_STATUS_SQL = "UPDATE User SET StatusId = ? WHERE UserId = ?";
@@ -61,12 +61,12 @@ public class UserSQL implements UserDAO {
      * user with given ID in database.
      */
     @Override
-    public User getUser(long userId) throws DAOException {
+    public User getUser(String userId) throws DAOException {
         PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             statement = connection.prepareStatement(GET_USER_BY_ID_SQL);
-            statement.setLong(1, userId);
+            statement.setString(1, userId);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
                 return getNextUser(set);
@@ -115,37 +115,6 @@ public class UserSQL implements UserDAO {
             }
         }
         throw new InvalidUsernameOrPasswordException("Login or password is incorrect!");
-    }
-
-    /**
-     * Creates and returns user according to information in database and given
-     * parameter (username). Gets proxy connection from database pool, prepares
-     * statement on it (by SQL-string) and gets result set with user.
-     * @param username username of user to find.
-     * @return user with given username.
-     * @throws DAOException if {@link SQLException} was caught.
-     */
-    @Override
-    public User getUser(String username) throws DAOException {
-        PreparedStatement statement = null;
-        try (ProxyConnection proxyConnection = pool.getConnection()) {
-            Connection connection = proxyConnection.getConnection();
-            statement = connection.prepareStatement(GET_USER_BY_USERNAME_SQL);
-            statement.setString(1, username);
-            ResultSet set = statement.executeQuery();
-            if (set.next()) {
-                return getNextUser(set);
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        } finally {
-            try {
-                statement.close();
-            } catch (SQLException e) {
-                LOGGER.error(e);
-            }
-        }
-        throw new DAOException("No user with username " + username + " in DAO!");
     }
 
     /**
@@ -202,16 +171,15 @@ public class UserSQL implements UserDAO {
             if (emailIsUsed(connection, user.getEmail())) {
                 throw new UsedEmailException("E-mail is already in use!");
             }
-            statement.setLong(1, user.getUserId());
-            statement.setString(2, user.getUsername());
-            statement.setString(3, user.getFirstName());
-            statement.setString(4, user.getLastName());
-            statement.setString(5, encoded);
+            statement.setString(1, user.getUsername());
+            statement.setString(2, user.getFirstName());
+            statement.setString(3, user.getLastName());
+            statement.setString(4, encoded);
             UserStatus status = user.getStatus();
-            statement.setInt(6, status.getStatusId());
-            statement.setString(7, user.getEmail());
-            statement.setBoolean(8, user.isBanned());
-            statement.setTimestamp(9, user.getBirthDateTimestamp());
+            statement.setInt(5, status.getStatusId());
+            statement.setString(6, user.getEmail());
+            statement.setBoolean(7, user.isBanned());
+            statement.setTimestamp(8, user.getBirthDateTimestamp());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -230,14 +198,14 @@ public class UserSQL implements UserDAO {
      * @throws DAOException if {@link SQLException} was caught.
      */
     @Override
-    public void changeBanStatus(long userId) throws DAOException {
+    public void changeBanStatus(String userId) throws DAOException {
         PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             statement = connection.prepareStatement(CHANGE_BAN_STATUS_SQL);
             User user = getUser(userId);
             statement.setBoolean(1, !user.isBanned());
-            statement.setLong(2, userId);
+            statement.setString(2, userId);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -257,13 +225,13 @@ public class UserSQL implements UserDAO {
      * @throws DAOException if {@link SQLException} was caught.
      */
     @Override
-    public void changeUserStatus(long userId, int statusId) throws DAOException {
+    public void changeUserStatus(String userId, int statusId) throws DAOException {
         PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             statement = connection.prepareStatement(CHANGE_USER_STATUS_SQL);
             statement.setInt(1, statusId);
-            statement.setLong(2, userId);
+            statement.setString(2, userId);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -287,7 +255,7 @@ public class UserSQL implements UserDAO {
      * @throws DAOException if {@link SQLException} was caught.
      */
     @Override
-    public void editUser(long userId, String firstName, String lastName, String email) throws DAOException {
+    public void editUser(String userId, String firstName, String lastName, String email) throws DAOException {
         PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
@@ -298,7 +266,7 @@ public class UserSQL implements UserDAO {
             statement.setString(1, firstName);
             statement.setString(2, lastName);
             statement.setString(3, email);
-            statement.setLong(4, userId);
+            statement.setString(4, userId);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -318,13 +286,13 @@ public class UserSQL implements UserDAO {
      * @throws DAOException if {@link SQLException} was caught.
      */
     @Override
-    public void changePassword(long userId, String newPassword) throws DAOException {
+    public void changePassword(String userId, String newPassword) throws DAOException {
         PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             statement = connection.prepareStatement(CHANGE_PASSWORD_SQL);
             statement.setString(1, newPassword);
-            statement.setLong(2, userId);
+            statement.setString(2, userId);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -385,7 +353,7 @@ public class UserSQL implements UserDAO {
      * parameter (ID, username or e-mail) ascending or descending. Gets proxy
      * connection from database pool, prepares statement on it (by SQL-string)
      * and gets result set with all aliens in database.
-     * @param sortedBy sorting parameter (ID, name, movie title or planet).
+     * @param sortedBy sorting parameter (ID, username or e-mail).
      * @param sortType type of sorting (ascending/descending).
      * @return sorted list of users.
      * @throws DAOException if {@link SQLException} was caught.
@@ -438,7 +406,7 @@ public class UserSQL implements UserDAO {
     private User getNextUser(ResultSet set) throws SQLException {
         int statusId = set.getInt(5) - 1;
         UserStatus status = UserStatus.values()[statusId];
-        UserBuilder builder = new UserBuilder(set.getLong(1));
+        UserBuilder builder = new UserBuilder(set.getString(1));
         return builder.withUsername(set.getString(2))
                 .withFirstName(set.getString(3))
                 .withLastName(set.getString(4))
@@ -465,10 +433,10 @@ public class UserSQL implements UserDAO {
         }
     }
 
-    private boolean emailIsUsed(Connection connection, String email, long userId) throws SQLException {
+    private boolean emailIsUsed(Connection connection, String email, String userId) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(GET_USER_BY_EMAIL_EXCEPT_CURRENT_SQL)) {
             statement.setString(1, email);
-            statement.setLong(2, userId);
+            statement.setString(2, userId);
             ResultSet set = statement.executeQuery();
             return set.first();
         }

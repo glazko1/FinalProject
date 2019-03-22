@@ -10,8 +10,8 @@ import service.exception.ServiceException;
 
 import java.util.List;
 
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -53,8 +53,8 @@ public class AdminTest {
     public void changeBanStatus_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        doThrow(DAOException.class).when(userDAO).changeBanStatus(anyLong());
-        service.changeBanStatus(anyLong());
+        doThrow(DAOException.class).when(userDAO).changeBanStatus(anyString());
+        service.changeBanStatus(anyString());
         //then
         //expecting ServiceException
     }
@@ -63,8 +63,8 @@ public class AdminTest {
     public void changeBanStatus_validParameters_void() throws DAOException, ServiceException {
         //given
         //when
-        doNothing().when(userDAO).changeBanStatus(anyLong());
-        service.changeBanStatus(anyLong());
+        doNothing().when(userDAO).changeBanStatus(anyString());
+        service.changeBanStatus(anyString());
         //then
     }
 
@@ -72,8 +72,8 @@ public class AdminTest {
     public void changeUserStatus_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        doThrow(DAOException.class).when(userDAO).changeUserStatus(anyLong(), anyInt());
-        service.changeUserStatus(anyLong(), anyInt());
+        doThrow(DAOException.class).when(userDAO).changeUserStatus(anyString(), anyInt());
+        service.changeUserStatus(anyString(), anyInt());
         //then
         //expecting ServiceException
     }
@@ -82,8 +82,8 @@ public class AdminTest {
     public void changeUserStatus_validParameters_void() throws DAOException, ServiceException {
         //given
         //when
-        doNothing().when(userDAO).changeUserStatus(anyLong(), anyInt());
-        service.changeUserStatus(anyLong(), anyInt());
+        doNothing().when(userDAO).changeUserStatus(anyString(), anyInt());
+        service.changeUserStatus(anyString(), anyInt());
         //then
     }
 }

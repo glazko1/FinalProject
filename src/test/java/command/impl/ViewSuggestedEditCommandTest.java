@@ -7,13 +7,11 @@ import org.testng.annotations.Test;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
 import service.impl.AlienSpecialist;
-import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -27,32 +25,13 @@ public class ViewSuggestedEditCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         AlienSpecialistService service = mock(AlienSpecialist.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new ViewSuggestedEditCommand(service, mockRequest, mockResponse, checker);
+        Command command = new ViewSuggestedEditCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("editId")).thenReturn("1");
-        when(checker.checkStatus(any(), any())).thenReturn(true);
-        doThrow(ServiceException.class).when(service).viewSuggestedEdit(anyLong());
+        doThrow(ServiceException.class).when(service).viewSuggestedEdit(anyString());
         command.execute();
         //then
         //expecting CommandException
-    }
-
-    @Test
-    public void execute_noAccess_main() throws CommandException {
-        //given
-        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-        AlienSpecialistService service = mock(AlienSpecialist.class);
-        Edit edit = mock(Edit.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new ViewSuggestedEditCommand(service, mockRequest, mockResponse, checker);
-        //when
-        when(mockRequest.getParameter("editId")).thenReturn("1");
-        when(checker.checkStatus(any(), any())).thenReturn(false);
-        String result = command.execute();
-        //then
-        assertEquals(result, "main");
     }
 
     @Test
@@ -62,12 +41,10 @@ public class ViewSuggestedEditCommandTest {
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         AlienSpecialistService service = mock(AlienSpecialist.class);
         Edit edit = mock(Edit.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new ViewSuggestedEditCommand(service, mockRequest, mockResponse, checker);
+        Command command = new ViewSuggestedEditCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("editId")).thenReturn("1");
-        when(checker.checkStatus(any(), any())).thenReturn(true);
-        when(service.viewSuggestedEdit(anyLong())).thenReturn(edit);
+        when(service.viewSuggestedEdit(anyString())).thenReturn(edit);
         String result = command.execute();
         //then
         assertEquals(result, "suggested-edit-page");

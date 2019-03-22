@@ -6,13 +6,10 @@ import org.testng.annotations.Test;
 import service.CommonService;
 import service.exception.ServiceException;
 import service.impl.Common;
-import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -28,34 +25,16 @@ public class ChangePasswordCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new ChangePasswordCommand(service, mockRequest, mockResponse, checker);
+        Command command = new ChangePasswordCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("userId")).thenReturn("1");
-        when(checker.checkAccess(anyLong(), any())).thenReturn(true);
         when(mockRequest.getParameter("currentPassword")).thenReturn("CurrentPassword");
         when(mockRequest.getParameter("newPassword")).thenReturn("NewPassword");
         when(mockRequest.getParameter("confirmedPassword")).thenReturn("ConfirmedPassword");
-        doThrow(ServiceException.class).when(service).changePassword(anyLong(), anyString(), anyString(), anyString());
+        doThrow(ServiceException.class).when(service).changePassword(anyString(), anyString(), anyString(), anyString());
         command.execute();
         //then
         //expecting CommandException
-    }
-
-    @Test
-    public void execute_noAccess_main() throws CommandException {
-        //given
-        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-        CommonService service = mock(Common.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new ChangePasswordCommand(service, mockRequest, mockResponse, checker);
-        //when
-        when(mockRequest.getParameter("userId")).thenReturn("1");
-        when(checker.checkAccess(anyLong(), any())).thenReturn(false);
-        String result = command.execute();
-        //then
-        assertEquals(result, "main");
     }
 
     @Test
@@ -64,15 +43,13 @@ public class ChangePasswordCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new ChangePasswordCommand(service, mockRequest, mockResponse, checker);
+        Command command = new ChangePasswordCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("userId")).thenReturn("1");
-        when(checker.checkAccess(anyLong(), any())).thenReturn(true);
         when(mockRequest.getParameter("currentPassword")).thenReturn("CurrentPassword");
         when(mockRequest.getParameter("newPassword")).thenReturn("NewPassword");
         when(mockRequest.getParameter("confirmedPassword")).thenReturn("ConfirmedPassword");
-        doNothing().when(service).changePassword(anyLong(), anyString(), anyString(), anyString());
+        doNothing().when(service).changePassword(anyString(), anyString(), anyString(), anyString());
         String result = command.execute();
         //then
         assertEquals(result, "main");

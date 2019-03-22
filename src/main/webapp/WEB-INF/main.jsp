@@ -40,11 +40,11 @@
     </c:if>
     <form method="get" action="mainWindow">
         <button type="submit" name="button" value="viewAllAliens" style="height: 200px; width: 200px; margin-right: 25px">
-            <img src="img/spock.png" align="center" alt="" height="150px"><br>
+            <img src="img/alien.png" align="center" alt="" height="150px"><br>
             <fmt:message key="button.view_aliens" />
         </button>
         <button type="submit" name="button" value="viewAllMovies" style="height: 200px; width: 200px">
-            <img src="img/transformers.png" align="center" alt="" height="150px"><br>
+            <img src="img/movie.png" align="center" alt="" height="150px"><br>
             <fmt:message key="button.view_movies" />
         </button>
         <br><br>

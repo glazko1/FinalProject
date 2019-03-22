@@ -6,13 +6,17 @@ import java.sql.Timestamp;
 
 public class MovieBuilder {
 
-    private long movieId;
+    private String movieId;
     private String title;
     private int runningTime;
     private int budget;
     private Timestamp releaseDate;
 
-    public MovieBuilder(long movieId) {
+    public MovieBuilder() {
+        this("");
+    }
+
+    public MovieBuilder(String movieId) {
         this.movieId = movieId;
     }
 

@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class User {
 
-    private long userId;
+    private String userId;
     private String username;
     private String firstName;
     private String lastName;
@@ -15,15 +15,15 @@ public class User {
     private boolean banned;
     private Timestamp birthDate;
 
-    public User(long userId) {
+    public User(String userId) {
         this.userId = userId;
     }
 
-    public long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -89,15 +89,11 @@ public class User {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return userId == user.userId &&
-                banned == user.banned &&
+        return banned == user.banned &&
+                Objects.equals(userId, user.userId) &&
                 Objects.equals(username, user.username) &&
                 Objects.equals(firstName, user.firstName) &&
                 Objects.equals(lastName, user.lastName) &&

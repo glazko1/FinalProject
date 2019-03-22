@@ -5,13 +5,10 @@ import command.exception.CommandException;
 import org.testng.annotations.Test;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
-import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -27,31 +24,14 @@ public class AcceptEditCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         AlienSpecialistService service = mock(AlienSpecialistService.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new AcceptEditCommand(service, mockRequest, mockResponse, checker);
+        Command command = new AcceptEditCommand(service, mockRequest, mockResponse);
         //when
-        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("editId")).thenReturn("1");
         when(mockRequest.getParameter("userId")).thenReturn("1");
-        doThrow(ServiceException.class).when(service).acceptEdit(anyLong());
+        doThrow(ServiceException.class).when(service).acceptEdit(anyString());
         command.execute();
         //then
         //expecting CommandException
-    }
-
-    @Test
-    public void execute_noAccess_main() throws CommandException {
-        //given
-        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-        AlienSpecialistService service = mock(AlienSpecialistService.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new AcceptEditCommand(service, mockRequest, mockResponse, checker);
-        //when
-        when(checker.checkStatus(any(), any())).thenReturn(false);
-        String result = command.execute();
-        //then
-        assertEquals(result, "main");
     }
 
     @Test
@@ -60,15 +40,13 @@ public class AcceptEditCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         AlienSpecialistService service = mock(AlienSpecialistService.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new AcceptEditCommand(service, mockRequest, mockResponse, checker);
+        Command command = new AcceptEditCommand(service, mockRequest, mockResponse);
         //when
-        when(checker.checkStatus(any(), any())).thenReturn(true);
         when(mockRequest.getParameter("editId")).thenReturn("1");
         when(mockRequest.getParameter("userId")).thenReturn("1");
-        doNothing().when(service).acceptEdit(anyLong());
-        doNothing().when(service).sendNotification(anyLong(), anyString());
-        doNothing().when(service).deleteEdit(anyLong());
+        doNothing().when(service).acceptEdit(anyString());
+        doNothing().when(service).sendNotification(anyString(), anyString());
+        doNothing().when(service).deleteEdit(anyString());
         String result = command.execute();
         //then
         assertEquals(result, "main");

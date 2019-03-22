@@ -5,7 +5,7 @@ import entity.Movie;
 
 public class AlienBuilder {
 
-    private long alienId;
+    private String alienId;
     private String alienName;
     private Movie movie;
     private String planet;
@@ -13,7 +13,11 @@ public class AlienBuilder {
     private double averageRating;
     private String imagePath;
 
-    public AlienBuilder(long alienId) {
+    public AlienBuilder() {
+        this("");
+    }
+
+    public AlienBuilder(String alienId) {
         this.alienId = alienId;
     }
 

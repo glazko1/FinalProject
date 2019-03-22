@@ -22,6 +22,10 @@
     <param-value>/FinalProject/upload</param-value>
   </context-param>
 
+  <error-page>
+    <location>/WEB-INF/error.jsp</location>
+  </error-page>
+
   <servlet>
     <servlet-name>index</servlet-name>
     <jsp-file>/index.jsp</jsp-file>

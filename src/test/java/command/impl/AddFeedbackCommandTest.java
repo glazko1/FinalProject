@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -30,10 +29,10 @@ public class AddFeedbackCommandTest {
         Command command = new AddFeedbackCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("alienId")).thenReturn("1");
-        when(mockRequest.getParameter("username")).thenReturn("Username");
+        when(mockRequest.getParameter("userId")).thenReturn("1");
         when(mockRequest.getParameter("rating")).thenReturn("1");
         when(mockRequest.getParameter("feedbackText")).thenReturn("FeedbackText");
-        doThrow(ServiceException.class).when(service).addFeedback(anyLong(), anyString(), anyInt(), anyString());
+        doThrow(ServiceException.class).when(service).addFeedback(anyString(), anyString(), anyInt(), anyString());
         command.execute();
         //then
         //expecting CommandException
@@ -48,10 +47,10 @@ public class AddFeedbackCommandTest {
         Command command = new AddFeedbackCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("alienId")).thenReturn("1");
-        when(mockRequest.getParameter("username")).thenReturn("Username");
+        when(mockRequest.getParameter("userId")).thenReturn("1");
         when(mockRequest.getParameter("rating")).thenReturn("1");
         when(mockRequest.getParameter("feedbackText")).thenReturn("FeedbackText");
-        doNothing().when(service).addFeedback(anyLong(), anyString(), anyInt(), anyString());
+        doNothing().when(service).addFeedback(anyString(), anyString(), anyInt(), anyString());
         String result = command.execute();
         //then
         assertEquals(result, "main");

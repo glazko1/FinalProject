@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface FeedbackDAO {
 
-    List<Feedback> getFeedbacksByAlienId(long alienId) throws DAOException;
+    List<Feedback> getFeedbacksByAlienId(String alienId) throws DAOException;
     void addNewFeedback(Feedback feedback) throws DAOException;
-    void deleteFeedback(long feedbackId) throws DAOException;
+    void deleteFeedback(String feedbackId) throws DAOException;
+    List<Feedback> getFeedbacksByUserId(String userId) throws DAOException;
 }

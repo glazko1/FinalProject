@@ -2,11 +2,9 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
-import entity.UserStatus;
 import service.AdminService;
 import service.exception.ServiceException;
 import service.impl.Admin;
-import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,7 +14,6 @@ public class ChangeBanStatusCommand implements Command {
     private AdminService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
-    private UserAccessChecker checker;
 
     /**
      * Constructs command with default service, specified request and response.
@@ -24,20 +21,19 @@ public class ChangeBanStatusCommand implements Command {
      * @param response HTTP-response.
      */
     public ChangeBanStatusCommand(HttpServletRequest request, HttpServletResponse response) {
-        this(Admin.getInstance(), request, response, UserAccessChecker.getInstance());
+        this(Admin.getInstance(), request, response);
     }
 
     /**
      * Constructs command with specified service, request and response.
-     * @param service service layer class with opportunities of alien specialists.
+     * @param service service layer class with opportunities of admin.
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
-    ChangeBanStatusCommand(AdminService service, HttpServletRequest request, HttpServletResponse response, UserAccessChecker checker) {
+    ChangeBanStatusCommand(AdminService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;
         this.request = request;
         this.response = response;
-        this.checker = checker;
     }
 
     /**
@@ -49,10 +45,7 @@ public class ChangeBanStatusCommand implements Command {
      */
     @Override
     public String execute() throws CommandException {
-        if (!checker.checkStatus(UserStatus.ADMIN, request)) {
-            return "main";
-        }
-        long userId = Long.parseLong(request.getParameter("userId"));
+        String userId = request.getParameter("userId");
         try {
             service.changeBanStatus(userId);
         } catch (ServiceException e) {

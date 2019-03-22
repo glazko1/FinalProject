@@ -6,21 +6,21 @@ import java.util.Objects;
 
 public class Edit {
 
-    private long editId;
+    private String editId;
     private Alien alien;
     private User user;
     private String editText;
     private Timestamp editDateTime;
 
-    public Edit(long editId) {
+    public Edit(String editId) {
         this.editId = editId;
     }
 
-    public long getEditId() {
+    public String getEditId() {
         return editId;
     }
 
-    public void setEditId(long editId) {
+    public void setEditId(String editId) {
         this.editId = editId;
     }
 
@@ -62,14 +62,10 @@ public class Edit {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Edit edit = (Edit) o;
-        return editId == edit.editId &&
+        return Objects.equals(editId, edit.editId) &&
                 Objects.equals(alien, edit.alien) &&
                 Objects.equals(user, edit.user) &&
                 Objects.equals(editText, edit.editText) &&
@@ -79,16 +75,5 @@ public class Edit {
     @Override
     public int hashCode() {
         return Objects.hash(editId, alien, user, editText, editDateTime);
-    }
-
-    @Override
-    public String toString() {
-        return "Edit{" +
-                "editId=" + editId +
-                ", alien=" + alien +
-                ", user=" + user +
-                ", editText='" + editText + '\'' +
-                ", editDateTime=" + editDateTime +
-                '}';
     }
 }

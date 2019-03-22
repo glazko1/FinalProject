@@ -6,21 +6,21 @@ import java.util.Objects;
 
 public class Movie {
 
-    private long movieId;
+    private String movieId;
     private String title;
     private int runningTime;
     private int budget;
     private Timestamp releaseDate;
 
-    public Movie(long movieId) {
+    public Movie(String movieId) {
         this.movieId = movieId;
     }
 
-    public long getMovieId() {
+    public String getMovieId() {
         return movieId;
     }
 
-    public void setMovieId(long movieId) {
+    public void setMovieId(String movieId) {
         this.movieId = movieId;
     }
 
@@ -62,16 +62,12 @@ public class Movie {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Movie movie = (Movie) o;
-        return movieId == movie.movieId &&
-                runningTime == movie.runningTime &&
+        return runningTime == movie.runningTime &&
                 budget == movie.budget &&
+                Objects.equals(movieId, movie.movieId) &&
                 Objects.equals(title, movie.title) &&
                 Objects.equals(releaseDate, movie.releaseDate);
     }

@@ -26,6 +26,8 @@
         <button class="underlined" name="button" value="logout"><fmt:message key="button.logout" /></button>
     </form>
     <form style="display: inline; margin: 25px;">
+        <input type="hidden" name="button" value="viewNotifications">
+        <input type="hidden" name="userId" value="${sessionScope.userId}">
         <label for="locale"></label><select id="locale" name="locale" onchange="submit()">
         <option value="en_EN" ${locale == 'en_EN' ? 'selected' : ''}>English</option>
         <option value="de_DE" ${locale == 'de_DE' ? 'selected' : ''}>Deutsch</option>

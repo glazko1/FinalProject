@@ -31,7 +31,7 @@ public class EditSQL implements EditDAO {
 
     private EditSQL() {}
 
-    private static final String ADD_NEW_EDIT_SQL = "INSERT INTO Edit (EditId, AlienId, UserId, EditText, EditDateTime) VALUES (?, ?, ?, ?, ?)";
+    private static final String ADD_NEW_EDIT_SQL = "INSERT INTO Edit (EditId, AlienId, UserId, EditText, EditDateTime) VALUES (UUID(), ?, ?, ?, ?)";
     private static final String GET_ALL_EDITS_SQL = "SELECT e.EditId, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, a.ImagePath, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, e.EditText, e.EditDateTime FROM Edit e JOIN Alien a ON e.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User U ON e.UserId = u.UserId";
     private static final String GET_EDIT_BY_ID_SQL = "SELECT e.EditId, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, a.ImagePath, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, e.EditText, e.EditDateTime FROM Edit e JOIN Alien a ON e.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User U ON e.UserId = u.UserId WHERE e.EditId = ?";
     private static final String DELETE_EDIT_SQL = "DELETE FROM Edit WHERE EditId = ?";
@@ -49,11 +49,10 @@ public class EditSQL implements EditDAO {
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(ADD_NEW_EDIT_SQL);
-            statement.setLong(1, edit.getEditId());
-            statement.setLong(2, edit.getAlien().getAlienId());
-            statement.setLong(3, edit.getUser().getUserId());
-            statement.setString(4, edit.getEditText());
-            statement.setTimestamp(5, edit.getEditTimestamp());
+            statement.setString(1, edit.getAlien().getAlienId());
+            statement.setString(2, edit.getUser().getUserId());
+            statement.setString(3, edit.getEditText());
+            statement.setTimestamp(4, edit.getEditTimestamp());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -94,11 +93,11 @@ public class EditSQL implements EditDAO {
      * edit with given ID in database.
      */
     @Override
-    public Edit getSuggestedEdit(long editId) throws DAOException {
+    public Edit getSuggestedEdit(String editId) throws DAOException {
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(GET_EDIT_BY_ID_SQL);
-            statement.setLong(1, editId);
+            statement.setString(1, editId);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
                 return getNextEdit(set);
@@ -115,11 +114,11 @@ public class EditSQL implements EditDAO {
      * @throws DAOException if {@link SQLException} was caught.
      */
     @Override
-    public void deleteEdit(long editId) throws DAOException {
+    public void deleteEdit(String editId) throws DAOException {
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(DELETE_EDIT_SQL);
-            statement.setLong(1, editId);
+            statement.setString(1, editId);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -129,7 +128,7 @@ public class EditSQL implements EditDAO {
     private Edit getNextEdit(ResultSet set) throws SQLException {
         int statusId = set.getInt(17) - 1;
         UserStatus status = UserStatus.values()[statusId];
-        UserBuilder builder = new UserBuilder(set.getLong(13));
+        UserBuilder builder = new UserBuilder(set.getString(13));
         User user = builder.withUsername(set.getString(14))
                 .withFirstName(set.getString(15))
                 .withLastName(set.getString(16))
@@ -138,13 +137,13 @@ public class EditSQL implements EditDAO {
                 .isBanned(set.getBoolean(19))
                 .hasBirthDate(set.getTimestamp(20))
                 .build();
-        MovieBuilder movieBuilder = new MovieBuilder(set.getLong(8));
+        MovieBuilder movieBuilder = new MovieBuilder(set.getString(8));
         Movie movie = movieBuilder.withTitle(set.getString(9))
                 .withRunningTime(set.getInt(10))
                 .withBudget(set.getInt(11))
                 .hasReleaseDate(set.getTimestamp(12))
                 .build();
-        AlienBuilder alienBuilder = new AlienBuilder(set.getLong(2));
+        AlienBuilder alienBuilder = new AlienBuilder(set.getString(2));
         Alien alien = alienBuilder.withName(set.getString(3))
                 .fromMovie(movie)
                 .fromPlanet(set.getString(4))
@@ -152,7 +151,7 @@ public class EditSQL implements EditDAO {
                 .withAverageRating(set.getDouble(6))
                 .withPathToImage(set.getString(7))
                 .build();
-        EditBuilder editBuilder = new EditBuilder(set.getLong(1));
+        EditBuilder editBuilder = new EditBuilder(set.getString(1));
         return editBuilder.aboutAlien(alien)
                 .suggestedBy(user)
                 .withText(set.getString(21))

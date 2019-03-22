@@ -6,7 +6,6 @@ import entity.User;
 import service.CommonService;
 import service.exception.ServiceException;
 import service.impl.Common;
-import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,7 +15,6 @@ public class ForwardToEditUserCommand implements Command {
     private CommonService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
-    private UserAccessChecker checker;
 
     /**
      * Constructs command with default service, specified request and response.
@@ -24,20 +22,19 @@ public class ForwardToEditUserCommand implements Command {
      * @param response HTTP-response.
      */
     public ForwardToEditUserCommand(HttpServletRequest request, HttpServletResponse response) {
-        this(Common.getInstance(), request, response, UserAccessChecker.getInstance());
+        this(Common.getInstance(), request, response);
     }
 
     /**
      * Constructs command with specified service, request and response.
-     * @param service service layer class with opportunities of alien specialists.
+     * @param service service layer class with opportunities of user.
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
-    ForwardToEditUserCommand(CommonService service, HttpServletRequest request, HttpServletResponse response, UserAccessChecker checker) {
+    ForwardToEditUserCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;
         this.request = request;
         this.response = response;
-        this.checker = checker;
     }
 
     /**
@@ -50,10 +47,7 @@ public class ForwardToEditUserCommand implements Command {
      */
     @Override
     public String execute() throws CommandException {
-        long userId = Long.parseLong(request.getParameter("userId"));
-        if (!checker.checkAccess(userId, request)) {
-            return "main";
-        }
+        String userId = request.getParameter("userId");
         try {
             User user = service.viewUser(userId);
             request.setAttribute("username", user.getUsername());

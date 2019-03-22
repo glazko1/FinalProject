@@ -7,13 +7,11 @@ import org.testng.annotations.Test;
 import service.CommonService;
 import service.exception.ServiceException;
 import service.impl.Common;
-import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -27,31 +25,13 @@ public class ForwardToEditMovieCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new ForwardToEditMovieCommand(service, mockRequest, mockResponse, checker);
+        Command command = new ForwardToEditMovieCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("movieId")).thenReturn("1");
-        when(checker.checkStatus(any(), any())).thenReturn(true);
-        doThrow(ServiceException.class).when(service).viewMovie(anyLong());
+        doThrow(ServiceException.class).when(service).viewMovie(anyString());
         command.execute();
         //then
         //expecting CommandException
-    }
-
-    @Test
-    public void execute_noAccess_main() throws CommandException {
-        //given
-        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-        CommonService service = mock(Common.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new ForwardToEditMovieCommand(service, mockRequest, mockResponse, checker);
-        //when
-        when(mockRequest.getParameter("movieId")).thenReturn("1");
-        when(checker.checkStatus(any(), any())).thenReturn(false);
-        String result = command.execute();
-        //then
-        assertEquals(result, "main");
     }
 
     @Test
@@ -61,12 +41,10 @@ public class ForwardToEditMovieCommandTest {
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
         Movie movie = mock(Movie.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new ForwardToEditMovieCommand(service, mockRequest, mockResponse, checker);
+        Command command = new ForwardToEditMovieCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("movieId")).thenReturn("1");
-        when(checker.checkStatus(any(), any())).thenReturn(true);
-        when(service.viewMovie(anyLong())).thenReturn(movie);
+        when(service.viewMovie(anyString())).thenReturn(movie);
         String result = command.execute();
         //then
         assertEquals(result, "edit-movie");

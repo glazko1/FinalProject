@@ -8,14 +8,11 @@ import service.exception.ServiceException;
 import service.exception.user.InvalidEmailException;
 import service.exception.user.InvalidUserInformationException;
 import service.impl.Common;
-import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -31,15 +28,13 @@ public class EditUserCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new EditUserCommand(service, mockRequest, mockResponse, checker);
+        Command command = new EditUserCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("userId")).thenReturn("1");
-        when(checker.checkAccess(anyLong(), any())).thenReturn(true);
         when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
         when(mockRequest.getParameter("lastName")).thenReturn("LastName");
         when(mockRequest.getParameter("email")).thenReturn("Email");
-        doThrow(ServiceException.class).when(service).editUser(anyLong(), anyString(), anyString(), anyString());
+        doThrow(ServiceException.class).when(service).editUser(anyString(), anyString(), anyString(), anyString());
         command.execute();
         //then
         //expecting CommandException
@@ -52,16 +47,14 @@ public class EditUserCommandTest {
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
         HttpSession session = mock(HttpSession.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new EditUserCommand(service, mockRequest, mockResponse, checker);
+        Command command = new EditUserCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("userId")).thenReturn("1");
-        when(checker.checkAccess(anyLong(), any())).thenReturn(true);
         when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
         when(mockRequest.getParameter("lastName")).thenReturn("LastName");
         when(mockRequest.getParameter("email")).thenReturn("Email");
         when(mockRequest.getSession()).thenReturn(session);
-        doThrow(InvalidEmailException.class).when(service).editUser(anyLong(), anyString(), anyString(), anyString());
+        doThrow(InvalidEmailException.class).when(service).editUser(anyString(), anyString(), anyString(), anyString());
         String result = command.execute();
         //then
         assertEquals(result, "main");
@@ -74,32 +67,14 @@ public class EditUserCommandTest {
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
         HttpSession session = mock(HttpSession.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new EditUserCommand(service, mockRequest, mockResponse, checker);
+        Command command = new EditUserCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("userId")).thenReturn("1");
-        when(checker.checkAccess(anyLong(), any())).thenReturn(true);
         when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
         when(mockRequest.getParameter("lastName")).thenReturn("LastName");
         when(mockRequest.getParameter("email")).thenReturn("Email");
         when(mockRequest.getSession()).thenReturn(session);
-        doThrow(InvalidUserInformationException.class).when(service).editUser(anyLong(), anyString(), anyString(), anyString());
-        String result = command.execute();
-        //then
-        assertEquals(result, "main");
-    }
-
-    @Test
-    public void execute_noAccess_main() throws CommandException {
-        //given
-        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-        CommonService service = mock(Common.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new EditUserCommand(service, mockRequest, mockResponse, checker);
-        //when
-        when(mockRequest.getParameter("userId")).thenReturn("1");
-        when(checker.checkAccess(anyLong(), any())).thenReturn(false);
+        doThrow(InvalidUserInformationException.class).when(service).editUser(anyString(), anyString(), anyString(), anyString());
         String result = command.execute();
         //then
         assertEquals(result, "main");
@@ -111,15 +86,13 @@ public class EditUserCommandTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         CommonService service = mock(Common.class);
-        UserAccessChecker checker = mock(UserAccessChecker.class);
-        Command command = new EditUserCommand(service, mockRequest, mockResponse, checker);
+        Command command = new EditUserCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("userId")).thenReturn("1");
-        when(checker.checkAccess(anyLong(), any())).thenReturn(true);
         when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
         when(mockRequest.getParameter("lastName")).thenReturn("LastName");
         when(mockRequest.getParameter("email")).thenReturn("Email");
-        doNothing().when(service).editUser(anyLong(), anyString(), anyString(), anyString());
+        doNothing().when(service).editUser(anyString(), anyString(), anyString(), anyString());
         String result = command.execute();
         //then
         assertEquals(result, "main");

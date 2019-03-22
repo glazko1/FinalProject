@@ -27,7 +27,7 @@
     </form>
     <form style="display: inline; margin: 25px;">
         <input type="hidden" name="button" value="viewMovie">
-        <input type="hidden" name="alienId" value="${movie.movieId}">
+        <input type="hidden" name="movieId" value="${movie.movieId}">
         <label for="locale"></label><select id="locale" name="locale" onchange="submit()">
         <option value="en_EN" ${locale == 'en_EN' ? 'selected' : ''}>English</option>
         <option value="de_DE" ${locale == 'de_DE' ? 'selected' : ''}>Deutsch</option>

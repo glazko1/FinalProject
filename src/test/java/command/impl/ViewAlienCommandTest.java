@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.List;
 
-import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -32,7 +32,7 @@ public class ViewAlienCommandTest {
         Command command = new ViewAlienCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("alienId")).thenReturn("1");
-        doThrow(ServiceException.class).when(service).viewAlienWithFeedbacks(anyLong());
+        doThrow(ServiceException.class).when(service).viewAlienWithFeedbacks(anyString());
         command.execute();
         //then
         //expecting CommandException
@@ -48,7 +48,7 @@ public class ViewAlienCommandTest {
         Command command = new ViewAlienCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("alienId")).thenReturn("1");
-        when(service.viewAlienWithFeedbacks(anyLong())).thenReturn(pair);
+        when(service.viewAlienWithFeedbacks(anyString())).thenReturn(pair);
         String result = command.execute();
         //then
         assertEquals(result, "alien-page");

@@ -27,8 +27,8 @@ public class NotificationSQL implements NotificationDAO {
 
     private NotificationSQL() {}
 
-    private static final String GET_NOTIFICATIONS_BY_USER_ID_SQL = "SELECT n.NotificationId, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, n.NotificationText, n.NotificationDateTime FROM Notification n JOIN User u ON n.UserId = u.UserId WHERE n.UserId = ?";
-    private static final String ADD_NEW_NOTIFICATION_SQL = "INSERT INTO Notification (NotificationId, UserId, NotificationText, NotificationDateTime) VALUES (?, ?, ?, ?)";
+    private static final String GET_NOTIFICATIONS_BY_USER_ID_SQL = "SELECT n.NotificationId, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, n.NotificationText, n.NotificationDateTime FROM Notification n JOIN User u ON n.UserId = u.UserId WHERE n.UserId = ? ORDER BY n.NotificationDateTime DESC";
+    private static final String ADD_NEW_NOTIFICATION_SQL = "INSERT INTO Notification (NotificationId, UserId, NotificationText, NotificationDateTime) VALUES (UUID(), ?, ?, ?)";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
     /**
@@ -40,12 +40,12 @@ public class NotificationSQL implements NotificationDAO {
      * @throws DAOException if {@link SQLException} was caught.
      */
     @Override
-    public List<Notification> getNotificationsByUserId(long userId) throws DAOException {
+    public List<Notification> getNotificationsByUserId(String userId) throws DAOException {
         List<Notification> notifications = new ArrayList<>();
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(GET_NOTIFICATIONS_BY_USER_ID_SQL);
-            statement.setLong(1, userId);
+            statement.setString(1, userId);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
                 Notification notification = getNextNotification(set);
@@ -69,11 +69,10 @@ public class NotificationSQL implements NotificationDAO {
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(ADD_NEW_NOTIFICATION_SQL);
-            statement.setLong(1, notification.getNotificationId());
             User user = notification.getUser();
-            statement.setLong(2, user.getUserId());
-            statement.setString(3, notification.getNotificationText());
-            statement.setTimestamp(4, notification.getNotificationTimestamp());
+            statement.setString(1, user.getUserId());
+            statement.setString(2, notification.getNotificationText());
+            statement.setTimestamp(3, notification.getNotificationTimestamp());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -83,7 +82,7 @@ public class NotificationSQL implements NotificationDAO {
     private Notification getNextNotification(ResultSet set) throws SQLException {
         int statusId = set.getInt(6) - 1;
         UserStatus status = UserStatus.values()[statusId];
-        UserBuilder userBuilder = new UserBuilder(set.getLong(2));
+        UserBuilder userBuilder = new UserBuilder(set.getString(2));
         User user = userBuilder.withUsername(set.getString(3))
                 .withFirstName(set.getString(4))
                 .withLastName(set.getString(5))
@@ -92,7 +91,7 @@ public class NotificationSQL implements NotificationDAO {
                 .isBanned(set.getBoolean(8))
                 .hasBirthDate(set.getTimestamp(9))
                 .build();
-        NotificationBuilder notificationBuilder = new NotificationBuilder(set.getLong(1));
+        NotificationBuilder notificationBuilder = new NotificationBuilder(set.getString(1));
         return notificationBuilder.toUser(user)
                 .withText(set.getString(10))
                 .withNotificationDateTime(set.getTimestamp(11))

@@ -7,7 +7,6 @@ import service.exception.ServiceException;
 import service.exception.user.InvalidEmailException;
 import service.exception.user.InvalidUserInformationException;
 import service.impl.Common;
-import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +17,6 @@ public class EditUserCommand implements Command {
     private CommonService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
-    private UserAccessChecker checker;
 
     /**
      * Constructs command with default service, specified request and response.
@@ -26,20 +24,19 @@ public class EditUserCommand implements Command {
      * @param response HTTP-response.
      */
     public EditUserCommand(HttpServletRequest request, HttpServletResponse response) {
-        this(Common.getInstance(), request, response, UserAccessChecker.getInstance());
+        this(Common.getInstance(), request, response);
     }
 
     /**
      * Constructs command with specified service, request and response.
-     * @param service service layer class with opportunities of alien specialists.
+     * @param service service layer class with opportunities of user.
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
-    EditUserCommand(CommonService service, HttpServletRequest request, HttpServletResponse response, UserAccessChecker checker) {
+    EditUserCommand(CommonService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;
         this.request = request;
         this.response = response;
-        this.checker = checker;
     }
 
     /**
@@ -52,10 +49,7 @@ public class EditUserCommand implements Command {
      */
     @Override
     public String execute() throws CommandException {
-        long userId = Long.parseLong(request.getParameter("userId"));
-        if (!checker.checkAccess(userId, request)) {
-            return "main";
-        }
+        String userId = request.getParameter("userId");
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");

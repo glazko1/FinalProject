@@ -12,7 +12,7 @@ public class ForwardToRestorePasswordCommand implements Command {
     private HttpServletResponse response;
 
     /**
-     * Constructs command with default service, specified request and response.
+     * Constructs command with specified request and response.
      * @param request HTTP-request.
      * @param response HTTP-response.
      */

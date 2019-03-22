@@ -6,6 +6,7 @@
 <fmt:setBundle basename="text" />
 <html>
 <head>
+    <title><fmt:message key="title.alien_catalog" /></title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
@@ -17,6 +18,10 @@
         <form method="get" action="mainWindow" style="display: inline; margin: 25px;">
             <input type="hidden" name="userId" value="${sessionScope.userId}">
             <button class="underlined" name="button" value="viewUser"><fmt:message key="button.my_profile" /></button>
+        </form>
+        <form method="get" action="mainWindow" style="display: inline; margin: 25px;">
+            <input type="hidden" name="userId" value="${sessionScope.userId}">
+            <button class="underlined" name="button" value="viewNotifications"><fmt:message key="button.notifications" /></button>
         </form>
         <form method="post" action="mainWindow" style="display: inline; margin: 25px;">
             <button class="underlined" name="button" value="logout"><fmt:message key="button.logout" /></button>

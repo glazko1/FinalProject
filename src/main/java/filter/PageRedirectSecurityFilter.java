@@ -29,6 +29,10 @@ public class PageRedirectSecurityFilter implements Filter {
         HttpSession session = request.getSession();
         if (session.getAttribute("status") == null && !path.endsWith("index")) {
             response.sendRedirect("index");
+        } else if (session.getAttribute("status") != null
+                && !path.endsWith("index")
+                && !path.endsWith("main")) {
+            response.sendRedirect("main");
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }

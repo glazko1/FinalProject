@@ -3,11 +3,9 @@ package command.impl;
 import command.Command;
 import command.exception.CommandException;
 import entity.Edit;
-import entity.UserStatus;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
 import service.impl.AlienSpecialist;
-import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +16,6 @@ public class ViewAllSuggestedEditsCommand implements Command {
     private AlienSpecialistService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
-    private UserAccessChecker checker;
 
     /**
      * Constructs command with default service, specified request and response.
@@ -26,20 +23,19 @@ public class ViewAllSuggestedEditsCommand implements Command {
      * @param response HTTP-response.
      */
     public ViewAllSuggestedEditsCommand(HttpServletRequest request, HttpServletResponse response) {
-        this(AlienSpecialist.getInstance(), request, response, UserAccessChecker.getInstance());
+        this(AlienSpecialist.getInstance(), request, response);
     }
 
     /**
      * Constructs command with specified service, request and response.
-     * @param service service layer class with opportunities of alien specialists.
+     * @param service service layer class with opportunities of alien specialist.
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
-    ViewAllSuggestedEditsCommand(AlienSpecialistService service, HttpServletRequest request, HttpServletResponse response, UserAccessChecker checker) {
+    ViewAllSuggestedEditsCommand(AlienSpecialistService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;
         this.request = request;
         this.response = response;
-        this.checker = checker;
     }
 
     /**
@@ -51,10 +47,6 @@ public class ViewAllSuggestedEditsCommand implements Command {
      */
     @Override
     public String execute() throws CommandException {
-        if (!checker.checkStatus(UserStatus.ALIEN_SPECIALIST, request) &&
-                !checker.checkStatus(UserStatus.ADMIN, request)) {
-            return "main";
-        }
         try {
             List<Edit> edits = service.viewAllSuggestedEdits();
             request.setAttribute("edits", edits);

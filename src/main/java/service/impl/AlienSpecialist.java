@@ -23,7 +23,6 @@ import service.exception.alien.InvalidAlienInformationException;
 import service.exception.alien.InvalidAlienNameException;
 import util.builder.AlienBuilder;
 import util.builder.NotificationBuilder;
-import util.generator.IdGenerator;
 import util.validator.AlienInformationValidator;
 
 import java.sql.Timestamp;
@@ -46,16 +45,29 @@ public class AlienSpecialist implements AlienSpecialistService {
     private MovieDAO movieDAO = MovieSQL.getInstance();
     private EditDAO editDAO = EditSQL.getInstance();
     private NotificationDAO notificationDAO = NotificationSQL.getInstance();
-    private IdGenerator generator = IdGenerator.getInstance();
 
+    /**
+     * Performs operation of adding information about new alien. Checks correctness
+     * of information by validator and calls appropriate method of alien-specified
+     * DAO to put information to database.
+     * @param alienName name of new alien.
+     * @param planet planet of new alien.
+     * @param description description of new alien.
+     * @param movieTitle movie about new alien.
+     * @param imagePath path to alien's image.
+     * @throws InvalidAlienInformationException if information about new alien is
+     * not correct.
+     * @throws InvalidAlienNameException if alien's name is already in use.
+     * @throws ServiceException if {@link DAOException} was caught.
+     */
     @Override
-    public void addAlien(long id, String alienName, String planet, String description, String movieTitle, String imagePath) throws ServiceException {
+    public void addAlien(String alienName, String planet, String description, String movieTitle, String imagePath) throws ServiceException {
         if (!validator.validate(alienName, planet, description)) {
             throw new InvalidAlienInformationException("Information is not valid!");
         }
         try {
             Movie movie = movieDAO.getMovieByTitle(movieTitle);
-            AlienBuilder alienBuilder = new AlienBuilder(id);
+            AlienBuilder alienBuilder = new AlienBuilder();
             Alien alien = alienBuilder.withName(alienName)
                     .fromMovie(movie)
                     .fromPlanet(planet)
@@ -71,20 +83,35 @@ public class AlienSpecialist implements AlienSpecialistService {
         }
     }
 
+    /**
+     * Performs operation of editing information about specified alien. Calls
+     * appropriate method of alien-specified DAO to put information to database.
+     * @param alienId ID of alien to edit information about.
+     * @param movieTitle movie about alien.
+     * @param planet alien's home planet.
+     * @param description new description of alien.
+     * @throws ServiceException if {@link DAOException} was caught.
+     */
     @Override
-    public void editAlien(long alienId, String movieTitle, String planet, String description) throws ServiceException {
+    public void editAlien(String alienId, String movieTitle, String planet, String description) throws ServiceException {
         if (!validator.validate(planet, description)) {
             throw new InvalidAlienInformationException("Information is not valid!");
         }
         try {
             Movie movie = movieDAO.getMovieByTitle(movieTitle);
-            long movieId = movie.getMovieId();
+            String movieId = movie.getMovieId();
             alienDAO.editAlien(alienId, movieId, planet, description);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
     }
 
+    /**
+     * Performs operation of getting information about all suggested edits. Calls
+     * appropriate method of edit-specified DAO and returns list of suggested edits.
+     * @return list of suggested edits.
+     * @throws ServiceException if {@link DAOException} was caught.
+     */
     @Override
     public List<Edit> viewAllSuggestedEdits() throws ServiceException {
         try {
@@ -94,8 +121,16 @@ public class AlienSpecialist implements AlienSpecialistService {
         }
     }
 
+    /**
+     * Performs operation of getting information about specified suggested edit
+     * (by ID). Calls appropriate method of edit-specified DAO and returns
+     * edit with given ID.
+     * @param editId ID of edit to get.
+     * @return edit with given ID.
+     * @throws ServiceException if {@link DAOException} was caught.
+     */
     @Override
-    public Edit viewSuggestedEdit(long editId) throws ServiceException {
+    public Edit viewSuggestedEdit(String editId) throws ServiceException {
         try {
             return editDAO.getSuggestedEdit(editId);
         } catch (DAOException e) {
@@ -103,8 +138,15 @@ public class AlienSpecialist implements AlienSpecialistService {
         }
     }
 
+    /**
+     * Performs operation of accepting specified suggested edit (by ID). Calls
+     * appropriate method of edit-specified DAO and updates alien's description
+     * (by calling method of alien-specified DAO).
+     * @param editId ID of edit to accept.
+     * @throws ServiceException if {@link DAOException} was caught.
+     */
     @Override
-    public void acceptEdit(long editId) throws ServiceException {
+    public void acceptEdit(String editId) throws ServiceException {
         try {
             Edit edit = editDAO.getSuggestedEdit(editId);
             Alien alien = edit.getAlien();
@@ -114,8 +156,15 @@ public class AlienSpecialist implements AlienSpecialistService {
         }
     }
 
+    /**
+     * Performs operation of deleting specified suggested edit (by ID). Calls
+     * appropriate method of edit-specified DAO to delete information from
+     * database.
+     * @param editId ID of edit to delete.
+     * @throws ServiceException if {@link DAOException} was caught.
+     */
     @Override
-    public void deleteEdit(long editId) throws ServiceException {
+    public void deleteEdit(String editId) throws ServiceException {
         try {
             editDAO.deleteEdit(editId);
         } catch (DAOException e) {
@@ -123,13 +172,20 @@ public class AlienSpecialist implements AlienSpecialistService {
         }
     }
 
+    /**
+     * Performs operation of sending notification to specified user (by ID). Calls
+     * appropriate method of notification-specified DAO to put information into
+     * database.
+     * @param userId ID of user to send notification to.
+     * @param notificationText text of notification.
+     * @throws ServiceException if {@link DAOException} was caught.
+     */
     @Override
-    public void sendNotification(long userId, String notificationText) throws ServiceException {
+    public void sendNotification(String userId, String notificationText) throws ServiceException {
         try {
             User user = userDAO.getUser(userId);
-            long notificationId = generator.generateId();
             Timestamp notificationDateTime = new Timestamp(System.currentTimeMillis());
-            NotificationBuilder builder = new NotificationBuilder(notificationId);
+            NotificationBuilder builder = new NotificationBuilder();
             Notification notification = builder.toUser(user)
                     .withText(notificationText)
                     .withNotificationDateTime(notificationDateTime)
@@ -140,6 +196,12 @@ public class AlienSpecialist implements AlienSpecialistService {
         }
     }
 
+    /**
+     * Performs operation of sending notification to all users. Calls appropriate
+     * method of notification-specified DAO to put information into database.
+     * @param notificationText text of notification.
+     * @throws ServiceException if {@link DAOException} was caught.
+     */
     @Override
     public void sendNotificationToAll(String notificationText) throws ServiceException {
         try {
@@ -147,8 +209,7 @@ public class AlienSpecialist implements AlienSpecialistService {
             List<Notification> notifications = new ArrayList<>();
             Timestamp notificationDateTime = new Timestamp(System.currentTimeMillis());
             users.forEach(u -> {
-                long notificationId = generator.generateId();
-                NotificationBuilder builder = new NotificationBuilder(notificationId);
+                NotificationBuilder builder = new NotificationBuilder();
                 Notification notification = builder.toUser(u)
                         .withText(notificationText)
                         .withNotificationDateTime(notificationDateTime)
@@ -163,8 +224,14 @@ public class AlienSpecialist implements AlienSpecialistService {
         }
     }
 
+    /**
+     * Performs operation of deleting specified alien (by ID). Calls appropriate
+     * method of alien-specified DAO to delete information from database.
+     * @param alienId ID of alien to delete.
+     * @throws ServiceException if {@link DAOException} was caught.
+     */
     @Override
-    public void deleteAlien(long alienId) throws ServiceException {
+    public void deleteAlien(String alienId) throws ServiceException {
         try {
             alienDAO.deleteAlien(alienId);
         } catch (DAOException e) {

@@ -23,7 +23,6 @@ import util.validator.AlienInformationValidator;
 
 import java.util.List;
 
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
@@ -59,7 +58,7 @@ public class AlienSpecialistTest {
         //when
         when(validator.validate(anyString(), anyString(), anyString())).thenReturn(true);
         doThrow(DAOException.class).when(movieDAO).getMovieByTitle(anyString());
-        service.addAlien(1, "AlienName", "Planet",
+        service.addAlien("AlienName", "Planet",
                 "Description", "Title", "Path");
         //then
         //expecting ServiceException
@@ -73,7 +72,7 @@ public class AlienSpecialistTest {
         when(validator.validate(anyString(), anyString(), anyString())).thenReturn(true);
         doReturn(movie).when(movieDAO).getMovieByTitle(anyString());
         doNothing().when(alienDAO).addNewAlien(any(Alien.class));
-        service.addAlien(1, "AlienName", "Planet", "Description", "Title", "Path");
+        service.addAlien("AlienName", "Planet", "Description", "Title", "Path");
         //then
     }
 
@@ -83,7 +82,7 @@ public class AlienSpecialistTest {
         //when
         when(validator.validate(anyString(), anyString())).thenReturn(true);
         doThrow(DAOException.class).when(movieDAO).getMovieByTitle(anyString());
-        service.editAlien(1, "MovieTitle", "Planet", "Description");
+        service.editAlien("1","MovieTitle", "Planet", "Description");
         //then
         //expecting ServiceException
     }
@@ -95,8 +94,8 @@ public class AlienSpecialistTest {
         //when
         when(validator.validate(anyString(), anyString())).thenReturn(true);
         doReturn(movie).when(movieDAO).getMovieByTitle(anyString());
-        doNothing().when(alienDAO).editAlien(anyLong(), anyLong(), anyString(), anyString());
-        service.editAlien(1, "Title", "Planet", "Description");
+        doNothing().when(alienDAO).editAlien(anyString(), anyString(), anyString(), anyString());
+        service.editAlien("1", "Title", "Planet", "Description");
         //then
     }
 
@@ -125,8 +124,8 @@ public class AlienSpecialistTest {
     public void viewSuggestedEdit_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        doThrow(DAOException.class).when(editDAO).getSuggestedEdit(anyLong());
-        service.viewSuggestedEdit(anyLong());
+        doThrow(DAOException.class).when(editDAO).getSuggestedEdit(anyString());
+        service.viewSuggestedEdit(anyString());
         //then
         //expecting ServiceException
     }
@@ -136,8 +135,8 @@ public class AlienSpecialistTest {
         //given
         Edit edit = mock(Edit.class);
         //when
-        doReturn(edit).when(editDAO).getSuggestedEdit(anyLong());
-        Edit result = service.viewSuggestedEdit(anyLong());
+        doReturn(edit).when(editDAO).getSuggestedEdit(anyString());
+        Edit result = service.viewSuggestedEdit(anyString());
         //then
         assertEquals(result, edit);
     }
@@ -146,8 +145,8 @@ public class AlienSpecialistTest {
     public void acceptEdit_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        doThrow(DAOException.class).when(editDAO).getSuggestedEdit(anyLong());
-        service.acceptEdit(anyLong());
+        doThrow(DAOException.class).when(editDAO).getSuggestedEdit(anyString());
+        service.acceptEdit(anyString());
         //then
         //expecting ServiceException
     }
@@ -158,10 +157,10 @@ public class AlienSpecialistTest {
         Edit edit = mock(Edit.class);
         Alien alien = mock(Alien.class);
         //when
-        doReturn(edit).when(editDAO).getSuggestedEdit(anyLong());
+        doReturn(edit).when(editDAO).getSuggestedEdit(anyString());
         doReturn(alien).when(edit).getAlien();
-        doNothing().when(alienDAO).updateDescription(anyLong(), anyString());
-        service.acceptEdit(anyLong());
+        doNothing().when(alienDAO).updateDescription(anyString(), anyString());
+        service.acceptEdit(anyString());
         //then
     }
 
@@ -169,8 +168,8 @@ public class AlienSpecialistTest {
     public void deleteEdit_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        doThrow(DAOException.class).when(editDAO).deleteEdit(anyLong());
-        service.deleteEdit(anyLong());
+        doThrow(DAOException.class).when(editDAO).deleteEdit(anyString());
+        service.deleteEdit(anyString());
         //then
         //expecting ServiceException
     }
@@ -179,8 +178,8 @@ public class AlienSpecialistTest {
     public void deleteEdit_validParameters_void() throws DAOException, ServiceException {
         //given
         //when
-        doNothing().when(editDAO).deleteEdit(anyLong());
-        service.deleteEdit(anyLong());
+        doNothing().when(editDAO).deleteEdit(anyString());
+        service.deleteEdit(anyString());
         //then
     }
 
@@ -188,8 +187,8 @@ public class AlienSpecialistTest {
     public void sendNotification_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        doThrow(DAOException.class).when(userDAO).getUser(anyLong());
-        service.sendNotification(1, "text");
+        doThrow(DAOException.class).when(userDAO).getUser(anyString());
+        service.sendNotification("1", "text");
         //then
         //expecting ServiceException
     }
@@ -199,9 +198,9 @@ public class AlienSpecialistTest {
         //given
         User user = mock(User.class);
         //when
-        doReturn(user).when(userDAO).getUser(anyLong());
+        doReturn(user).when(userDAO).getUser(anyString());
         doNothing().when(notificationDAO).addNewNotification(any(Notification.class));
-        service.sendNotification(1, "text");
+        service.sendNotification("1", "text");
         //then
     }
 
@@ -230,8 +229,8 @@ public class AlienSpecialistTest {
     public void deleteAlien_exceptionFromDAO_ServiceException() throws DAOException, ServiceException {
         //given
         //when
-        doThrow(DAOException.class).when(alienDAO).deleteAlien(anyLong());
-        service.deleteAlien(anyLong());
+        doThrow(DAOException.class).when(alienDAO).deleteAlien(anyString());
+        service.deleteAlien(anyString());
         //then
         //expecting ServiceException
     }
@@ -240,8 +239,8 @@ public class AlienSpecialistTest {
     public void deleteAlien_validParameters_void() throws DAOException, ServiceException {
         //given
         //when
-        doNothing().when(alienDAO).deleteAlien(anyLong());
-        service.deleteAlien(anyLong());
+        doNothing().when(alienDAO).deleteAlien(anyString());
+        service.deleteAlien(anyString());
         //then
     }
 }

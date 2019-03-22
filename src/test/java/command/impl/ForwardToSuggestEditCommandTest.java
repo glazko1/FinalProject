@@ -11,7 +11,7 @@ import service.impl.Common;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.mockito.Mockito.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -28,7 +28,7 @@ public class ForwardToSuggestEditCommandTest {
         Command command = new ForwardToSuggestEditCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("alienId")).thenReturn("1");
-        doThrow(ServiceException.class).when(service).viewAlien(anyLong());
+        doThrow(ServiceException.class).when(service).viewAlien(anyString());
         command.execute();
         //then
         //expecting CommandException
@@ -44,7 +44,7 @@ public class ForwardToSuggestEditCommandTest {
         Command command = new ForwardToSuggestEditCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("alienId")).thenReturn("1");
-        when(service.viewAlien(anyLong())).thenReturn(alien);
+        when(service.viewAlien(anyString())).thenReturn(alien);
         String result = command.execute();
         //then
         assertEquals(result, "suggest-edit");

@@ -27,7 +27,7 @@ public class ViewUserCommand implements Command {
 
     /**
      * Constructs command with specified service, request and response.
-     * @param service service layer class with opportunities of alien specialists.
+     * @param service service layer class with opportunities of user.
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
@@ -46,7 +46,7 @@ public class ViewUserCommand implements Command {
      */
     @Override
     public String execute() throws CommandException {
-        long id = Long.parseLong(request.getParameter("userId"));
+        String id = request.getParameter("userId");
         try {
             User user = service.viewUser(id);
             request.setAttribute("user", user);

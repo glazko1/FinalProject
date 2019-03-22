@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface NotificationDAO {
 
-    List<Notification> getNotificationsByUserId(long userId) throws DAOException;
+    List<Notification> getNotificationsByUserId(String userId) throws DAOException;
     void addNewNotification(Notification notification) throws DAOException;
 }

@@ -27,7 +27,7 @@ public class ForwardToSuggestEditCommand implements Command {
 
     /**
      * Constructs command with specified service, request and response.
-     * @param service service layer class with opportunities of alien specialists.
+     * @param service service layer class with opportunities of user.
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
@@ -46,7 +46,7 @@ public class ForwardToSuggestEditCommand implements Command {
      */
     @Override
     public String execute() throws CommandException {
-        long alienId = Long.parseLong(request.getParameter("alienId"));
+        String alienId = request.getParameter("alienId");
         try {
             Alien alien = service.viewAlien(alienId);
             request.setAttribute("alien", alien);

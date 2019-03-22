@@ -11,7 +11,7 @@ import service.impl.Common;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -28,7 +28,7 @@ public class ViewMovieCommandTest {
         Command command = new ViewMovieCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("movieId")).thenReturn("1");
-        doThrow(ServiceException.class).when(service).viewMovie(anyLong());
+        doThrow(ServiceException.class).when(service).viewMovie(anyString());
         command.execute();
         //then
         //expecting CommandException
@@ -44,7 +44,7 @@ public class ViewMovieCommandTest {
         Command command = new ViewMovieCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("movieId")).thenReturn("1");
-        when(service.viewMovie(anyLong())).thenReturn(movie);
+        when(service.viewMovie(anyString())).thenReturn(movie);
         String result = command.execute();
         //then
         assertEquals(result, "movie-page");

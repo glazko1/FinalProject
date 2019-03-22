@@ -2,13 +2,11 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
-import entity.UserStatus;
 import service.MovieFanService;
 import service.exception.ServiceException;
 import service.exception.movie.InvalidMovieInformationException;
 import service.exception.movie.InvalidMovieTitleException;
 import service.impl.MovieFan;
-import util.checker.UserAccessChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +18,6 @@ public class AddMovieCommand implements Command {
     private MovieFanService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
-    private UserAccessChecker checker;
 
     /**
      * Constructs command with default service, specified request and response.
@@ -28,20 +25,19 @@ public class AddMovieCommand implements Command {
      * @param response HTTP-response.
      */
     public AddMovieCommand(HttpServletRequest request, HttpServletResponse response) {
-        this(MovieFan.getInstance(), request, response, UserAccessChecker.getInstance());
+        this(MovieFan.getInstance(), request, response);
     }
 
     /**
      * Constructs command with specified service, request and response.
-     * @param service service layer class with opportunities of alien specialists.
+     * @param service service layer class with opportunities of movie fan.
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
-    AddMovieCommand(MovieFanService service, HttpServletRequest request, HttpServletResponse response, UserAccessChecker checker) {
+    AddMovieCommand(MovieFanService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;
         this.request = request;
         this.response = response;
-        this.checker = checker;
     }
 
     /**
@@ -55,10 +51,6 @@ public class AddMovieCommand implements Command {
      */
     @Override
     public String execute() throws CommandException {
-        if (!checker.checkStatus(UserStatus.MOVIE_FAN, request) &&
-                !checker.checkStatus(UserStatus.ADMIN, request)) {
-            return "main";
-        }
         String title = request.getParameter("title");
         String runningTime = request.getParameter("runningTime");
         String budget = request.getParameter("budget");

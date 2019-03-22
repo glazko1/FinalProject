@@ -2,14 +2,11 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
-import entity.UserStatus;
 import service.AlienSpecialistService;
 import service.exception.ServiceException;
 import service.exception.alien.InvalidAlienInformationException;
 import service.exception.alien.InvalidAlienNameException;
 import service.impl.AlienSpecialist;
-import util.checker.UserAccessChecker;
-import util.generator.IdGenerator;
 import util.writer.ContentWriter;
 
 import javax.servlet.ServletException;
@@ -26,31 +23,30 @@ public class AddAlienCommand implements Command {
     private HttpServletRequest request;
     private HttpServletResponse response;
     private ContentWriter writer;
-    private UserAccessChecker checker;
 
     /**
-     * Constructs command with default service and content writer, specified request
-     * and response.
+     * Constructs command with default service, specified request, response and
+     * content writer.
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
     public AddAlienCommand(HttpServletRequest request, HttpServletResponse response) {
-        this(AlienSpecialist.getInstance(), request, response, ContentWriter.getInstance(), UserAccessChecker.getInstance());
+        this(AlienSpecialist.getInstance(), request, response, ContentWriter.getInstance());
     }
 
     /**
-     * Constructs command with specified service, request and response, default content
+     * Constructs command with specified service, request, response and content
      * writer.
-     * @param service service layer class with opportunities of alien specialists.
+     * @param service service layer class with opportunities of alien specialist.
      * @param request HTTP-request.
      * @param response HTTP-response.
+     * @param writer content writer.
      */
-    AddAlienCommand(AlienSpecialistService service, HttpServletRequest request, HttpServletResponse response, ContentWriter writer, UserAccessChecker checker) {
+    AddAlienCommand(AlienSpecialistService service, HttpServletRequest request, HttpServletResponse response, ContentWriter writer) {
         this.service = service;
         this.request = request;
         this.response = response;
         this.writer = writer;
-        this.checker = checker;
     }
 
     /**
@@ -65,21 +61,15 @@ public class AddAlienCommand implements Command {
      */
     @Override
     public String execute() throws CommandException {
-        if (!checker.checkStatus(UserStatus.ALIEN_SPECIALIST, request) &&
-                !checker.checkStatus(UserStatus.ADMIN, request)) {
-            return "main";
-        }
         String alienName = request.getParameter("alienName");
         String planet = request.getParameter("planet");
         String description = request.getParameter("description");
         String movie = request.getParameter("movie");
-        IdGenerator idGenerator = IdGenerator.getInstance();
-        long id = idGenerator.generateId();
-        String imagePath = "img/" + id + ".png";
+        String imagePath = "img/" + alienName + ".png";
         String path = request.getServletContext().getRealPath("/") + imagePath;
         HttpSession session = request.getSession();
         try {
-            service.addAlien(id, alienName, planet, description, movie, imagePath);
+            service.addAlien(alienName, planet, description, movie, imagePath);
             Part filePart = request.getPart("photo");
             InputStream inputStream = filePart.getInputStream();
             writer.writeContent(inputStream, path);

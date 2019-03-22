@@ -6,20 +6,20 @@ import java.util.Objects;
 
 public class Notification {
 
-    private long notificationId;
+    private String notificationId;
     private User user;
     private String notificationText;
     private Timestamp notificationDateTime;
 
-    public Notification(long notificationId) {
+    public Notification(String notificationId) {
         this.notificationId = notificationId;
     }
 
-    public long getNotificationId() {
+    public String getNotificationId() {
         return notificationId;
     }
 
-    public void setNotificationId(long notificationId) {
+    public void setNotificationId(String notificationId) {
         this.notificationId = notificationId;
     }
 
@@ -53,14 +53,10 @@ public class Notification {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Notification that = (Notification) o;
-        return notificationId == that.notificationId &&
+        return Objects.equals(notificationId, that.notificationId) &&
                 Objects.equals(user, that.user) &&
                 Objects.equals(notificationText, that.notificationText) &&
                 Objects.equals(notificationDateTime, that.notificationDateTime);

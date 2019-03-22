@@ -26,7 +26,7 @@ public class AddFeedbackCommand implements Command {
 
     /**
      * Constructs command with specified service, request and response.
-     * @param service service layer class with opportunities of alien specialists.
+     * @param service service layer class with opportunities of user.
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
@@ -46,13 +46,14 @@ public class AddFeedbackCommand implements Command {
      */
     @Override
     public String execute() throws CommandException {
-        long alienId = Long.parseLong(request.getParameter("alienId"));
-        String username = request.getParameter("username");
+        String alienId = request.getParameter("alienId");
+        String userId = request.getParameter("userId");
         int rating = Integer.parseInt(request.getParameter("rating"));
         String feedbackText = request.getParameter("feedbackText");
         try {
-            service.addFeedback(alienId, username, rating, feedbackText);
+            service.addFeedback(alienId, userId, rating, feedbackText);
             service.recountAverageRating(alienId);
+            service.reviewUserStatus(userId);
         } catch (ServiceException e) {
             throw new CommandException(e);
         }

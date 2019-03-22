@@ -7,12 +7,16 @@ import java.sql.Timestamp;
 
 public class NotificationBuilder {
 
-    private long notificationId;
+    private String notificationId;
     private User user;
     private String notificationText;
     private Timestamp notificationDateTime;
 
-    public NotificationBuilder(long notificationId) {
+    public NotificationBuilder() {
+        this("");
+    }
+
+    public NotificationBuilder(String notificationId) {
         this.notificationId = notificationId;
     }
 

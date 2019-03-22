@@ -6,22 +6,22 @@ import java.util.Objects;
 
 public class Feedback {
 
-    private long feedbackId;
+    private String feedbackId;
     private Alien alien;
     private User user;
     private int rating;
     private String feedbackText;
     private Timestamp feedbackDateTime;
 
-    public Feedback(long feedbackId) {
+    public Feedback(String feedbackId) {
         this.feedbackId = feedbackId;
     }
 
-    public long getFeedbackId() {
+    public String getFeedbackId() {
         return feedbackId;
     }
 
-    public void setFeedbackId(long feedbackId) {
+    public void setFeedbackId(String feedbackId) {
         this.feedbackId = feedbackId;
     }
 
@@ -69,15 +69,11 @@ public class Feedback {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Feedback feedback = (Feedback) o;
-        return feedbackId == feedback.feedbackId &&
-                rating == feedback.rating &&
+        return rating == feedback.rating &&
+                Objects.equals(feedbackId, feedback.feedbackId) &&
                 Objects.equals(alien, feedback.alien) &&
                 Objects.equals(user, feedback.user) &&
                 Objects.equals(feedbackText, feedback.feedbackText) &&

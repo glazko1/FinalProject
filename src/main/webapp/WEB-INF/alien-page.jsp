@@ -73,7 +73,7 @@
     <h2><fmt:message key="message.your_feedback" /></h2>
     <form method="post" action="mainWindow">
         <input type="hidden" name="alienId" value="${alien.alienId}">
-        <input type="hidden" name="username" value="${sessionScope.username}">
+        <input type="hidden" name="userId" value="${sessionScope.userId}">
         <table>
             <tr>
                 <td>Rating</td>

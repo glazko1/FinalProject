@@ -31,7 +31,7 @@ public class SignInCommand implements Command {
 
     /**
      * Constructs command with specified service, request and response.
-     * @param service service layer class with opportunities of alien specialists.
+     * @param service service layer class with opportunities of user.
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
@@ -58,7 +58,7 @@ public class SignInCommand implements Command {
         HttpSession session = request.getSession();
         try {
             User user = service.signIn(username, password);
-            session.setAttribute("userId", String.valueOf(user.getUserId()));
+            session.setAttribute("userId", user.getUserId());
             session.setAttribute("username", user.getUsername());
             UserStatus status = user.getStatus();
             session.setAttribute("status", status);

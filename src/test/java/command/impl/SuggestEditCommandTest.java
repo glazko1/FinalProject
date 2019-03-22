@@ -10,7 +10,6 @@ import service.impl.Common;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -31,7 +30,7 @@ public class SuggestEditCommandTest {
         when(mockRequest.getParameter("alienId")).thenReturn("1");
         when(mockRequest.getParameter("userId")).thenReturn("1");
         when(mockRequest.getParameter("description")).thenReturn("Description");
-        doThrow(ServiceException.class).when(service).suggestEdit(anyLong(), anyLong(), anyString());
+        doThrow(ServiceException.class).when(service).suggestEdit(anyString(), anyString(), anyString());
         command.execute();
         //then
         //expecting CommandException
@@ -48,7 +47,7 @@ public class SuggestEditCommandTest {
         when(mockRequest.getParameter("alienId")).thenReturn("1");
         when(mockRequest.getParameter("userId")).thenReturn("1");
         when(mockRequest.getParameter("description")).thenReturn("Description");
-        doNothing().when(service).suggestEdit(anyLong(), anyLong(), anyString());
+        doNothing().when(service).suggestEdit(anyString(), anyString(), anyString());
         String result = command.execute();
         //then
         assertEquals(result, "main");
