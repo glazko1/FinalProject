@@ -59,7 +59,7 @@
                 <th align="center"><fmt:message key="message.email" /></th>
                 <td align="center">
                     <label>
-                        <input type="text" name="email" value="${email}">
+                        <input type="email" name="email" value="${email}">
                     </label>
                 </td>
             </tr>

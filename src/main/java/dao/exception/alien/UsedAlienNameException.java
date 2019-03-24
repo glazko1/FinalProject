@@ -4,6 +4,8 @@ import dao.exception.DAOException;
 
 public class UsedAlienNameException extends DAOException {
 
+    static final long serialVersionUID = 2798369731742149697L;
+
     public UsedAlienNameException() {
     }
 

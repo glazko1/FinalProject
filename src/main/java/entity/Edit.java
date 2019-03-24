@@ -62,8 +62,12 @@ public class Edit {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Edit edit = (Edit) o;
         return Objects.equals(editId, edit.editId) &&
                 Objects.equals(alien, edit.alien) &&

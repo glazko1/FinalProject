@@ -4,6 +4,8 @@ import service.exception.ServiceException;
 
 public class InvalidAlienNameException extends ServiceException {
 
+    static final long serialVersionUID = 7517079801719305240L;
+
     public InvalidAlienNameException() {
     }
 

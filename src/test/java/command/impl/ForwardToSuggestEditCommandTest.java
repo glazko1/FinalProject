@@ -20,7 +20,7 @@ import static org.testng.Assert.assertEquals;
 public class ForwardToSuggestEditCommandTest {
 
     @Test(expectedExceptions = CommandException.class)
-    public void execute_exceptionFromService_CommandException() throws ServiceException, CommandException {
+    public void execute_serviceExceptionFromViewAlien_CommandException() throws ServiceException, CommandException {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);

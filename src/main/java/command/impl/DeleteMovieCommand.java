@@ -2,16 +2,16 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
-import service.MovieFanService;
+import service.AdminService;
 import service.exception.ServiceException;
-import service.impl.MovieFan;
+import service.impl.Admin;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class DeleteMovieCommand implements Command {
 
-    private MovieFanService service;
+    private AdminService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
 
@@ -21,16 +21,16 @@ public class DeleteMovieCommand implements Command {
      * @param response HTTP-response.
      */
     public DeleteMovieCommand(HttpServletRequest request, HttpServletResponse response) {
-        this(MovieFan.getInstance(), request, response);
+        this(Admin.getInstance(), request, response);
     }
 
     /**
      * Constructs command with specified service, request and response.
-     * @param service service layer class with opportunities of movie fan.
+     * @param service service layer class with opportunities of admin.
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
-    DeleteMovieCommand(MovieFanService service, HttpServletRequest request, HttpServletResponse response) {
+    DeleteMovieCommand(AdminService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;
         this.request = request;
         this.response = response;

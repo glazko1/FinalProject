@@ -213,7 +213,7 @@ public class MovieSQL implements MovieDAO {
      * given ID according to given parameters. Gets proxy connection from database
      * pool, prepares statement on it (by SQL-string) and executes.
      * @param movieId ID of movie to edit.
-     * @param runningTime new value of rummning time.
+     * @param runningTime new value of running time.
      * @param budget new value of budget.
      * @param releaseDate new release date.
      * @throws DAOException if {@link SQLException} was caught.

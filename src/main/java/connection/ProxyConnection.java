@@ -18,15 +18,25 @@ public class ProxyConnection implements AutoCloseable {
         this.connection = connection;
     }
 
+    /**
+     * Returns connection to list of available connections in database
+     * connection pool.
+     */
     @Override
     public void close() {
         pool.releaseConnection(this);
     }
 
+    /**
+     * @return connection from this proxy-connection.
+     */
     public Connection getConnection() {
         return connection;
     }
 
+    /**
+     * Closes connection from this proxy-connection.
+     */
     public void destroy() {
         try {
             connection.close();

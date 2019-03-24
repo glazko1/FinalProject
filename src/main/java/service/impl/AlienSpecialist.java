@@ -224,22 +224,7 @@ public class AlienSpecialist implements AlienSpecialistService {
         }
     }
 
-    /**
-     * Performs operation of deleting specified alien (by ID). Calls appropriate
-     * method of alien-specified DAO to delete information from database.
-     * @param alienId ID of alien to delete.
-     * @throws ServiceException if {@link DAOException} was caught.
-     */
-    @Override
-    public void deleteAlien(String alienId) throws ServiceException {
-        try {
-            alienDAO.deleteAlien(alienId);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
-    }
-
-    public void setValidator(AlienInformationValidator validator) {
+    void setValidator(AlienInformationValidator validator) {
         this.validator = validator;
     }
 

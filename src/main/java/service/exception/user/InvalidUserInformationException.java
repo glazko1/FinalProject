@@ -4,6 +4,8 @@ import service.exception.ServiceException;
 
 public class InvalidUserInformationException extends ServiceException {
 
+    static final long serialVersionUID = 1092011219356618035L;
+
     public InvalidUserInformationException() {
     }
 

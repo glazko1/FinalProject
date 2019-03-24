@@ -10,6 +10,11 @@ import javax.servlet.annotation.WebListener;
 @WebListener
 public class AppContextListener implements ServletContextListener {
 
+    /**
+     * Initializes context: gets information about driver, URL, username,
+     * password and initializes database in accordance with this information.
+     * @param sce servlet context event to get servlet context.
+     */
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext context = sce.getServletContext();
@@ -18,9 +23,13 @@ public class AppContextListener implements ServletContextListener {
         String user = context.getInitParameter("db.user");
         String password = context.getInitParameter("db.password");
         DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
-        pool.create(driver, url, user, password);
+        pool.init(driver, url, user, password);
     }
 
+    /**
+     * Destroys database connection pool.
+     * @param sce servlet context event.
+     */
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();

@@ -69,8 +69,12 @@ public class Feedback {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Feedback feedback = (Feedback) o;
         return rating == feedback.rating &&
                 Objects.equals(feedbackId, feedback.feedbackId) &&

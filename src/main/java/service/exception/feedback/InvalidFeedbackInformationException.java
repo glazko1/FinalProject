@@ -4,6 +4,8 @@ import service.exception.ServiceException;
 
 public class InvalidFeedbackInformationException extends ServiceException {
 
+    static final long serialVersionUID = 8377293207008733735L;
+
     public InvalidFeedbackInformationException() {
     }
 

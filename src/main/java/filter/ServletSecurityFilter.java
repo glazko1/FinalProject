@@ -31,12 +31,13 @@ public class ServletSecurityFilter implements Filter {
         adminActions.add("changeUserStatus");
         adminActions.add("viewAllUsers");
         adminActions.add("viewAllUsersSorted");
+        adminActions.add("deleteAlien");
+        adminActions.add("deleteMovie");
         movieFanActions = new ArrayList<>();
         movieFanActions.add("addMovie");
         movieFanActions.add("forwardToNewMovie");
         movieFanActions.add("forwardToEditMovie");
         movieFanActions.add("editMovie");
-        movieFanActions.add("deleteMovie");
         alienSpecialistActions = new ArrayList<>();
         alienSpecialistActions.add("addAlien");
         alienSpecialistActions.add("editAlien");
@@ -44,7 +45,6 @@ public class ServletSecurityFilter implements Filter {
         alienSpecialistActions.add("viewSuggestedEdit");
         alienSpecialistActions.add("acceptEdit");
         alienSpecialistActions.add("rejectEdit");
-        alienSpecialistActions.add("deleteAlien");
         alienSpecialistActions.add("forwardToNewAlien");
         alienSpecialistActions.add("forwardToEditAlien");
         userActions = new ArrayList<>();
@@ -66,6 +66,7 @@ public class ServletSecurityFilter implements Filter {
         userActions.add("deleteFeedback");
         userActions.add("forwardToSuggestEdit");
         userActions.add("suggestEdit");
+        userActions.add("deleteNotification");
         accessActions = new ArrayList<>();
         accessActions.add("changePassword");
         accessActions.add("forwardToChangePassword");
@@ -73,6 +74,7 @@ public class ServletSecurityFilter implements Filter {
         accessActions.add("forwardToEditUser");
         accessActions.add("editUser");
         accessActions.add("deleteFeedback");
+        accessActions.add("deleteNotification");
     }
 
     @Override
@@ -99,6 +101,9 @@ public class ServletSecurityFilter implements Filter {
             }
         } else {
             request.setAttribute("allowed", true);
+        }
+        if (!(boolean) request.getAttribute("allowed")) {
+            session.setAttribute("message", "message.not_allowed");
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }

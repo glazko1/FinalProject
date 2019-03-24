@@ -4,6 +4,8 @@ import service.exception.ServiceException;
 
 public class BannedUserException extends ServiceException {
 
+    static final long serialVersionUID = 9102408482251889090L;
+
     public BannedUserException() {
     }
 

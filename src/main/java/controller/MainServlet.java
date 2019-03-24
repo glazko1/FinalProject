@@ -20,6 +20,15 @@ public class MainServlet extends HttpServlet {
 
     private static final Logger LOGGER = LogManager.getLogger(MainServlet.class);
 
+    /**
+     * Processes get-requests to servlet. Creates command in accordance with
+     * parameter from request and if operation is allowed (checked by filter)
+     * executes it and forwards to some page.
+     * @param request HTTP request.
+     * @param response HTTP response.
+     * @throws ServletException if error occurred while processing.
+     * @throws IOException if error occurred while processing.
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("button");
@@ -40,6 +49,14 @@ public class MainServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Processes post-requests to servlet. Creates command in accordance with
+     * parameter from request and if operation is allowed (checked by filter)
+     * executes it and redirects to some page.
+     * @param request HTTP request.
+     * @param response HTTP response.
+     * @throws IOException if error occurred while processing.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String action = request.getParameter("button");

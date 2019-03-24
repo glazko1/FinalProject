@@ -20,7 +20,7 @@ import static org.testng.Assert.assertEquals;
 public class ForwardToEditMovieCommandTest {
 
     @Test(expectedExceptions = CommandException.class)
-    public void execute_exceptionFromService_CommandException() throws ServiceException, CommandException {
+    public void execute_serviceExceptionFromViewMovie_CommandException() throws ServiceException, CommandException {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
@@ -35,7 +35,7 @@ public class ForwardToEditMovieCommandTest {
     }
 
     @Test
-    public void execute_validParameters_main() throws ServiceException, CommandException {
+    public void execute_validParameters_editMovie() throws ServiceException, CommandException {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);

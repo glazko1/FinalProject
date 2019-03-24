@@ -4,6 +4,8 @@ import dao.exception.DAOException;
 
 public class UsedMovieTitleException extends DAOException {
 
+    static final long serialVersionUID = 9078139177711296878L;
+
     public UsedMovieTitleException() {
     }
 

@@ -29,14 +29,12 @@ div {
     width: 30%;
     margin-left: 20%;
     float: left;
-    /*background-color: lightgreen;*/
 }
 
 .right-column {
     width: 30%;
     margin-right: 20%;
     float: right;
-    /*background-color: bisque;*/
 }
 
 .center-column {
@@ -49,10 +47,6 @@ button {
     border: 2px solid white;
     font-size: 18px;
     color: white;
-    /*cursor: pointer;*/
-    /*overflow: hidden;*/
-    /*outline: none;*/
-    /*padding: 0;*/
 }
 
 .underlined {

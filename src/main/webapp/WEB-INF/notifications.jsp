@@ -38,7 +38,12 @@
 <div class="center-column">
 <h2><fmt:message key="button.your_notifications" /></h2>
 <c:forEach items="${notifications}" var="notification">
-    ${notification.notificationDateTime}<br>
+    ${notification.notificationDateTime}
+    <form method="post" action="mainWindow" style="display: inline; margin: 0;">
+        <input type="hidden" name="userId" value="${notification.user.userId}">
+        <input type="hidden" name="notificationId" value="${notification.notificationId}">
+        <button type="submit" name="button" value="deleteNotification" style="font-size: 14px;"><fmt:message key="message.delete" /></button>
+    </form><br>
     ${notification.notificationText}<br><br>
 </c:forEach>
 </div>

@@ -23,7 +23,7 @@ import static org.testng.Assert.assertEquals;
 public class EditUserCommandTest {
 
     @Test(expectedExceptions = CommandException.class)
-    public void execute_exceptionFromService_CommandException() throws ServiceException, CommandException {
+    public void execute_serviceExceptionFromEditUser_CommandException() throws ServiceException, CommandException {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
@@ -41,7 +41,7 @@ public class EditUserCommandTest {
     }
 
     @Test
-    public void execute_invalidEmailExceptionFromService_CommandException() throws ServiceException, CommandException {
+    public void execute_invalidEmailExceptionFromEditUser_main() throws ServiceException, CommandException {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
@@ -61,7 +61,47 @@ public class EditUserCommandTest {
     }
 
     @Test
-    public void execute_invalidUserInformationExceptionFromService_CommandException() throws ServiceException, CommandException {
+    public void execute_invalidUserInformationExceptionFromEditUser_main() throws ServiceException, CommandException {
+        //given
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        CommonService service = mock(Common.class);
+        HttpSession session = mock(HttpSession.class);
+        Command command = new EditUserCommand(service, mockRequest, mockResponse);
+        //when
+        when(mockRequest.getParameter("userId")).thenReturn("1");
+        when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
+        when(mockRequest.getParameter("lastName")).thenReturn("LastName");
+        when(mockRequest.getParameter("email")).thenReturn("Email");
+        when(mockRequest.getSession()).thenReturn(session);
+        doThrow(InvalidUserInformationException.class).when(service).editUser(anyString(), anyString(), anyString(), anyString());
+        String result = command.execute();
+        //then
+        assertEquals(result, "main");
+    }
+
+    @Test
+    public void execute_invalidEmailExceptionFromService_main() throws ServiceException, CommandException {
+        //given
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        CommonService service = mock(Common.class);
+        HttpSession session = mock(HttpSession.class);
+        Command command = new EditUserCommand(service, mockRequest, mockResponse);
+        //when
+        when(mockRequest.getParameter("userId")).thenReturn("1");
+        when(mockRequest.getParameter("firstName")).thenReturn("FirstName");
+        when(mockRequest.getParameter("lastName")).thenReturn("LastName");
+        when(mockRequest.getParameter("email")).thenReturn("Email");
+        when(mockRequest.getSession()).thenReturn(session);
+        doThrow(InvalidEmailException.class).when(service).editUser(anyString(), anyString(), anyString(), anyString());
+        String result = command.execute();
+        //then
+        assertEquals(result, "main");
+    }
+
+    @Test
+    public void execute_invalidUserInformationExceptionFromService_main() throws ServiceException, CommandException {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);

@@ -1,5 +1,8 @@
 package util.hasher;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.security.NoSuchAlgorithmException;
@@ -18,6 +21,16 @@ public class PasswordHashKeeper {
 
     private PasswordHashKeeper() {}
 
+    private static final Logger LOGGER = LogManager.getLogger(PasswordHashKeeper.class);
+
+    /**
+     * Generate hash-string on base of given parameters (username and password).
+     * Salt is generated on base of username (because username is unchangeable),
+     * then password is encoded and returned.
+     * @param username user's login.
+     * @param password user's password.
+     * @return encoded password.
+     */
     public String generateHash(String username, String password) {
         byte[] salt = username.getBytes();
         KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
@@ -26,7 +39,7 @@ public class PasswordHashKeeper {
             byte[] encoded = factory.generateSecret(spec).getEncoded();
             return new String(encoded, UTF_8);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            e.printStackTrace();
+           LOGGER.error(e.getMessage());
         }
         throw new RuntimeException();
     }

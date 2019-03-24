@@ -19,7 +19,7 @@ import static org.testng.Assert.assertEquals;
 public class AcceptEditCommandTest {
 
     @Test(expectedExceptions = CommandException.class)
-    public void execute_exceptionFromService_CommandException() throws ServiceException, CommandException {
+    public void execute_serviceExceptionFromAcceptEdit_CommandException() throws ServiceException, CommandException {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
@@ -29,6 +29,41 @@ public class AcceptEditCommandTest {
         when(mockRequest.getParameter("editId")).thenReturn("1");
         when(mockRequest.getParameter("userId")).thenReturn("1");
         doThrow(ServiceException.class).when(service).acceptEdit(anyString());
+        command.execute();
+        //then
+        //expecting CommandException
+    }
+
+    @Test(expectedExceptions = CommandException.class)
+    public void execute_serviceExceptionFromSendNotification_CommandException() throws ServiceException, CommandException {
+        //given
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        AlienSpecialistService service = mock(AlienSpecialistService.class);
+        Command command = new AcceptEditCommand(service, mockRequest, mockResponse);
+        //when
+        when(mockRequest.getParameter("editId")).thenReturn("1");
+        when(mockRequest.getParameter("userId")).thenReturn("1");
+        doNothing().when(service).acceptEdit(anyString());
+        doThrow(ServiceException.class).when(service).sendNotification(anyString(), anyString());
+        command.execute();
+        //then
+        //expecting CommandException
+    }
+
+    @Test(expectedExceptions = CommandException.class)
+    public void execute_serviceExceptionFromDeleteEdit_CommandException() throws ServiceException, CommandException {
+        //given
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        AlienSpecialistService service = mock(AlienSpecialistService.class);
+        Command command = new AcceptEditCommand(service, mockRequest, mockResponse);
+        //when
+        when(mockRequest.getParameter("editId")).thenReturn("1");
+        when(mockRequest.getParameter("userId")).thenReturn("1");
+        doNothing().when(service).acceptEdit(anyString());
+        doNothing().when(service).sendNotification(anyString(), anyString());
+        doThrow(ServiceException.class).when(service).deleteEdit(anyString());
         command.execute();
         //then
         //expecting CommandException

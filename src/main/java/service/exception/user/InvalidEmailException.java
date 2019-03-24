@@ -4,6 +4,8 @@ import service.exception.ServiceException;
 
 public class InvalidEmailException extends ServiceException {
 
+    static final long serialVersionUID = 5265268463676855751L;
+
     public InvalidEmailException() {
     }
 

@@ -75,7 +75,7 @@
         <c:if test="${sessionScope.status.statusId == 1 && user.userId != sessionScope.userId && user.status.statusId != 1}">
             <button type="submit" name="button" value="changeBanStatus">
                 <c:if test="${user.banned == false}"><fmt:message key="button.ban_user" /></c:if>
-                <c:if test="${user.banned == true}"><fmt:message key="button.unban_user" /></c:if>
+                <c:if test="${user.banned == true}"><fmt:message key="button.remove_ban" /></c:if>
             </button><br><br>
             <fmt:message key="message.change_status" />
             <label>

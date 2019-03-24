@@ -47,9 +47,11 @@ public class DeleteFeedbackCommand implements Command {
     public String execute() throws CommandException {
         String feedbackId = request.getParameter("feedbackId");
         String alienId = request.getParameter("alienId");
+        String userId = request.getParameter("userId");
         try {
             service.deleteFeedback(feedbackId);
             service.recountAverageRating(alienId);
+            service.reviewUserStatus(userId);
         } catch (ServiceException e) {
             throw new CommandException(e);
         }

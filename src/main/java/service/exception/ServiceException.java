@@ -2,6 +2,8 @@ package service.exception;
 
 public class ServiceException extends Throwable {
 
+    static final long serialVersionUID = 4493675610057011258L;
+
     public ServiceException() {
     }
 

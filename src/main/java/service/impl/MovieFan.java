@@ -85,23 +85,7 @@ public class MovieFan implements MovieFanService {
         }
     }
 
-    /**
-     * Performs operation of deleting information about specified movie (by ID).
-     * Calls appropriate method of movie-specified DAO to delete information from
-     * database.
-     * @param movieId ID of movie to delete.
-     * @throws ServiceException if {@link DAOException} was caught.
-     */
-    @Override
-    public void deleteMovie(String movieId) throws ServiceException {
-        try {
-            movieDAO.deleteMovie(movieId);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
-    }
-
-    public void setValidator(MovieInformationValidator validator) {
+    void setValidator(MovieInformationValidator validator) {
         this.validator = validator;
     }
 

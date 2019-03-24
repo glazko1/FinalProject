@@ -8,6 +8,8 @@ import entity.Edit;
 import entity.Movie;
 import entity.User;
 import entity.UserStatus;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pool.DatabaseConnectionPool;
 import util.builder.AlienBuilder;
 import util.builder.EditBuilder;
@@ -31,8 +33,9 @@ public class EditSQL implements EditDAO {
 
     private EditSQL() {}
 
+    private static final Logger LOGGER = LogManager.getLogger(EditSQL.class);
     private static final String ADD_NEW_EDIT_SQL = "INSERT INTO Edit (EditId, AlienId, UserId, EditText, EditDateTime) VALUES (UUID(), ?, ?, ?, ?)";
-    private static final String GET_ALL_EDITS_SQL = "SELECT e.EditId, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, a.ImagePath, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, e.EditText, e.EditDateTime FROM Edit e JOIN Alien a ON e.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User U ON e.UserId = u.UserId";
+    private static final String GET_ALL_EDITS_SQL = "SELECT e.EditId, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, a.ImagePath, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, e.EditText, e.EditDateTime FROM Edit e JOIN Alien a ON e.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User U ON e.UserId = u.UserId ORDER BY e.EditDateTime DESC";
     private static final String GET_EDIT_BY_ID_SQL = "SELECT e.EditId, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, a.ImagePath, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, e.EditText, e.EditDateTime FROM Edit e JOIN Alien a ON e.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User U ON e.UserId = u.UserId WHERE e.EditId = ?";
     private static final String DELETE_EDIT_SQL = "DELETE FROM Edit WHERE EditId = ?";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
@@ -46,9 +49,10 @@ public class EditSQL implements EditDAO {
      */
     @Override
     public void addNewEdit(Edit edit) throws DAOException {
+        PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(ADD_NEW_EDIT_SQL);
+            statement = connection.prepareStatement(ADD_NEW_EDIT_SQL);
             statement.setString(1, edit.getAlien().getAlienId());
             statement.setString(2, edit.getUser().getUserId());
             statement.setString(3, edit.getEditText());
@@ -56,6 +60,12 @@ public class EditSQL implements EditDAO {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e);
+            }
         }
     }
 
@@ -68,10 +78,11 @@ public class EditSQL implements EditDAO {
      */
     @Override
     public List<Edit> getAllSuggestedEdits() throws DAOException {
+        PreparedStatement statement = null;
         List<Edit> edits = new ArrayList<>();
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_ALL_EDITS_SQL);
+            statement = connection.prepareStatement(GET_ALL_EDITS_SQL);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
                 Edit edit = getNextEdit(set);
@@ -79,6 +90,12 @@ public class EditSQL implements EditDAO {
             }
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e);
+            }
         }
         return edits;
     }
@@ -94,9 +111,10 @@ public class EditSQL implements EditDAO {
      */
     @Override
     public Edit getSuggestedEdit(String editId) throws DAOException {
+        PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_EDIT_BY_ID_SQL);
+            statement = connection.prepareStatement(GET_EDIT_BY_ID_SQL);
             statement.setString(1, editId);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
@@ -104,6 +122,12 @@ public class EditSQL implements EditDAO {
             }
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e);
+            }
         }
         throw new DAOException("No edit with ID " + editId + " in DAO!");
     }
@@ -115,13 +139,20 @@ public class EditSQL implements EditDAO {
      */
     @Override
     public void deleteEdit(String editId) throws DAOException {
+        PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(DELETE_EDIT_SQL);
+            statement = connection.prepareStatement(DELETE_EDIT_SQL);
             statement.setString(1, editId);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e);
+            }
         }
     }
 

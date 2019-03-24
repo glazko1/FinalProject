@@ -1,7 +1,11 @@
 package service.impl;
 
+import dao.AlienDAO;
+import dao.MovieDAO;
 import dao.UserDAO;
 import dao.exception.DAOException;
+import dao.impl.AlienSQL;
+import dao.impl.MovieSQL;
 import dao.impl.UserSQL;
 import entity.User;
 import service.AdminService;
@@ -20,6 +24,8 @@ public class Admin implements AdminService {
     private Admin() {}
 
     private UserDAO userDAO = UserSQL.getInstance();
+    private AlienDAO alienDAO = AlienSQL.getInstance();
+    private MovieDAO movieDAO = MovieSQL.getInstance();
 
     /**
      * Performs operation of getting information about all users. Calls
@@ -70,7 +76,7 @@ public class Admin implements AdminService {
     /**
      * Performs operation of getting information about all users in specified by
      * parameters (sorted by and type of sorting) order. Calls appropriate method
-     * of user-specified DAO.
+     * of user-specified DAO and returns sorted list of users.
      * @param sortedBy sorting parameter (ID, username or e-mail).
      * @param sortType type of sorting (ascending/descending).
      * @return sorted list of users existing in database.
@@ -85,7 +91,44 @@ public class Admin implements AdminService {
         }
     }
 
+    /**
+     * Performs operation of deleting specified alien (by ID). Calls appropriate
+     * method of alien-specified DAO to delete information from database.
+     * @param alienId ID of alien to delete.
+     * @throws ServiceException if {@link DAOException} was caught.
+     */
+    @Override
+    public void deleteAlien(String alienId) throws ServiceException {
+        try {
+            alienDAO.deleteAlien(alienId);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    /**
+     * Performs operation of deleting information about specified movie (by ID).
+     * Calls appropriate method of movie-specified DAO to delete information from
+     * database.
+     * @param movieId ID of movie to delete.
+     * @throws ServiceException if {@link DAOException} was caught.
+     */
+    @Override
+    public void deleteMovie(String movieId) throws ServiceException {
+        try {
+            movieDAO.deleteMovie(movieId);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
     void setUserDAO(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
+
+    void setAlienDAO(AlienDAO alienDAO) {
+        this.alienDAO = alienDAO;
+    }
+
+    void setMovieDAO(MovieDAO movieDAO) { this.movieDAO = movieDAO; }
 }

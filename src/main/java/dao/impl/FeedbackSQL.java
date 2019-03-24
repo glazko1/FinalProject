@@ -8,6 +8,8 @@ import entity.Feedback;
 import entity.Movie;
 import entity.User;
 import entity.UserStatus;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pool.DatabaseConnectionPool;
 import util.builder.AlienBuilder;
 import util.builder.FeedbackBuilder;
@@ -31,6 +33,7 @@ public class FeedbackSQL implements FeedbackDAO {
 
     private FeedbackSQL() {}
 
+    private static final Logger LOGGER = LogManager.getLogger(FeedbackSQL.class);
     private static final String GET_FEEDBACKS_BY_ALIEN_ID_SQL = "SELECT f.FeedbackId, m.MovieId, m.Title, m.RunningTime, m.Budget, m.ReleaseDate, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, a.AlienId, a.AlienName, a.Planet, a.Description, a.AverageRating, a.ImagePath, f.Rating, f.FeedbackText, f.FeedbackDateTime FROM Feedback f JOIN Alien a ON f.AlienId = a.AlienId JOIN Movie m ON a.MovieId = m.MovieId JOIN User u ON f.UserId = u.UserId WHERE f.AlienId = ? ORDER BY FeedbackDateTime DESC";
     private static final String ADD_NEW_FEEDBACK_SQL = "INSERT INTO Feedback (FeedbackId, AlienId, UserId, Rating, FeedbackText, FeedbackDateTime) VALUES (UUID(), ?, ?, ?, ?, ?)";
     private static final String DELETE_FEEDBACK_SQL = "DELETE FROM Feedback WHERE FeedbackId = ?";
@@ -49,10 +52,11 @@ public class FeedbackSQL implements FeedbackDAO {
      */
     @Override
     public List<Feedback> getFeedbacksByAlienId(String alienId) throws DAOException {
+        PreparedStatement statement = null;
         List<Feedback> feedbacks = new ArrayList<>();
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_FEEDBACKS_BY_ALIEN_ID_SQL);
+            statement = connection.prepareStatement(GET_FEEDBACKS_BY_ALIEN_ID_SQL);
             statement.setString(1, alienId);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
@@ -61,6 +65,12 @@ public class FeedbackSQL implements FeedbackDAO {
             }
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e);
+            }
         }
         return feedbacks;
     }
@@ -74,9 +84,10 @@ public class FeedbackSQL implements FeedbackDAO {
      */
     @Override
     public void addNewFeedback(Feedback feedback) throws DAOException {
+        PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(ADD_NEW_FEEDBACK_SQL);
+            statement = connection.prepareStatement(ADD_NEW_FEEDBACK_SQL);
             statement.setString(1, feedback.getAlien().getAlienId());
             statement.setString(2, feedback.getUser().getUserId());
             statement.setInt(3, feedback.getRating());
@@ -85,6 +96,12 @@ public class FeedbackSQL implements FeedbackDAO {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e);
+            }
         }
     }
 
@@ -95,22 +112,38 @@ public class FeedbackSQL implements FeedbackDAO {
      */
     @Override
     public void deleteFeedback(String feedbackId) throws DAOException {
+        PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(DELETE_FEEDBACK_SQL);
+            statement = connection.prepareStatement(DELETE_FEEDBACK_SQL);
             statement.setString(1, feedbackId);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e);
+            }
         }
     }
 
+    /**
+     * Creates and returns list of feedbacks left by specified user. Gets proxy
+     * connection from database pool, prepares statement on it (by SQL-string)
+     * and gets result set with all feedbacks left by user in database.
+     * @param userId ID of user to find his feedbacks.
+     * @return list of feedbacks left by specified user.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
     @Override
     public List<Feedback> getFeedbacksByUserId(String userId) throws DAOException {
+        PreparedStatement statement = null;
         List<Feedback> feedbacks = new ArrayList<>();
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_FEEDBACKS_BY_USER_ID_SQL);
+            statement = connection.prepareStatement(GET_FEEDBACKS_BY_USER_ID_SQL);
             statement.setString(1, userId);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
@@ -118,6 +151,12 @@ public class FeedbackSQL implements FeedbackDAO {
             }
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e);
+            }
         }
         return feedbacks;
     }

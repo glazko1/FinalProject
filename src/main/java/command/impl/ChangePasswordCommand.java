@@ -5,6 +5,7 @@ import command.exception.CommandException;
 import service.CommonService;
 import service.exception.user.InvalidPasswordException;
 import service.exception.ServiceException;
+import service.exception.user.InvalidUserInformationException;
 import service.impl.Common;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,6 +56,8 @@ public class ChangePasswordCommand implements Command {
         HttpSession session = request.getSession();
         try {
             service.changePassword(userId, currentPassword, newPassword, confirmedPassword);
+        } catch (InvalidUserInformationException e) {
+            session.setAttribute("message", "message.passwords_dont_match");
         } catch (InvalidPasswordException e) {
             session.setAttribute("message", "message.invalid_password");
         } catch (ServiceException e) {

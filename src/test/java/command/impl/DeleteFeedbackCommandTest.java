@@ -20,7 +20,7 @@ import static org.testng.Assert.assertEquals;
 public class DeleteFeedbackCommandTest {
 
     @Test(expectedExceptions = CommandException.class)
-    public void execute_exceptionFromService_CommandException() throws ServiceException, CommandException {
+    public void execute_serviceExceptionFromDeleteFeedback_CommandException() throws ServiceException, CommandException {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
@@ -31,6 +31,43 @@ public class DeleteFeedbackCommandTest {
         when(mockRequest.getParameter("feedbackId")).thenReturn("1");
         when(mockRequest.getParameter("alienId")).thenReturn("1");
         doThrow(ServiceException.class).when(service).deleteFeedback(anyString());
+        command.execute();
+        //then
+        //expecting CommandException
+    }
+
+    @Test(expectedExceptions = CommandException.class)
+    public void execute_serviceExceptionFromRecountAverageRating_CommandException() throws ServiceException, CommandException {
+        //given
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        CommonService service = mock(Common.class);
+        Command command = new DeleteFeedbackCommand(service, mockRequest, mockResponse);
+        //when
+        when(mockRequest.getParameter("userId")).thenReturn("1");
+        when(mockRequest.getParameter("feedbackId")).thenReturn("1");
+        when(mockRequest.getParameter("alienId")).thenReturn("1");
+        doNothing().when(service).deleteFeedback(anyString());
+        doThrow(ServiceException.class).when(service).recountAverageRating(anyString());
+        command.execute();
+        //then
+        //expecting CommandException
+    }
+
+    @Test(expectedExceptions = CommandException.class)
+    public void execute_serviceExceptionFromReviewUserStatus_CommandException() throws ServiceException, CommandException {
+        //given
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        CommonService service = mock(Common.class);
+        Command command = new DeleteFeedbackCommand(service, mockRequest, mockResponse);
+        //when
+        when(mockRequest.getParameter("userId")).thenReturn("1");
+        when(mockRequest.getParameter("feedbackId")).thenReturn("1");
+        when(mockRequest.getParameter("alienId")).thenReturn("1");
+        doNothing().when(service).deleteFeedback(anyString());
+        doNothing().when(service).recountAverageRating(anyString());
+        doThrow(ServiceException.class).when(service).reviewUserStatus(anyString());
         command.execute();
         //then
         //expecting CommandException
@@ -49,6 +86,7 @@ public class DeleteFeedbackCommandTest {
         when(mockRequest.getParameter("alienId")).thenReturn("1");
         doNothing().when(service).deleteFeedback(anyString());
         doNothing().when(service).recountAverageRating(anyString());
+        doNothing().when(service).reviewUserStatus(anyString());
         String result = command.execute();
         //then
         assertEquals(result, "main");

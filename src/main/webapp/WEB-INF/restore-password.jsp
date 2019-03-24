@@ -28,7 +28,7 @@
                 <td align="center"><fmt:message key="message.username" /></td>
                 <td align="center">
                     <label>
-                        <input type="text" required pattern=".{6,15}" name="username" title="<fmt:message key="message.username_format" />">
+                        <input type="text" required pattern="[A-Za-z0-9][A-Za-z0-9_-]{4,13}[A-Za-z0-9]" name="username" title="<fmt:message key="message.username_format" />">
                     </label>
                 </td>
             </tr>
@@ -60,7 +60,7 @@
                 <td align="center"><fmt:message key="message.new_password" /></td>
                 <td align="center">
                     <label>
-                        <input type="password" required pattern=".{8,30}" name="newPassword" title="<fmt:message key="message.password_format" />">
+                        <input type="password" required pattern="[A-Za-z0-9][A-Za-z0-9_-]{6,28}[A-Za-z0-9]" name="newPassword" title="<fmt:message key="message.password_format" />">
                     </label>
                 </td>
             </tr>
@@ -68,7 +68,7 @@
                 <td align="center"><fmt:message key="message.confirm_password" /></td>
                 <td align="center">
                     <label>
-                        <input type="password" required pattern=".{8,30}" name="confirmedPassword" title="<fmt:message key="message.password_format" />">
+                        <input type="password" required pattern="[A-Za-z0-9][A-Za-z0-9_-]{6,28}[A-Za-z0-9]" name="confirmedPassword" title="<fmt:message key="message.password_format" />">
                     </label>
                 </td>
             </tr>

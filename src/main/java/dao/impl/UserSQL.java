@@ -219,7 +219,8 @@ public class UserSQL implements UserDAO {
     }
 
     /**
-     * Changes status of user (administrator, movie fan, alien specialist and user).
+     * Changes status of user (administrator, movie fan, alien specialist and
+     * user).
      * @param userId ID of user to change status.
      * @param statusId ID of new user's status.
      * @throws DAOException if {@link SQLException} was caught.
@@ -349,7 +350,7 @@ public class UserSQL implements UserDAO {
     }
 
     /**
-     * Creates and returns list of users existing in database sorted by givem
+     * Creates and returns list of users existing in database sorted by given
      * parameter (ID, username or e-mail) ascending or descending. Gets proxy
      * connection from database pool, prepares statement on it (by SQL-string)
      * and gets result set with all aliens in database.

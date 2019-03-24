@@ -176,8 +176,8 @@ public class AlienSQL implements AlienDAO {
     }
 
     /**
-     * Updates information (movie, planet and description) about alien with given ID
-     * according to given parameters. Gets proxy connection from database pool,
+     * Updates information (movie, planet and description) about alien with given
+     * ID according to given parameters. Gets proxy connection from database pool,
      * prepares statement on it (by SQL-string) and executes.
      * @param alienId ID of alien to edit.
      * @param movieId new movie ID.

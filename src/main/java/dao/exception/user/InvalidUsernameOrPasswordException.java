@@ -4,6 +4,8 @@ import dao.exception.DAOException;
 
 public class InvalidUsernameOrPasswordException extends DAOException {
 
+    static final long serialVersionUID = 2546574241390152834L;
+
     public InvalidUsernameOrPasswordException() {
     }
 

@@ -42,19 +42,19 @@
             <tr>
                 <th align="center"><fmt:message key="message.current_password" /></th>
                 <td align="center">
-                    <label><input type="password" required pattern=".{8,30}" name="currentPassword" title="<fmt:message key="message.password_format" />"></label>
+                    <label><input type="password" required pattern="[A-Za-z0-9][A-Za-z0-9_-]{6,28}[A-Za-z0-9]" name="currentPassword" title="<fmt:message key="message.password_format" />"></label>
                 </td>
             </tr>
             <tr>
                 <th align="center"><fmt:message key="message.new_password" /></th>
                 <td align="center">
-                    <label><input type="password" required pattern=".{8,30}" name="newPassword" title="<fmt:message key="message.password_format" />"></label>
+                    <label><input type="password" required pattern="[A-Za-z0-9][A-Za-z0-9_-]{6,28}[A-Za-z0-9]" name="newPassword" title="<fmt:message key="message.password_format" />"></label>
                 </td>
             </tr>
             <tr>
                 <th align="center"><fmt:message key="message.confirm_password" /></th>
                 <td align="center">
-                    <label><input type="password" required pattern=".{8,30}" name="confirmedPassword" title="<fmt:message key="message.password_format" />"></label>
+                    <label><input type="password" required pattern="[A-Za-z0-9][A-Za-z0-9_-]{6,28}[A-Za-z0-9]" name="confirmedPassword" title="<fmt:message key="message.password_format" />"></label>
                 </td>
             </tr>
         </table><br>

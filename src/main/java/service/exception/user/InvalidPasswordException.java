@@ -4,6 +4,8 @@ import service.exception.ServiceException;
 
 public class InvalidPasswordException extends ServiceException {
 
+    static final long serialVersionUID = 7086976748828152731L;
+
     public InvalidPasswordException() {
     }
 

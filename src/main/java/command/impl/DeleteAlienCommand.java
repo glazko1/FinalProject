@@ -2,16 +2,16 @@ package command.impl;
 
 import command.Command;
 import command.exception.CommandException;
-import service.AlienSpecialistService;
+import service.AdminService;
 import service.exception.ServiceException;
-import service.impl.AlienSpecialist;
+import service.impl.Admin;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class DeleteAlienCommand implements Command {
 
-    private AlienSpecialistService service;
+    private AdminService service;
     private HttpServletRequest request;
     private HttpServletResponse response;
 
@@ -21,16 +21,16 @@ public class DeleteAlienCommand implements Command {
      * @param response HTTP-response.
      */
     public DeleteAlienCommand(HttpServletRequest request, HttpServletResponse response) {
-        this(AlienSpecialist.getInstance(), request, response);
+        this(Admin.getInstance(), request, response);
     }
 
     /**
      * Constructs command with specified service, request and response.
-     * @param service service layer class with opportunities of alien specialist.
+     * @param service service layer class with opportunities of admin.
      * @param request HTTP-request.
      * @param response HTTP-response.
      */
-    DeleteAlienCommand(AlienSpecialistService service, HttpServletRequest request, HttpServletResponse response) {
+    DeleteAlienCommand(AdminService service, HttpServletRequest request, HttpServletResponse response) {
         this.service = service;
         this.request = request;
         this.response = response;

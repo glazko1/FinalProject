@@ -12,6 +12,7 @@ import command.impl.ChangeUserStatusCommand;
 import command.impl.DeleteAlienCommand;
 import command.impl.DeleteFeedbackCommand;
 import command.impl.DeleteMovieCommand;
+import command.impl.DeleteNotificationCommand;
 import command.impl.EditAlienCommand;
 import command.impl.EditMovieCommand;
 import command.impl.EditUserCommand;
@@ -58,11 +59,11 @@ public class CommandFactory {
 
     /**
      * Creates and returns command in accordance with its given name. Can return
-     * object of any class extending {@link Command} interface.
+     * object of any class implementing {@link Command} interface.
      * @param name command's name.
      * @param request HTTP-request.
      * @param response HTTP-response.
-     * @return some command  in accordance with name.
+     * @return some command in accordance with name.
      * @throws CommandException if there is no command with given name.
      */
     public Command createCommand(String name, HttpServletRequest request, HttpServletResponse response) throws CommandException {
@@ -147,6 +148,8 @@ public class CommandFactory {
                 return new DeleteMovieCommand(request, response);
             case "viewAllUsersSorted":
                 return new ViewAllUsersSortedCommand(request, response);
+            case "deleteNotification":
+                return new DeleteNotificationCommand(request, response);
             default:
                 break;
         }

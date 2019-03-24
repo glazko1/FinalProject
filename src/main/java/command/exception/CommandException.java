@@ -2,6 +2,8 @@ package command.exception;
 
 public class CommandException extends Throwable {
 
+    static final long serialVersionUID = 5374011758552587556L;
+
     public CommandException() {
     }
 

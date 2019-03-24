@@ -4,6 +4,8 @@ import service.exception.ServiceException;
 
 public class InvalidEditInformationException extends ServiceException {
 
+    static final long serialVersionUID = 1799704336566606085L;
+
     public InvalidEditInformationException() {
     }
 

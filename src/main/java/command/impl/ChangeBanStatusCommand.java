@@ -38,7 +38,7 @@ public class ChangeBanStatusCommand implements Command {
 
     /**
      * Executes command of changing user's ban status (from banned to not banned and
-     * vice versa). Gets information about user's ID from request, then calles service
+     * vice versa). Gets information about user's ID from request, then calls service
      * layer to change ban status.
      * @return url to redirect from servlet.
      * @throws CommandException if {@link ServiceException} was caught.

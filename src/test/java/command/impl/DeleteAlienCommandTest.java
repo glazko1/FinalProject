@@ -3,9 +3,9 @@ package command.impl;
 import command.Command;
 import command.exception.CommandException;
 import org.testng.annotations.Test;
-import service.AlienSpecialistService;
+import service.AdminService;
 import service.exception.ServiceException;
-import service.impl.AlienSpecialist;
+import service.impl.Admin;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,11 +20,11 @@ import static org.testng.Assert.assertEquals;
 public class DeleteAlienCommandTest {
 
     @Test(expectedExceptions = CommandException.class)
-    public void execute_exceptionFromService_CommandException() throws ServiceException, CommandException {
+    public void execute_serviceExceptionFromDeleteAlien_CommandException() throws ServiceException, CommandException {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-        AlienSpecialistService service = mock(AlienSpecialist.class);
+        AdminService service =  mock(Admin.class);
         Command command = new DeleteAlienCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("alienId")).thenReturn("1");
@@ -39,7 +39,7 @@ public class DeleteAlienCommandTest {
         //given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-        AlienSpecialistService service = mock(AlienSpecialist.class);
+        AdminService service =  mock(Admin.class);
         Command command = new DeleteAlienCommand(service, mockRequest, mockResponse);
         //when
         when(mockRequest.getParameter("alienId")).thenReturn("1");

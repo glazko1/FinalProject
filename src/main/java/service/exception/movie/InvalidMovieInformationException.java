@@ -4,6 +4,8 @@ import service.exception.ServiceException;
 
 public class InvalidMovieInformationException extends ServiceException {
 
+    static final long serialVersionUID = 1731341242874654177L;
+
     public InvalidMovieInformationException() {
     }
 

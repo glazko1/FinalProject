@@ -6,6 +6,8 @@ import dao.exception.DAOException;
 import entity.Notification;
 import entity.User;
 import entity.UserStatus;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pool.DatabaseConnectionPool;
 import util.builder.NotificationBuilder;
 import util.builder.UserBuilder;
@@ -27,8 +29,10 @@ public class NotificationSQL implements NotificationDAO {
 
     private NotificationSQL() {}
 
+    private static final Logger LOGGER = LogManager.getLogger(NotificationSQL.class);
     private static final String GET_NOTIFICATIONS_BY_USER_ID_SQL = "SELECT n.NotificationId, u.UserId, u.Username, u.FirstName, u.LastName, u.StatusId, u.Email, u.Banned, u.BirthDate, n.NotificationText, n.NotificationDateTime FROM Notification n JOIN User u ON n.UserId = u.UserId WHERE n.UserId = ? ORDER BY n.NotificationDateTime DESC";
     private static final String ADD_NEW_NOTIFICATION_SQL = "INSERT INTO Notification (NotificationId, UserId, NotificationText, NotificationDateTime) VALUES (UUID(), ?, ?, ?)";
+    private static final String DELETE_NOTIFICATION_SQL = "DELETE FROM Notification WHERE NotificationId = ?";
     private DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance();
 
     /**
@@ -41,10 +45,11 @@ public class NotificationSQL implements NotificationDAO {
      */
     @Override
     public List<Notification> getNotificationsByUserId(String userId) throws DAOException {
+        PreparedStatement statement = null;
         List<Notification> notifications = new ArrayList<>();
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_NOTIFICATIONS_BY_USER_ID_SQL);
+            statement = connection.prepareStatement(GET_NOTIFICATIONS_BY_USER_ID_SQL);
             statement.setString(1, userId);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
@@ -53,6 +58,12 @@ public class NotificationSQL implements NotificationDAO {
             }
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e);
+            }
         }
         return notifications;
     }
@@ -66,9 +77,10 @@ public class NotificationSQL implements NotificationDAO {
      */
     @Override
     public void addNewNotification(Notification notification) throws DAOException {
+        PreparedStatement statement = null;
         try (ProxyConnection proxyConnection = pool.getConnection()) {
             Connection connection = proxyConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(ADD_NEW_NOTIFICATION_SQL);
+            statement = connection.prepareStatement(ADD_NEW_NOTIFICATION_SQL);
             User user = notification.getUser();
             statement.setString(1, user.getUserId());
             statement.setString(2, notification.getNotificationText());
@@ -76,6 +88,37 @@ public class NotificationSQL implements NotificationDAO {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e);
+            }
+        }
+    }
+
+    /**
+     * Deletes notification with given ID from database. Gets proxy connection from
+     * database pool, prepares statement on it (by SQL-string) and executes.
+     * @param notificationId ID of notification to delete.
+     * @throws DAOException if {@link SQLException} was caught.
+     */
+    @Override
+    public void deleteNotification(String notificationId) throws DAOException {
+        PreparedStatement statement = null;
+        try (ProxyConnection proxyConnection = pool.getConnection()) {
+            Connection connection = proxyConnection.getConnection();
+            statement = connection.prepareStatement(DELETE_NOTIFICATION_SQL);
+            statement.setString(1, notificationId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.error(e);
+            }
         }
     }
 

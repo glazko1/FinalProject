@@ -19,6 +19,15 @@ public class UserInformationValidatorTest {
     }
 
     @Test
+    public void validateWithTwoParams_hyphenAtUsernameEnd_false() {
+        //given
+        //when
+        boolean result = validator.validate("Incorrect-", "Password");
+        //then
+        assertFalse(result);
+    }
+
+    @Test
     public void validateWithTwoParams_longUsername_false() {
         //given
         //when
@@ -32,6 +41,15 @@ public class UserInformationValidatorTest {
         //given
         //when
         boolean result = validator.validate("Username", "Short");
+        //then
+        assertFalse(result);
+    }
+
+    @Test
+    public void validateWithTwoParams_underscoreAtPasswordBeginning_false() {
+        //given
+        //when
+        boolean result = validator.validate("Username", "_WrongPassword");
         //then
         assertFalse(result);
     }

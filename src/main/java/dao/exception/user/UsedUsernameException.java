@@ -4,6 +4,8 @@ import dao.exception.DAOException;
 
 public class UsedUsernameException extends DAOException {
 
+    static final long serialVersionUID = 8336554758055622936L;
+
     public UsedUsernameException() {
     }
 

@@ -74,8 +74,12 @@ public class Alien {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Alien alien = (Alien) o;
         return Double.compare(alien.averageRating, averageRating) == 0 &&
                 Objects.equals(alienId, alien.alienId) &&
